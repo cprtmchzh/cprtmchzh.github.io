@@ -6,7 +6,7 @@
     const explore = document.querySelector('.home-explore');
     if (!landing || !explore) return;
     const tiles = [...explore.querySelectorAll('.home-tile')];
-    const panels = [...landing.querySelectorAll('.home-box'),...tiles];
+    const panels = tiles;
     const reduced = matchMedia('(prefers-reduced-motion: reduce)');
     const small = matchMedia('(max-width: 980px)');
     // Panels unfold as one bordered rectangle; no independently animated
@@ -20,19 +20,10 @@
         panel.dataset.foldDir = directions[Math.floor(Math.random() * directions.length)];
         panel.classList.add('fold-panel');
       }
-      // Hero cards act as one group; the three reveals start at the same time.
-      const heroBoxes = [...landing.querySelectorAll('.home-box')];
-      const heroObserver = new IntersectionObserver(entries => {
-        for (const entry of entries) {
-          const open = entry.intersectionRatio >= .48;
-          for (const box of heroBoxes) togglePanel(box,open);
-        }
-      },{threshold:[0,.48,1]});
       const tileObserver = new IntersectionObserver(entries => {
         for (const entry of entries) togglePanel(entry.target,entry.isIntersecting);
       },{rootMargin:'0px 0px -2% 0px',threshold:0});
       requestAnimationFrame(() => {
-        heroObserver.observe(landing);
         tiles.forEach(tile => tileObserver.observe(tile));
       });
     }

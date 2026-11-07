@@ -19,12 +19,14 @@
   <link rel="stylesheet" href="{{ '/assets/css/night-sky.css' | relative_url }}">
 <link rel="stylesheet" href="{{ '/assets/css/editorial-display.css' | relative_url }}">
 <link rel="stylesheet" href="{{ '/assets/css/home-scroll.css' | relative_url }}">
+<link rel="stylesheet" href="{{ '/assets/css/home-atmosphere.css' | relative_url }}">
+<script src="{{ '/assets/js/home-atmosphere.js' | relative_url }}"></script>
 <script src="{{ '/assets/js/home-scroll.js' | relative_url }}" defer></script>
 </head>
 <body>
 
 
-  <main id="main"><div class="night-sky" aria-hidden="true"><span class="night-sky__stars"></span><span class="night-sky__twinkle"></span><span class="night-sky__meteor"></span><span class="night-sky__constellation night-sky__constellation--cassiopeia"></span><span class="night-sky__constellation night-sky__constellation--dipper"></span></div><section class="home-landing" id="top"><div class="home-stage"><div class="home-topbar">
+  <main id="main"><div class="night-sky" aria-hidden="true"><span class="night-sky__stars"></span><span class="night-sky__twinkle"></span><span class="night-sky__meteor"></span><span class="night-sky__constellation night-sky__constellation--cassiopeia"></span><span class="night-sky__constellation night-sky__constellation--dipper"></span></div><div class="home-atmosphere" aria-hidden="true"><span></span><span></span><span></span></div><section class="home-landing" id="top"><div class="home-stage"><div class="home-topbar">
   <button class="theme-bulb" type="button" data-theme-toggle aria-label="전구 끄기 — 다크 모드" aria-pressed="false" title="다크 모드로 전환"><svg class="bulb-art" viewBox="0 0 40 46" aria-hidden="true" focusable="false"><path d="M20 4C11.6 4 6.5 10 6.5 17.2c0 5 2.5 8.8 6 11.7 1.3 1.1 2.2 4h10.6c.2-1.7.9-2.9 2.2-4 3.5-2.9 6-6.7 6-11.7C33.5 10 28.4 4 20 4Z"/><path d="M15 33h10M15.8 37.5h8.4M18 41h4M15.7 19.8l4.3 4.7 4.3-4.7M20 24.5v8"/></svg></button>
 </div>
 {{ content }}</div><a class="home-scroll-cue" href="#explore" aria-label="Scroll to more content" title="Explore more"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 9 7 7 7-7"/></svg></a></section>
@@ -36,7 +38,7 @@
       <h2 class="home-tile__title">Archive</h2>
       <div class="home-tile__notes" aria-label="Latest posts, newest first">
         {% for post in site.posts limit:24 %}
-        <a class="home-tile__note" href="{{ post.url | relative_url }}"><time datetime="{{ post.date | date: '%Y-%m-%d' }}">{{ post.date | date: '%Y.%m.%d' }}</time><strong>{{ post.title | escape }}</strong>{% if post.description %}<span>{{ post.description | escape | truncate: 100 }}</span>{% endif %}</a>
+        <a class="home-tile__note" href="{{ post.url | relative_url }}"><time datetime="{{ post.date | date: '%Y-%m-%d' }}">{{ post.date | date: '%Y.%m.%d' }}</time><strong>{{ post.title | escape }}</strong>{% if post.description %}<span>{{ post.description | markdownify | strip_html | normalize_whitespace | truncate: 100 | escape }}</span>{% endif %}</a>
         {% else %}<p class="home-tile__empty">No notes yet.</p>{% endfor %}
       </div>
     </section>
@@ -50,7 +52,10 @@
       <div class="home-tile__feature-copy">
         <h2>{{ featured_post.title | default: 'Archive' | escape }}</h2>
         {% if featured_post %}<time class="home-tile__feature-date" datetime="{{ featured_post.date | date: '%Y-%m-%d' }}">{{ featured_post.date | date: '%Y.%m.%d' }}</time>{% endif %}
-        <p>{{ featured_post.excerpt | strip_html | normalize_whitespace | truncate: 155 | escape | default: 'Read the latest notes.' }}</p>
+        {% assign summary_paragraphs = featured_post.content | markdownify | split: '<p>' %}
+        {% assign summary_fallback = summary_paragraphs[1] | split: '</p>' | first | strip_html | normalize_whitespace %}
+        {% assign featured_summary = featured_post.description | default: summary_fallback | default: 'Read the latest notes.' %}
+        <p>{{ featured_summary | markdownify | strip_html | normalize_whitespace | truncate: 155 | escape }}</p>
         {% if featured_post.tags.size > 0 %}<div class="home-tile__feature-tags" aria-label="Post tags">{% for tag in featured_post.tags limit:4 %}<span>{{ tag | escape }}</span>{% endfor %}</div>{% endif %}
       </div>
     </a>
