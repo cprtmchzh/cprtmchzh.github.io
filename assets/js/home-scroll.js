@@ -22,52 +22,19 @@
       }
       // Hero cards act as one group; the three reveals start at the same time.
       const heroBoxes = [...landing.querySelectorAll('.home-box')];
-      let drawing = document.documentElement.classList.contains('home-intro-pending');
+      let loading = document.documentElement.classList.contains('home-loading');
       let heroVisible = true;
       const heroObserver = new IntersectionObserver(entries => {
         for (const entry of entries) {
           const open = entry.intersectionRatio >= .48;
           heroVisible = open;
-          if (!drawing) for (const box of heroBoxes) togglePanel(box,open);
+          if (!loading) for (const box of heroBoxes) togglePanel(box,open);
         }
       },{threshold:[0,.48,1]});
-      if (drawing) {
-        const nav = landing.querySelector('.home-links');
-        const bounds = nav.getBoundingClientRect();
-        const outlines = [];
-        const animations = [];
-        const ns = 'http://www.w3.org/2000/svg';
-        try { sessionStorage.setItem('portfolio-home-outline-v2','seen'); } catch (_) {}
-        heroBoxes.forEach((box,index) => {
-          const size = box.getBoundingClientRect();
-          const svg = document.createElementNS(ns,'svg');
-          svg.setAttribute('class','home-entry-outline');
-          svg.setAttribute('aria-hidden','true');
-          svg.setAttribute('focusable','false');
-          svg.setAttribute('viewBox',`0 0 ${size.width} ${size.height}`);
-          Object.assign(svg.style,{left:`${size.left-bounds.left}px`,top:`${size.top-bounds.top}px`,width:`${size.width}px`,height:`${size.height}px`});
-          const rect = document.createElementNS(ns,'rect');
-          for (const [key,value] of Object.entries({x:.5,y:.5,width:size.width-1,height:size.height-1,pathLength:1})) rect.setAttribute(key,String(value));
-          svg.append(rect);nav.append(svg);outlines.push(svg);
-          animations.push(rect.animate([{strokeDashoffset:1},{strokeDashoffset:0}],{duration:520,delay:index*90,easing:'ease-in-out',fill:'both'}));
-        });
-        let finished = false;
-        const reveal = () => {
-          if (finished) return;
-          finished = true;drawing = false;
-          document.documentElement.classList.remove('home-intro-pending');
-          for (const box of heroBoxes) togglePanel(box,heroVisible);
-          // Keep the completed outline while the original line-to-panel reveal runs.
-          setTimeout(() => { outlines.forEach(svg=>svg.remove());animations.forEach(animation=>animation.cancel()); },650);
-          window.removeEventListener('resize',reveal);
-          document.removeEventListener('portfolio:before-home-scroll',reveal);
-        };
-        Promise.all(animations.map(animation=>animation.finished.catch(()=>{}))).then(reveal);
-        window.addEventListener('resize',reveal,{once:true});
-        document.addEventListener('portfolio:before-home-scroll',reveal,{once:true});
-        reduced.addEventListener('change',reveal,{once:true});
-        setTimeout(reveal,1000);
-      }
+      document.addEventListener('portfolio:home-ready', () => {
+        loading = false;
+        for (const box of heroBoxes) togglePanel(box,heroVisible);
+      },{once:true});
       // IntersectionObserver sees the clipped 2px strip, which can sit outside
       // its viewport margin forever. Use stable layout rectangles for tile entry.
       let tileFrame = 0;

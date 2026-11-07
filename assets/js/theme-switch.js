@@ -129,11 +129,7 @@
     const styles = Array.from(document.querySelectorAll('link[rel="stylesheet"],style[data-home-preview-style]'))
       .map(node => node.tagName === 'STYLE' ? node.outerHTML :
         '<link rel="stylesheet" href="'+node.href.replace(/&/g,'&amp;').replace(/"/g,'&quot;')+'">').join('');
-    // The first-entry SVG strokes are temporary siblings of the cards. A
-    // static preview cannot run their cleanup, so never copy them into it.
-    const previewHome = document.querySelector('main').cloneNode(true);
-    previewHome.querySelectorAll('.home-entry-outline').forEach(outline => outline.remove());
-    const home = previewHome.outerHTML;
+    const home = document.querySelector('main').outerHTML;
     const src = '<!doctype html><html lang="ko" data-preview-copy="true" data-theme="'+opposite(theme)+'">' +
       '<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">'+
       '<base href="'+document.baseURI.replace(/&/g,'&amp;').replace(/"/g,'&quot;')+'">'+styles+

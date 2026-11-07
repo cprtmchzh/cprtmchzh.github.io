@@ -16,14 +16,31 @@
   .home-atmosphere span { animation:none; }
 }
 
-/* First visit: draw a non-interactive outline, then run the original panel reveal. */
+/* A short first-visit title screen, outside the theme-preview copy. */
 .home-links { position:relative; }
-.home-intro-pending .home-box { visibility:hidden; }
-.home-entry-outline { position:absolute;z-index:5;pointer-events:none;overflow:visible;fill:none;stroke:#26343b;stroke-width:1; }
-.home-entry-outline rect { stroke-dasharray:1;vector-effect:non-scaling-stroke; }
-[data-preview-copy="true"] .home-entry-outline { display:none!important; }
-:root[data-theme="dark"] .home-entry-outline { stroke:rgba(235,240,247,.7); }
+.home-loader { position:fixed;inset:0;z-index:1100;display:grid;place-items:center;padding:24px;background:#f8f6ef;color:#26343b;opacity:0;visibility:hidden;pointer-events:none;transition:opacity .18s ease,visibility 0s linear .18s; }
+.home-loader__identity { display:flex;flex-direction:column;align-items:center;text-align:center; }
+.home-loader__name { font:600 10px/1.4 ui-monospace,SFMono-Regular,Consolas,monospace;letter-spacing:.16em; }
+.home-loader__tiles { display:flex;gap:9px;margin:26px 0 22px; }
+.home-loader__tiles span { width:35px;height:44px;border:1px solid currentColor;background:#b5eed0; }
+.home-loader__tiles span:nth-child(2) { background:#d8b9f8; }
+.home-loader__tiles span:nth-child(3) { background:#fbbfd5; }
+.home-loader__title { font:400 clamp(25px,5vw,32px)/1.25 'Abril Fatface',Georgia,serif;letter-spacing:-.035em; }
+.home-loader__title i { font:italic .8em Georgia,serif;margin:0 3px; }
+.home-loader__caption { margin-top:14px;font:500 8px/1.6 ui-monospace,SFMono-Regular,Consolas,monospace;letter-spacing:.13em;opacity:.6; }
+:root.home-loading .home-loader { opacity:1;visibility:visible;transition:none; }
+:root.home-loading .home-box { visibility:hidden; }
+:root[data-theme="dark"] .home-loader { background:#090c12;color:#dce4ed; }
+:root[data-theme="dark"] .home-loader__tiles span { border-color:#82e8b7;background:#174337; }
+:root[data-theme="dark"] .home-loader__tiles span:nth-child(2) { border-color:#ceacff;background:#38264d; }
+:root[data-theme="dark"] .home-loader__tiles span:nth-child(3) { border-color:#ff9bc6;background:#4b283d; }
+@media(prefers-reduced-motion:no-preference) {
+  .home-loading .home-loader__tiles span { animation:home-loader-settle .38s cubic-bezier(.18,.78,.22,1) both; }
+  .home-loading .home-loader__tiles span:nth-child(2) { animation-delay:.08s; }
+  .home-loading .home-loader__tiles span:nth-child(3) { animation-delay:.16s; }
+  @keyframes home-loader-settle { from { opacity:0;transform:translateY(9px); } to { opacity:1;transform:translateY(0); } }
+}
 @media(prefers-reduced-motion:reduce) {
- .home-intro-pending .home-box { visibility:visible; }
- .home-entry-outline { display:none; }
+  .home-loader { display:none;transition:none; }
+  :root.home-loading .home-box { visibility:visible; }
 }

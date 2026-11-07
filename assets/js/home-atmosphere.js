@@ -1,13 +1,30 @@
-/* Pause decorative motion while the page is hidden. No pointer/scroll tracking. */
+/* Brief first-visit title screen and decorative-motion visibility state. */
 (() => {
-  // Only the first home visit in this tab receives the outline prelude.
+  const root = document.documentElement;
+  const motion = matchMedia('(prefers-reduced-motion: reduce)');
+  const key = 'portfolio-home-loader-v1';
+  const finish = () => {
+    if (!root.classList.contains('home-loading')) return;
+    root.classList.remove('home-loading');
+    document.dispatchEvent(new Event('portfolio:home-ready'));
+  };
   try {
-    if (!matchMedia('(prefers-reduced-motion: reduce)').matches && location.hash !== '#explore' && !sessionStorage.getItem('portfolio-home-outline-v2')) {
-      document.documentElement.classList.add('home-intro-pending');
-      setTimeout(() => document.documentElement.classList.remove('home-intro-pending'), 2400);
+    if (!motion.matches && location.hash !== '#explore' && !sessionStorage.getItem(key)) {
+      sessionStorage.setItem(key,'seen');
+      root.classList.add('home-loading');
+      // Never leave the page covered when another asset fails or loads slowly.
+      setTimeout(finish,2200);
+      document.addEventListener('DOMContentLoaded',() => setTimeout(finish,620),{once:true});
+      // Navigation and user input always take precedence over the introduction.
+      for (const name of ['pointerdown','keydown','wheel','touchstart','focusin']) {
+        document.addEventListener(name,finish,{once:true,passive:true});
+      }
+      window.addEventListener('pagehide',finish,{once:true});
+      document.addEventListener('portfolio:before-home-scroll',finish,{once:true});
+      motion.addEventListener('change',finish,{once:true});
     }
   } catch (_) {}
-  const sync = () => document.documentElement.classList.toggle('home-motion-paused', document.hidden);
-  document.addEventListener('visibilitychange', sync);
+  const sync = () => root.classList.toggle('home-motion-paused',document.hidden);
+  document.addEventListener('visibilitychange',sync);
   sync();
 })();
