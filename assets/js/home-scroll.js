@@ -83,6 +83,26 @@
       const scheduleTiles = () => {
         if (!tileFrame) tileFrame = requestAnimationFrame(updateTiles);
       };
+      // Back/forward cache restores the DOM without rerunning init. Store a
+      // collapsed frame and release it after restoration so reentry unfolds.
+      const resetClass = 'home-reentry-reset';
+      window.addEventListener('pagehide',event => {
+        if (event.persisted && !reduced.matches) document.documentElement.classList.add(resetClass);
+      });
+      window.addEventListener('pageshow',event => {
+        if (!event.persisted) return;
+        if (reduced.matches) {
+          document.documentElement.classList.remove(resetClass);
+          return;
+        }
+        document.documentElement.classList.add(resetClass);
+        // Resolve the collapsed style before enabling the transition again.
+        getComputedStyle(heroBoxes[0]).getPropertyValue('--fold-reveal');
+        requestAnimationFrame(() => requestAnimationFrame(() => {
+          document.documentElement.classList.remove(resetClass);
+          scheduleTiles();
+        }));
+      });
       window.addEventListener('scroll',scheduleTiles,{passive:true});
       window.addEventListener('resize',scheduleTiles,{passive:true});
       window.addEventListener('pageshow',scheduleTiles);

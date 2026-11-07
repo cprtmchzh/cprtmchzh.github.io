@@ -236,6 +236,7 @@ body.is-exploring .home-up-cue{opacity:.75;visibility:visible;pointer-events:aut
  .fold-panel[data-fold-dir="up"]{clip-path:inset(calc(100% - max(2px,var(--fold-reveal))) 0 0 0)}
  .fold-panel[data-fold-dir="down"]{clip-path:inset(0 0 calc(100% - max(2px,var(--fold-reveal))) 0)}
  .home-box.fold-panel.is-visible,.home-tile.fold-panel.is-visible{--fold-reveal:100%}
+ :root.home-reentry-reset .fold-panel{--fold-reveal:0%!important;transition:none!important}
  /* Its pseudo-element is the ENTIRE 4-sided border, not a moving line. */
  .home-box.fold-panel::after,.home-tile.fold-panel::after{
    content:""!important;display:block!important;position:absolute!important;
