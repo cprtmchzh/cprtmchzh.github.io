@@ -481,3 +481,31 @@ body.is-exploring .home-up-cue{opacity:.75;visibility:visible;pointer-events:aut
 @media (max-width:600px) {
   .home-explore { padding-bottom:12px; }
 }
+
+/* Reset the archive wrapper as well as the tiles at compact breakpoints.
+   Named areas prevent desktop row/column spans from creating overlapping tracks. */
+@media(max-width:980px) {
+ .home-explore { height:auto;min-height:100dvh;align-items:stretch;padding:20px; }
+ .home-explore__grid { height:auto;max-height:none;min-width:0;grid-template-columns:repeat(2,minmax(0,1fr));grid-template-rows:auto auto auto;grid-template-areas:"archive feature" "projects projects" "focus about";gap:12px; }
+ .home-tile__archive-stack { grid-area:archive;min-height:600px;gap:12px; }
+ .home-tile--feature { grid-area:feature;min-height:600px; }
+ .home-tile--projects { grid-area:projects;min-height:300px; }
+ .home-tile--focus { grid-area:focus;min-height:220px; }
+ .home-tile--about { grid-area:about;min-height:220px; }
+ .home-tile__archive-stack > .home-tile--archive { min-height:0; }
+ .home-tile--feature .home-tile__feature-copy { overflow:visible; }
+ .home-tile__feature-tags { flex-shrink:0; }
+}
+@media(max-width:600px) {
+ .home-explore { padding:12px 20px; }
+ .home-explore__grid { grid-template-columns:minmax(0,1fr);grid-template-rows:repeat(5,auto);grid-template-areas:"archive" "feature" "projects" "focus" "about";gap:12px; }
+ .home-tile__archive-stack { min-height:430px; }
+ .home-tile--feature { min-height:0;display:flex;flex-direction:column; }
+ .home-tile--feature .home-tile__feature-image { height:auto;min-height:0;aspect-ratio:1.65; }
+ .home-tile--feature .home-tile__feature-copy { padding-bottom:8px; }
+ .home-tile--projects { min-height:280px; }
+ .home-tile--focus { min-height:190px; }
+ .home-tile--about { min-height:140px; }
+ .home-tile__avatar { height:84px; }
+}
+@media(max-width:350px) { .home-explore { padding-inline:12px; } }
