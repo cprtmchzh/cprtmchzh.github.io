@@ -20,14 +20,11 @@
 .home-links { position:relative; }
 .home-loader { position:fixed;inset:0;z-index:1100;display:grid;place-items:center;padding:24px;background:#f8f6ef;color:#26343b;opacity:0;visibility:hidden;pointer-events:none;transition:opacity .22s ease,visibility 0s linear .22s; }
 .home-loader__identity { display:flex;flex-direction:column;align-items:center;text-align:center; }
-.home-loader__name { font:600 10px/1.4 ui-monospace,SFMono-Regular,Consolas,monospace;letter-spacing:.16em; }
-.home-loader__tiles { display:flex;gap:9px;margin:26px 0 22px; }
-.home-loader__tiles span { width:35px;height:44px;border:1px solid currentColor;background:#b5eed0; }
+.home-loader__tiles { display:flex;gap:9px;margin:0 0 18px; }
+.home-loader__tiles span { width:35px;height:64px;border:1px solid currentColor;background:#b5eed0; }
 .home-loader__tiles span:nth-child(2) { background:#d8b9f8; }
 .home-loader__tiles span:nth-child(3) { background:#fbbfd5; }
-.home-loader__title { font:400 clamp(25px,5vw,32px)/1.25 'Abril Fatface',Georgia,serif;letter-spacing:-.035em; }
-.home-loader__title i { font:italic .8em Georgia,serif;margin:0 3px; }
-.home-loader__caption { margin-top:14px;font:500 8px/1.6 ui-monospace,SFMono-Regular,Consolas,monospace;letter-spacing:.13em;opacity:.6; }
+.home-loader__status { font:500 11px/1.6 ui-monospace,SFMono-Regular,Consolas,monospace;letter-spacing:.08em;opacity:.65; }
 :root.home-loading .home-loader { opacity:1;visibility:visible;transition:none; }
 :root.home-loading .home-box { visibility:hidden; }
 :root[data-theme="dark"] .home-loader { background:#090c12;color:#dce4ed; }
@@ -42,9 +39,7 @@
   .home-loader-exiting .home-loader__tiles span { animation:home-loader-leave .30s cubic-bezier(.4,0,.2,1) both; }
   .home-loader-exiting .home-loader__tiles span:nth-child(2) { animation-delay:.09s; }
   .home-loader-exiting .home-loader__tiles span:nth-child(3) { animation-delay:.18s; }
-  .home-loader-exiting .home-loader__name,
-  .home-loader-exiting .home-loader__title,
-  .home-loader-exiting .home-loader__caption { animation:home-loader-type-leave .30s ease .16s forwards; }
+  .home-loader-exiting .home-loader__status { animation:home-loader-type-leave .30s ease .16s forwards; }
   @keyframes home-loader-leave { from { opacity:1;transform:translateY(0); } to { opacity:0;transform:translateY(9px); } }
   @keyframes home-loader-type-leave { to { opacity:0;transform:translateY(3px); } }
 }
