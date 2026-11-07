@@ -15,3 +15,14 @@
 @media(prefers-reduced-motion:reduce) {
   .home-atmosphere span { animation:none; }
 }
+
+/* First visit: draw a non-interactive outline, then run the original panel reveal. */
+.home-links { position:relative; }
+.home-intro-pending .home-box { visibility:hidden; }
+.home-entry-outline { position:absolute;z-index:5;pointer-events:none;overflow:visible;fill:none;stroke:#26343b;stroke-width:1; }
+.home-entry-outline rect { stroke-dasharray:1;vector-effect:non-scaling-stroke; }
+:root[data-theme="dark"] .home-entry-outline { stroke:rgba(235,240,247,.7); }
+@media(prefers-reduced-motion:reduce) {
+ .home-intro-pending .home-box { visibility:visible; }
+ .home-entry-outline { display:none; }
+}
