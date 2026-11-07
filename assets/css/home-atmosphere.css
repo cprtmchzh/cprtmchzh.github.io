@@ -24,7 +24,7 @@
 .home-loader__tiles span { width:35px;height:64px;border:1px solid currentColor;background:#b5eed0; }
 .home-loader__tiles span:nth-child(2) { background:#d8b9f8; }
 .home-loader__tiles span:nth-child(3) { background:#fbbfd5; }
-.home-loader__status { font:500 11px/1.6 ui-monospace,SFMono-Regular,Consolas,monospace;letter-spacing:.08em;opacity:.65; }
+.home-loader__status { font:400 14px/1.6 var(--font-display);letter-spacing:-.02em;opacity:.65; }
 :root.home-loading .home-loader { opacity:1;visibility:visible;transition:none; }
 :root.home-loading .home-box { visibility:hidden; }
 :root[data-theme="dark"] .home-loader { background:#090c12;color:#dce4ed; }
