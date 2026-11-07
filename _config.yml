@@ -1,0 +1,40 @@
+title: "cprtmchzh | Portfolio & Archive"
+description: "개발, 보안 연구, 글과 성과를 기록하는 개인 포트폴리오"
+lang: ko-KR
+timezone: Asia/Seoul
+url: "https://cprtmchzh.github.io"
+baseurl: ""
+markdown: kramdown
+highlighter: rouge
+permalink: /writing/:year/:month/:day/:title/
+future: false
+exclude:
+  - README.md
+  - OPTIMIZATION.md
+  - Gemfile
+  - Gemfile.lock
+  - _templates
+  - preview.html
+  - .gitignore
+defaults:
+  - scope:
+      path: ""
+      type: posts
+    values:
+      layout: article
+  - scope:
+      path: ""
+      type: projects
+    values:
+      layout: article
+      article_type: project
+
+kramdown:
+  input: GFM
+
+# Markdown project detail pages
+collections:
+  projects:
+    output: true
+    permalink: /projects/:name/
+

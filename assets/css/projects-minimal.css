@@ -1,0 +1,164 @@
+/* Projects: restored 3-column card layout and compact vertical spacing. */
+
+
+
+
+button{font:inherit;cursor:pointer}button,a{-webkit-tap-highlight-color:transparent}
+
+
+.skip{position:absolute;top:-80px;left:15px;background:#fff0ae;padding:10px 14px;z-index:99}
+
+
+
+
+
+.hero{padding:0 0 52px}
+
+
+.hero-copy{font-size:15px;color:#65645d;line-height:1.9;margin:0;max-width:650px}
+.section-top{min-height:var(--catalog-toolbar-height);border-top:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;gap:22px;padding:24px 0 26px}
+.section-label{font-size:13px;color:var(--muted)}.section-label strong{color:var(--ink);font-weight:650}
+.filters{display:flex;align-items:center;gap:8px;flex-wrap:wrap;justify-content:flex-end}
+.filter{border:1px solid transparent;background:transparent;color:#67655d;border-radius:0;font-size:12px;padding:8px 13px;line-height:1.2;transition:background .15s,border-color .15s,color .15s}
+.filter:hover{border-color:#d0cdc3;background:#f5f3ed}.filter[aria-pressed=true]{border-color:var(--ink);background:var(--ink);color:#fffefb}
+.filter .count{color:inherit;opacity:.65;font:11px ui-monospace,SFMono-Regular,Consolas,monospace;margin-left:4px}
+.project-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;align-content:start;min-height:var(--catalog-project-scroll-height)}
+.project-card{height:361px;min-width:0}
+.card-panel{height:100%;display:flex;flex-direction:column;position:relative;padding:24px 25px 23px}
+.card-top{display:flex;justify-content:space-between;align-items:center;gap:12px;color:#89877d;font-size:11px;letter-spacing:.035em}
+.card-num{font:12px ui-monospace,SFMono-Regular,Consolas,monospace;color:#5c5b54}
+.card-main{margin-top:auto;padding-top:35px}
+.card-type{font-size:10px;font-weight:700;letter-spacing:.1em;color:#89877c;margin:0 0 14px;text-transform:uppercase}
+.card-main h2{font-size:24px;line-height:1.35;letter-spacing:-.055em;font-weight:670;margin:0 0 12px}
+.card-desc{color:#77746b;font-size:12.5px;line-height:1.75;min-height:64px;margin:0}
+.card-foot{margin-top:26px;padding-top:17px;border-top:1px solid var(--soft);display:flex;align-items:center;justify-content:space-between;gap:8px}
+.card-tags{display:flex;gap:5px;flex-wrap:wrap}
+.card-tags span{color:#74726a;background:#f4f2eb;border-radius:0;padding:5px 7px;font-size:10px;white-space:nowrap}
+
+@media(max-width:960px){.project-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.project-card{height:330px}.page{width:calc(100% - 52px)}}
+@media(max-width:600px){.page{width:calc(100% - 36px)}.back-home{gap:6px}.back-arrow{font-size:18px}.content-return{padding-top:58px;margin-bottom:17px}.hero{padding:0 0 40px}.hero-title{font-size:58px;margin:12px 0 17px}.hero-copy{font-size:13px;max-width:340px}.section-top{align-items:flex-start;flex-direction:column;gap:18px;padding:20px 0}.filters{justify-content:flex-start;margin-left:-5px}.filter{padding:8px 10px}.project-grid{grid-template-columns:1fr;gap:12px}.project-card{height:auto;min-height:272px}.card-panel{padding:21px}.card-main{padding-top:28px}.card-desc{min-height:0}.card-foot{margin-top:23px}.simple-footer{padding-bottom:25px}}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.filter,.back-arrow{transition:none}}
+
+
+/* Only 6 or more VISIBLE projects create a scrollable list.
+   Normal page scrolling, original card sizes and spacing remain unchanged. */
+.project-grid.has-internal-scroll {
+  max-height: var(--catalog-project-scroll-height);
+  overflow-y: auto;
+  overflow-x: hidden;
+  overscroll-behavior-y: contain;
+  scrollbar-width: thin;
+  scrollbar-color: #c8c3b8 transparent;
+  padding-right: 8px;
+}
+.project-grid.has-internal-scroll::-webkit-scrollbar { width: 6px; }
+.project-grid.has-internal-scroll::-webkit-scrollbar-thumb { background: #c8c3b8; border-radius:0; }
+
+@media (max-width: 600px) {
+  .project-grid.has-internal-scroll { max-height: min(720px, 72vh); }
+}
+
+/* Project cards: restore original responsive column width; tighten vertical spacing only. */
+.project-grid { grid-template-columns:repeat(3,minmax(0,1fr)); column-gap:16px; row-gap:9px; justify-content:stretch; }
+.project-card-link { display:flex; flex-direction:column; color:inherit; text-decoration:none; cursor:pointer; }
+.project-card-link:hover {
+  background:#F0EEE6; border-color:#000000;
+  transform:translateY(-2px);
+  box-shadow:0 7px 22px rgba(39,39,34,.055);
+}
+.project-card-link:focus-visible { outline:3px solid var(--focus); outline-offset:3px; }
+.card-panel { transition:background .11s,border-color .11s,transform .11s,box-shadow .11s; }
+.card-open { font-size:17px; line-height:1; color:#9a9587; }
+.project-card-link:hover .card-open { color:#77746b; }
+:root:not([data-theme="dark"]) .project-card-link:hover .card-tags span {background:#efede6;color:#6d6a61;}
+@media (min-width:601px) and (max-width:960px) {
+  .project-grid { grid-template-columns:repeat(2,minmax(0,1fr)); }
+}
+@media (max-width:600px) {
+  .project-grid { grid-template-columns:minmax(0,1fr); max-width:none; row-gap:8px; }
+}
+@media (prefers-reduced-motion: reduce){.project-card-link:hover{transform:none}}
+
+.card-top-right{display:flex;align-items:center;gap:9px}
+
+/* Tighten the card's vertical footprint without narrowing its restored width. */
+@media (min-width:961px){.project-card{height:310px}}
+@media (min-width:601px) and (max-width:960px){.project-card{height:305px}}
+.card-panel{padding:21px 23px 20px}
+.card-main{padding-top:20px}
+.card-foot{margin-top:18px;padding-top:14px}
+@media (max-width:600px){.project-card{min-height:240px}.card-panel{padding:19px}.card-main{padding-top:18px}.card-foot{margin-top:16px}}
+
+/* Keep the footer separator clear of the last project card. */
+.project-grid { margin-bottom: 40px; }
+
+/* Empty search/category result: centered within the card-list component. */
+.project-empty-state {
+  grid-column: 1 / -1;
+  width: 100%;
+  min-height: 238px;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  color: #858176;
+  font-size: 13px;
+  letter-spacing: .01em;
+}
+@media (max-width: 600px) {
+  .project-grid { margin-bottom: 28px; }
+  .project-empty-state { min-height: 180px; }
+}
+
+/* Stack naturally on narrow viewports; keep the larger shared desktop rhythm. */
+@media (max-width:700px){.project-grid{min-height:0}.section-top{min-height:0}}
+
+/* The card lifts by 2px on hover. Reserve breathing room INSIDE the grid
+   so its top edge and shadow never collide with the toolbar or scroll clip. */
+.project-grid { padding-top: 14px; scroll-padding-top: 14px; }
+
+/* Projects inherit Home's mint accent. Existing typography is unchanged. */
+:root:not([data-theme="dark"]) .project-card-link:hover,
+:root:not([data-theme="dark"]) .project-card-link:focus-visible {
+  background:#B5EED0;
+  border-color:#338568;
+}
+:root:not([data-theme="dark"]) .project-card-link:hover .card-tags span,
+:root:not([data-theme="dark"]) .project-card-link:focus-visible .card-tags span {
+  background:#e3f8eb;
+  color:#74726a;
+}
+:root:not([data-theme="dark"]) .filter:hover:not([aria-pressed="true"]),
+:root:not([data-theme="dark"]) .filter:focus-visible:not([aria-pressed="true"]) {
+  background:#B5EED0;
+  border-color:#62b791;
+}
+
+
+/* Small project-card and filter metadata; body/card headings unchanged. */
+.filter { font-size: 13px; }
+.filter .count { font-size: 12px; }
+.card-top { font-size: 12.5px; }
+.card-num { font-size: 12.5px; }
+.card-type { font-size: 12px; }
+.card-desc { font-size: 13.5px; }
+.card-tags span { font-size: 12px; }
+
+/* Slightly tighter inner-page top spacing. */
+.content-return{padding-top:72px;margin-bottom:21px}
+.hero{padding-bottom:45px}
+@media(max-width:600px){.content-return{padding-top:46px;margin-bottom:15px}.hero{padding-bottom:34px}}
+
+/* Mint category hover: same filled surface + border language as Archive categories. */
+:root:not([data-theme="dark"]) .filters .filter:hover:not([aria-pressed="true"]),
+:root:not([data-theme="dark"]) .filters .filter:focus-visible:not([aria-pressed="true"]) {
+  background-color:#b5eed0;border:1px solid #379b71;color:#1f573d;
+}
+:root:not([data-theme="dark"]) .filters .filter[aria-pressed="true"] {
+  background-color:#b5eed0;border-color:#379b71;color:#1f573d;
+}
+:root[data-theme="dark"] body[data-page-accent="projects"] .filters .filter:hover:not([aria-pressed="true"]),
+:root[data-theme="dark"] body[data-page-accent="projects"] .filters .filter:focus-visible:not([aria-pressed="true"]) {
+  background:#1f4939;border-color:#88e3b5;color:#d4ffe8;
+}

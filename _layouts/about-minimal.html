@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="ko"><head>
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css" crossorigin>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Abril+Fatface&display=swap" rel="stylesheet">
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#f8f6ef">
+<title>{{ page.title | escape }} — {{ site.title | escape }}</title>
+<meta name="description" content="{{ page.description | default: site.description | escape }}">
+<link rel="icon" type="image/svg+xml" href="{{ '/assets/favicon.svg' | relative_url }}">
+<link rel="stylesheet" href="{{ '/assets/css/about-minimal.css' | relative_url }}">
+  <script src="{{ '/assets/js/theme-switch.js' | relative_url }}"></script>
+  <link rel="stylesheet" href="{{ '/assets/css/theme-switch.css' | relative_url }}">
+  <link rel="stylesheet" href="{{ '/assets/css/entrance-motion.css' | relative_url }}">
+<link rel="stylesheet" href="{{ '/assets/css/editorial-display.css' | relative_url }}">
+</head><body data-page-accent="about">
+
+
+<a class="skip" href="#main">본문으로 이동</a>
+<div class="page">
+<main class="main" id="main"><div class="profile-stack">
+<a class="back-home" href="{{ '/' | relative_url }}"><span class="back-arrow" aria-hidden="true">←</span> Home</a>
+{{ content }}
+</div></main></div>
+</body></html>

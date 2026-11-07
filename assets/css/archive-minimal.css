@@ -1,0 +1,114 @@
+/* Archive concept 01 — quiet reading index, harmonized with Projects 02. */
+
+
+
+
+button,input{font:inherit}button{cursor:pointer}a,button{-webkit-tap-highlight-color:transparent}
+
+.skip{position:absolute;top:-80px;left:15px;background:var(--accent);padding:10px 14px;z-index:99}
+
+
+
+
+
+.hero{padding:0 0 52px}
+
+.hero-copy{font-size:15px;color:#65645d;line-height:1.9;margin:0;max-width:660px}
+.workspace-top{min-height:var(--catalog-toolbar-height);border-top:1px solid var(--line);padding:22px 0 23px;display:flex;align-items:center;justify-content:space-between;gap:24px}
+.index-label{font-size:13px;color:var(--muted)}.index-label strong{color:var(--ink);font-weight:650}
+.search-box{height:41px;display:flex;align-items:center;gap:10px;padding:0 13px;width:min(100%,300px);border-radius:0;border:1px solid var(--line);background:var(--surface);transition:border-color .12s}
+.search-box:focus-within{border-color:#b28adb}.search-icon{font-size:18px;font-weight:400;color:#8b877b;line-height:1}
+.search-box input{background:transparent;min-width:0;border:0;outline:none;width:100%;color:var(--ink);font-size:12px}
+.search-box input::placeholder{color:#938f84}.search-box kbd{border:1px solid var(--line);border-radius:0;font:11px ui-monospace,monospace;color:#827f76;padding:0 4px}
+.archive-columns{min-height:var(--catalog-body-height);display:grid;grid-template-columns:324px minmax(0,1fr);gap:32px;padding-bottom:70px;align-items:start}
+.category-panel,.post-panel{min-width:0}.category-panel{background:transparent;border:0;padding:0}.post-panel{min-width:0}.panel-heading{height:48px;display:flex;align-items:flex-start;justify-content:space-between;gap:12px;border-bottom:1px solid var(--line)}
+.panel-heading h2{margin:0;color:#5b5952;font-size:11px;font-weight:700;letter-spacing:.10em;text-transform:uppercase}
+.panel-heading span{font:11px ui-monospace,SFMono-Regular,Consolas,monospace;color:#918d83}
+.category-list{display:grid;gap:6px;padding-top:11px}
+.category-line{display:flex;align-items:stretch;min-height:55px;border:1px solid transparent;border-radius:0;transition:background-color .14s,border-color .14s}
+.category-line:hover{background:#f0eee7}.category-line.is-active{background:#d8b9f8;border-color:#b999de}
+.category-button{display:flex;align-items:center;min-width:0;flex:1;gap:11px;text-align:left;border:0;background:transparent;padding:12px 9px 12px 12px;color:#65635b}
+.category-line.is-active .category-button{color:var(--ink)}.category-number{font:11px ui-monospace,SFMono-Regular,Consolas,monospace;color:#959186;flex:none;width:22px}
+.category-name{font-size:13px;font-weight:540;letter-spacing:-.025em;min-width:0}.category-line.is-active .category-name{font-weight:680}
+.category-count{margin-left:auto;color:#9b968b;font:11px ui-monospace,SFMono-Regular,Consolas,monospace}
+
+.posts-list{margin:0}.entry{border-bottom:1px solid var(--line)}.entry:first-child{border-top:0}
+.entry-link{display:block;padding:17px 17px 19px 2px;position:relative;transition:background-color .11s,padding .11s}
+.entry-link:hover{background:#f0eee7;padding-left:12px}
+.entry-top{display:flex;gap:13px;align-items:center;margin-bottom:8px;flex-wrap:wrap}
+.entry-date{font:11px ui-monospace,SFMono-Regular,Consolas,monospace;color:#969286}.entry-category{font-size:11px;color:#77746c}
+.entry-title{display:flex;align-items:center;justify-content:space-between;gap:14px;margin:0 0 6px;font-size:17px;line-height:1.5;font-weight:640;letter-spacing:-.045em}
+.entry-arrow{color:#a5a093;font-size:17px;font-weight:350;flex:none}.entry-link:hover .entry-arrow{color:var(--ink)}
+.entry-desc{color:#858176;font-size:11.7px;line-height:1.65;margin:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.empty-state{padding:34px 2px;color:#77736a;font-size:13px}
+
+@media(max-width:960px){.page{width:calc(100% - 52px)}.archive-columns{grid-template-columns:285px minmax(0,1fr);gap:25px}}
+@media(max-width:700px){.archive-columns{grid-template-columns:1fr;gap:31px}.category-list{grid-template-columns:repeat(2,minmax(0,1fr))}.category-line{min-height:53px}.category-button{padding:11px 7px}.category-name{font-size:12px}.category-number{width:17px}.category-count{margin-left:auto}.panel-heading{height:36px}}
+@media(max-width:600px){.page{width:calc(100% - 36px)}.back-home{gap:6px}.back-arrow{font-size:18px}.content-return{padding-top:58px;margin-bottom:17px}.hero{padding:0 0 40px}.hero-title{font-size:58px;margin:12px 0 17px}.hero-copy{font-size:13px;max-width:340px}.workspace-top{align-items:stretch;flex-direction:column;gap:15px;padding:18px 0 16px}.search-box{width:100%;max-width:none;height:42px}.archive-columns{padding-bottom:44px}.category-list{gap:4px}.category-button{gap:5px}.category-name{font-size:11.5px}.category-number{font-size:10px}.entry-link{padding:17px 7px 19px 2px}.entry-title{font-size:16px}.entry-desc{font-size:11px}.simple-footer{padding-bottom:25px}}
+@media(max-width:370px){.category-list{grid-template-columns:1fr}.category-button{padding:10px}.category-name{font-size:13px}}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*::before,*::after{transition:none!important}}
+
+
+/* Archive is a regular page; constrain only the article list when 6+ entries
+   match the current category and search. */
+.posts-list.has-internal-scroll {
+  max-height: var(--catalog-archive-scroll-height);
+  overflow-y: auto;
+  overflow-x: hidden;
+  overscroll-behavior-y: contain;
+  scrollbar-width: thin;
+  scrollbar-color: #c8c3b8 transparent;
+  padding-right: 8px;
+}
+.posts-list.has-internal-scroll::-webkit-scrollbar { width: 6px; }
+.posts-list.has-internal-scroll::-webkit-scrollbar-thumb { background: #c8c3b8; border-radius:0; }
+@media (max-width: 600px) {
+  .posts-list.has-internal-scroll { max-height: min(540px, 65vh); }
+}
+
+/* Empty archive category/search result remains centered in the list component. */
+.posts-list.is-empty {
+  display: flex;
+  min-height: 238px;
+  align-items: center;
+  justify-content: center;
+}
+.posts-list .empty-state {
+  margin: 0;
+  padding: 0 18px;
+  color: #858176;
+  font-size: 13px;
+  text-align: center;
+}
+@media (max-width:600px) {
+  .posts-list.is-empty { min-height: 180px; }
+}
+
+/* On stacked/narrow layouts, use natural content height rather than a spacer. */
+@media (max-width:700px){.archive-columns{min-height:0}.workspace-top{min-height:0}}
+
+
+/* Small archive UI: raise 10–12px metadata without changing titles/body. */
+.search-box input { font-size: 13px; }
+.search-box kbd { font-size: 12px; }
+.panel-heading h2 { font-size: 12px; }
+.panel-heading span { font-size: 12px; }
+.category-name { font-size: 14px; }
+.category-number, .category-count { font-size: 12px; }
+.entry-date { font-size: 12.5px; }
+.entry-category { font-size: 12.5px; }
+.entry-desc { font-size: 13px; }
+@media(max-width:700px) {
+  .category-name { font-size: 13px; }
+  .category-number { width: 19px; }
+}
+@media(max-width:600px) {
+  .category-name { font-size: 13px; }
+  .category-number { font-size: 11.5px; }
+  .entry-desc { font-size: 12.5px; }
+}
+
+/* Slightly tighter inner-page top spacing. */
+.content-return{padding-top:72px;margin-bottom:21px}
+.hero{padding-bottom:45px}
+@media(max-width:600px){.content-return{padding-top:46px;margin-bottom:15px}.hero{padding-bottom:34px}}

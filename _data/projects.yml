@@ -1,0 +1,13 @@
+# 프로젝트 목록 (새 프로젝트는 아래 항목과 동일한 형식으로 추가)
+- id: python-automation
+  title: Python 자동화 도구
+  type: DEVELOPMENT
+  category: development
+  category_ko: 개발
+  description: 반복 작업을 단순화하는 작은 CLI 도구. 명령어 설계부터 예외 처리까지의 과정을 기록합니다.
+  tags:
+  - Python
+  - CLI
+  - Automation
+  sample: true
+  detail_url: /projects/python-automation/

@@ -1,0 +1,58 @@
+/* Simple three-card home, intentionally free of ornament and grid lines. */
+:root { color-scheme: light; }
+*,*::before,*::after { box-sizing:border-box; }
+html,body { margin:0;min-width:0;min-height:100%; }
+html { background:#f8f6ef; }
+body { color:#223137; font-family:"Pretendard Variable", Pretendard,"Apple SD Gothic Neo","Noto Sans KR",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; }
+#main {
+  position:relative;display:grid;place-items:center;
+  min-height:100vh;min-height:100dvh;width:100%;
+  padding:102px 24px 48px;background:#f8f6ef;
+}
+.home-stage { position:relative; width:min(960px,100%); }
+.home-links {
+  display:grid;grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:22px;width:100%;margin:0;padding:0;
+}
+.home-links::before,.home-links::after,.home-box::before,.home-box::after { content:none!important;display:none!important; }
+.home-box {
+  position:relative;min-width:0;min-height:260px;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;
+  padding:26px 25px;border:1px solid #26343b;border-radius:0;
+  color:#223137;text-decoration:none;line-height:1.15;
+  box-shadow:none!important;transform:none!important;
+  transition:background-color .32s cubic-bezier(.22,1,.36,1),
+             border-color .32s ease, color .32s ease;
+}
+.home-box__eyebrow { font:650 11px/1.35 ui-monospace,SFMono-Regular,Consolas,monospace;letter-spacing:.10em;margin-bottom:17px; }
+.home-box__title { font-size:clamp(32px,3.05vw,44px);font-weight:750;letter-spacing:-.055em;transition:none!important;transform:none!important; }
+.home-box__symbol,.home-box__jump,.home-decor { display:none!important; }
+.home-box--projects { background:#b5eed0;--hover-fill:#94d9b4; }
+.home-box--archive { background:#d8b9f8;--hover-fill:#c69aea; }
+.home-box--about { background:#fbbfd5;--hover-fill:#eea8c3; }
+/* A single direct color change, with no lift, shadow, drawings or animation. */
+.home-box:hover,.home-box:focus-visible {
+  background:var(--hover-fill);
+  color:#1e2b31;box-shadow:none!important;transform:none!important;
+}
+.home-box:hover .home-box__title,.home-box:focus-visible .home-box__title { transform:none!important; }
+.home-box:focus-visible { outline:3px solid #273a46;outline-offset:3px; }
+/* Bulb centered directly over the MIDDLE card, outside its boundary. */
+.home-topbar {
+  position:absolute;z-index:10;left:50%;top:-66px;
+  width:48px;height:48px;display:grid;place-items:center;
+  transform:translateX(-50%);
+}
+.home-topbar .theme-bulb { position:static; }
+:root[data-theme="dark"] #main { background:#0b0e17; }
+@media(max-width:700px) {
+  #main { padding:112px 20px 52px; }
+  .home-stage { width:min(400px,100%); }
+  .home-links { grid-template-columns:1fr;gap:16px; }
+  .home-box { min-height:155px;padding:23px 22px; }
+  .home-box__title { font-size:clamp(31px,7.4vw,40px); }
+  .home-topbar { top:-65px; }
+}
+@media(prefers-reduced-motion:reduce) {
+  .home-box,.home-box__title {transition:none!important;}
+}

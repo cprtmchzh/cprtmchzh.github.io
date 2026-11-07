@@ -1,0 +1,205 @@
+/* Detailed post concept 02: a Jekyll Markdown reader, stable with rouge/kramdown */
+:root{color-scheme:light;--bg:#f8f6ef;--surface:#fffefa;--ink:#2b2b27;--body:#3f3e36;--muted:#77756c;--subtle:#99958b;--border:#dedbd1;--highlight:#fff2b5;--mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;--sans:"Pretendard Variable", Pretendard,"Apple SD Gothic Neo","Noto Sans KR",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+*,*::before,*::after{box-sizing:border-box}
+html{background:var(--bg);scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);font:400 15px/1.8 var(--sans);-webkit-font-smoothing:antialiased;word-break:keep-all}
+::selection{background:var(--highlight)}a{color:inherit;text-decoration:none}button{font:inherit;cursor:pointer}
+:focus-visible{outline:2px solid #bd891c;outline-offset:3px}
+.skip-link{position:absolute;left:15px;top:-100px;padding:8px 14px;z-index:50;background:var(--highlight)}.skip-link:focus{top:10px}
+.post-frame{width:min(1216px,calc(100% - 100px));margin:0 auto;padding:0 0 76px}
+.post-layout{display:grid;grid-template-columns:minmax(0,770px) minmax(220px,256px);column-gap:clamp(54px,5.8vw,110px);grid-template-areas:'lead aside' 'body aside' 'end aside';align-items:start;justify-content:space-between}
+.post-lead{grid-area:lead;min-width:0}.post-return{padding-top:77px;margin-bottom:44px}
+.back-link{display:inline-flex;gap:11px;align-items:center;font-size:13px;font-weight:600;letter-spacing:-.025em;line-height:1.6}
+.back-arrow{font-size:21px;line-height:1;font-weight:300;transition:transform .15s}.back-link:hover .back-arrow{transform:translateX(-4px)}
+.article-head{padding-bottom:32px;border-bottom:1px solid var(--border)}
+.post-kicker{font:600 10px/1.5 var(--mono);letter-spacing:.13em;color:#928e81}.post-kicker span{margin:0 9px;color:#c3beae}
+.article-head h1{font-size:clamp(36px,3.65vw,53px);line-height:1.25;letter-spacing:-.07em;font-weight:680;margin:22px 0 17px;overflow-wrap:anywhere}
+.post-summary{max-width:690px;color:#6f6c62;font-size:15px;line-height:1.88;margin:0 0 22px}
+.post-meta{display:flex;align-items:center;gap:12px;flex-wrap:wrap;color:#8a857b;font-size:12px}
+.post-meta time{font:11px/1.7 var(--mono)}.meta-separator{color:#c0b9ac}
+.post-category{display:inline-flex;align-items:center;gap:5px;color:#4a473f;border-bottom:1px solid #c9c2b3;font-weight:550}
+.post-category:hover{border-bottom-color:#4a473f}.post-category span{color:#9c968a}
+.post-tags{display:flex;flex-wrap:wrap;gap:7px;margin-top:18px}
+.post-tag{font:11px/1.5 var(--mono);padding:4px 10px;background:#fcfaf4;border:1px solid #e5e0d5;color:#79746b;border-radius:0}
+.post-content{grid-area:body;min-width:0;padding-top:39px;font-size:15px;line-height:1.98;color:var(--body);overflow-wrap:anywhere}
+.post-content>*:first-child{margin-top:0}
+.post-content p{margin:0 0 20px}
+.post-content h2,.post-content h3,.post-content h4{color:var(--ink);scroll-margin-top:34px;font-weight:670;letter-spacing:-.05em}
+.post-content h2{margin:61px 0 22px;padding-bottom:12px;font-size:25px;line-height:1.45;border-bottom:1px solid #eae6dc}
+.post-content h3{font-size:19px;line-height:1.55;margin:34px 0 15px}
+.post-content h4{font-size:16px;margin:25px 0 10px}
+.heading-anchor{font-size:.75em;margin-left:10px;color:#c0b9aa;opacity:0;transition:opacity .12s}
+.post-content h2:hover .heading-anchor,.post-content h3:hover .heading-anchor,.heading-anchor:focus-visible{opacity:1}
+.post-content a:not(.download-link):not(.heading-anchor){color:#51482a;text-decoration:underline;text-decoration-color:#c6b98b;text-underline-offset:4px}
+.post-content strong{color:#302e28;font-weight:670}.post-content em{color:inherit}
+.post-content ul,.post-content ol{margin:0 0 24px;padding-left:23px}.post-content li{margin:6px 0;padding-left:3px}.post-content li::marker{color:#a89b7a}
+.post-content blockquote{margin:30px 0;padding:14px 21px;border-left:3px solid #dec66f;background:#f4f0e3;border-radius:0;font-size:14px;color:#595448}
+.post-content blockquote p:last-child{margin-bottom:0}
+.post-content :not(pre)>code{padding:3px 6px;border:1px solid #e7e0d1;border-radius:0;background:#f0ecdf;color:#584b32;font:12.5px/1.75 var(--mono);word-break:break-word}
+.post-content pre,.post-content code{tab-size:2}.post-content pre{margin:0;background:#222724;color:#dbe2d9;border-radius:0;overflow:auto;padding:20px 23px 25px;max-width:100%;font:12.5px/1.75 var(--mono);word-break:normal}
+.post-content pre code,.post-content pre .code{font:inherit;color:inherit;background:transparent;border:0;white-space:pre;word-break:normal;overflow-wrap:normal;padding:0}
+.code-shell{margin:28px 0 32px;min-width:0;max-width:100%;border:1px solid #343a35;border-radius:0;overflow:hidden;background:#222724}
+.code-shell .highlighter-rouge,.code-shell .highlight{margin:0!important;background:none!important}
+.code-shell pre{border:0;border-radius:0;margin:0!important}
+.code-toolbar{height:42px;display:flex;align-items:center;justify-content:space-between;padding:0 14px 0 21px;border-bottom:1px solid #393d39;background:#2a302b}
+.code-label{font:600 10px/1 var(--mono);color:#b2bcb1;letter-spacing:.07em}
+.copy-code{font:11px/1.2 var(--sans);color:#d8ded4;border:1px solid #535d52;border-radius:0;background:transparent;padding:6px 11px}
+.copy-code:hover{background:#3a453b}.copy-code:focus-visible{outline-color:#f3d77b}
+/* Rouge output and Pygments static preview share token classes. */
+.post-content .highlight .c,.post-content .highlight .c1,.post-content .highlight .cm,.post-content .highlight .cp,.post-content .highlight .cs{color:#85988a;font-style:italic}
+.post-content .highlight .k,.post-content .highlight .kd,.post-content .highlight .kn,.post-content .highlight .kr,.post-content .highlight .o,.post-content .highlight .ow{color:#edc58a}
+.post-content .highlight .s,.post-content .highlight .s1,.post-content .highlight .s2,.post-content .highlight .sa,.post-content .highlight .sb,.post-content .highlight .sd,.post-content .highlight .se,.post-content .highlight .sh,.post-content .highlight .si,.post-content .highlight .sr,.post-content .highlight .ss{color:#acd8a8}
+.post-content .highlight .m,.post-content .highlight .mi,.post-content .highlight .mf,.post-content .highlight .mh,.post-content .highlight .mo,.post-content .highlight .il{color:#d4b8ea}
+.post-content .highlight .nf,.post-content .highlight .fm,.post-content .highlight .na,.post-content .highlight .nb,.post-content .highlight .nc,.post-content .highlight .nt,.post-content .highlight .nd{color:#a7d0e3}
+.post-content .highlight .err{color:#f0b1a0}
+.table-shell{width:100%;overflow-x:auto;margin:30px 0 36px;border:1px solid #dfdbd1;border-radius:0;background:#fdfcf7;overscroll-behavior-x:contain}
+.post-content table{width:100%;border-collapse:separate;border-spacing:0;margin:0;font-size:13px;line-height:1.65;min-width:530px}
+.post-content th,.post-content td{padding:13px 18px;border-bottom:1px solid #e9e5db;text-align:left;vertical-align:top;min-width:98px;overflow-wrap:normal;word-break:keep-all}
+.post-content thead th{background:#eeebdf;color:#48453b;font-weight:660;white-space:nowrap;border-bottom:1px solid #dbd6c9}
+.post-content tbody tr:nth-child(even){background:#f7f5ec}
+.post-content tbody tr:last-child td{border-bottom:0}
+.post-content img{display:block;height:auto;max-width:100%;margin:27px auto 13px;border-radius:0;border:1px solid var(--border)}
+.post-content img+em{display:block;text-align:center;color:#868075;font-size:12px;margin:0 auto 26px}
+.post-content figure{margin:28px 0}.post-content figcaption{color:#8a847b;font-size:12px;text-align:center}
+.post-content hr{border:0;border-top:1px solid var(--border);margin:40px 0}
+.post-content .download-link{display:inline-flex;align-items:center;gap:10px;padding:11px 17px;border:1px solid var(--border);background:var(--surface);border-radius:0;color:#3f3c33;font-size:13px;font-weight:570}
+.post-content .download-link:hover{background:#fff3d5}.post-content .download-link::before{content:'↓';font-size:18px;font-weight:300}
+.post-end{grid-area:end;display:flex;justify-content:space-between;align-items:center;gap:18px;margin-top:65px;padding-top:22px;border-top:1px solid var(--border)}
+.post-end>span{color:#aaa396;font:10px/1.5 var(--mono);letter-spacing:.1em}.end-back{font-size:12px}
+/* Right rail */
+.post-aside{grid-area:aside;min-width:0;align-self:stretch;padding-top:196px}
+.aside-inner{position:sticky;top:28px;padding-top:0;max-height:calc(100vh - 56px);max-height:calc(100dvh - 56px);overflow-y:auto;overscroll-behavior-y:contain;scrollbar-width:thin;scrollbar-color:#d4cbb8 transparent}
+.aside-section+.aside-section{margin-top:33px;padding-top:29px;border-top:1px solid #e2ded3}
+.aside-label{color:#8b857a;font:600 11.5px/1.4 var(--mono);letter-spacing:.09em;margin-bottom:15px}
+.post-toc{display:flex;flex-direction:column;gap:2px;border-left:1px solid #dad5c9;padding-left:0}
+.toc-link{display:block;margin-left:-1px;border-left:2px solid transparent;padding:8px 4px 8px 15px;font-size:14px;line-height:1.55;color:#817b6f;overflow-wrap:anywhere;transition:color .11s,border-color .11s}
+.toc-link[data-level="3"]{padding-left:25px;font-size:13px;color:#938d82}
+.toc-link:hover{color:#454237}.toc-link.is-active{color:#38342a;border-left-color:#c6a04e;font-weight:620}
+.related-category{font-size:14.5px;font-weight:620;line-height:1.5;margin-bottom:9px}
+/* Related articles share one compact, native bulleted list, at most five links. */
+.related-posts{list-style:disc;margin:0;padding-left:19px}
+.related-posts li{padding:5px 0;color:#a89b7a}
+.related-posts li::marker{color:#a89b7a;font-size:12px}
+.related-link{display:inline;color:#4a483f;font-size:14px;line-height:1.6;font-weight:540;overflow-wrap:anywhere}
+.related-link:hover{color:#856522;text-decoration:underline;text-underline-offset:3px}
+.related-all{font-size:13px;color:#706a5f;margin-top:15px;display:inline-flex;align-items:center;gap:6px}.related-all:hover{color:#3d382c}
+@media(max-width:1000px){.post-frame{width:calc(100% - 64px)}.post-layout{grid-template-columns:minmax(0,1fr) 220px;column-gap:34px}.post-aside{padding-top:185px}.article-head h1{font-size:clamp(35px,4.8vw,48px)}}
+@media(max-width:760px){.post-frame{width:min(680px,calc(100% - 38px));padding-bottom:44px}.post-layout{display:flex;flex-direction:column;gap:0}.post-lead,.post-content,.post-end,.post-aside{width:100%}.post-lead{order:0}.post-aside{order:1}.post-content{order:2}.post-end{order:3}
+.post-return{padding-top:45px;margin-bottom:33px}.article-head{padding-bottom:26px}.article-head h1{font-size:clamp(34px,8vw,44px);margin:15px 0 17px}.post-summary{font-size:13.5px;margin-bottom:18px}.post-meta{gap:8px 10px}.post-tags{margin-top:13px}
+.post-aside{padding-top:0}.aside-inner{padding-top:23px;position:static;display:block;max-height:none;overflow:visible}.aside-section+.aside-section{margin-top:0;padding-top:0;border-top:0}
+.toc-section{background:#f2efe5;border:1px solid #e5dfd1;border-radius:0;padding:13px 16px}.toc-section .aside-label{margin-bottom:8px}.post-toc{border:0;display:flex;flex-direction:row;flex-wrap:wrap;gap:0 14px}
+.toc-link,.toc-link[data-level="3"]{display:inline-block;border:0;margin:0;padding:4px 0;font-size:14px}.toc-link::before{content:'·';margin-right:5px;color:#bcae84}.toc-link.is-active{border:0;color:#4f452d}
+.related-section{display:none}.related-section.related-mobile{display:block;order:3;width:100%;padding-top:27px;margin-top:37px;border-top:1px solid var(--border)}
+.related-section.related-mobile .related-posts{max-width:520px}.related-section.related-mobile .related-link{padding:12px 0}
+.post-content{padding-top:28px;font-size:14px;line-height:1.9}
+.post-content h2{margin:43px 0 17px;font-size:22px}.post-content h3{font-size:18px;margin:27px 0 13px}.post-content pre{padding:17px 15px 20px;font-size:11.5px}.code-toolbar{padding:0 12px 0 15px}.post-content th,.post-content td{padding:11px 13px}.post-end{order:4;margin-top:45px}
+}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*::before,*::after{transition:none!important}}
+
+
+/* Unified article positioning and responsive sidebar */
+
+/* Central text column is centered relative to the viewport, not offset by the sidebar. */
+.post-frame{width:100%;max-width:none;padding:0 24px 88px;margin:0 auto}
+.post-layout{--reader-width:clamp(560px,50vw,720px);display:flex;flex-direction:column;position:relative;align-items:stretch;gap:0;width:min(var(--reader-width),100%);max-width:100%;margin:0 auto}
+.post-lead,.post-content,.post-end{width:100%;min-width:0}
+.post-aside{position:absolute;top:0;left:calc(100% + 34px);width:clamp(190px,16.5vw,246px);height:100%;padding-top:196px;align-self:auto}
+.aside-inner{position:sticky;top:28px;max-height:calc(100dvh - 56px);overflow-y:auto}
+.project-repo-link{display:inline-flex;margin-top:20px;color:#65522b;font-size:12px;font-weight:600;border-bottom:1px solid #cdbb87;padding-bottom:2px}
+.project-repo-link:hover{color:#31291b}
+@media(max-width:1120px){
+  .post-layout{--reader-width:760px;width:min(760px,100%)}
+  .post-aside{position:static;width:100%;height:auto;padding-top:0;order:1}
+  .post-lead{order:0}.post-content{order:2}.post-end{order:3}
+  .aside-inner{position:static;max-height:none;overflow:visible;padding-top:24px}
+  .toc-section{background:#f2efe5;border:1px solid #e5dfd1;border-radius:0;padding:13px 16px}
+  .post-toc{border-left:0;display:flex;flex-wrap:wrap;flex-direction:row;gap:0 14px}
+  .toc-link,.toc-link[data-level="3"]{display:inline-block;margin:0;padding:5px 0;border:0;font-size:14px}
+  .toc-link::before{content:'·';color:#bcae84;margin-right:5px}
+  .related-section{display:none}
+  .related-section.related-mobile{display:block;order:3;width:100%;padding:27px 0 0;margin-top:37px;border-top:1px solid var(--border)}
+  .post-end{order:4}
+}
+@media(max-width:760px){
+  .post-frame{width:100%;padding:0 19px 45px}
+  .post-layout{width:min(680px,100%)}
+  .post-aside{width:100%;padding-top:0}
+}
+
+/* Sidebar card: reuse the same surface and border treatment as the existing
+   Projects .card-panel. Archive and Projects share this article reader. */
+@media (min-width:1121px){
+  .post-aside .aside-inner.ui-card{
+    padding:18px 16px 20px;
+  }
+  .post-aside .aside-inner.ui-card .aside-section + .aside-section{
+    margin-top:20px;
+    padding-top:19px;
+    border-top:1px solid #e8e5db;
+  }
+}
+
+/* Compact reader uses an unboxed sidebar above the article as before. */
+@media(max-width:1120px){.post-aside .aside-inner.ui-card{background:transparent;border:0;border-radius:0}}
+
+/* Detailed reader: slightly wider character spacing, full 16px body type and
+   crisp, near-black text. Keep code syntax colors and dark-theme legibility. */
+.post-content {
+  font-size:16px;
+  line-height:1.9;
+}
+:root:not([data-theme="dark"]) .post-content,
+:root:not([data-theme="dark"]) .post-content h2,
+:root:not([data-theme="dark"]) .post-content h3,
+:root:not([data-theme="dark"]) .post-content h4,
+:root:not([data-theme="dark"]) .post-content strong {color:#111}
+:root:not([data-theme="dark"]) .post-content blockquote {color:#111}
+/* Font rendering: avoid thin macOS antialiasing and post-animation subpixel
+   compositing. The entrance CSS also stops translating the entire text layer. */
+body {-webkit-font-smoothing:auto;text-rendering:optimizeLegibility}
+.post-content {-webkit-font-smoothing:auto}
+@media (min-width:1121px) {
+  .post-aside {left:calc(100% + clamp(42px,4vw,64px))}
+}
+
+/* Reader and original TOC colors restored; increase the actual article width.
+   Place the sidebar in a second grid column instead of using an absolute left
+   offset, so it cannot overlap the wider article or escape the viewport. */
+.post-content{letter-spacing:normal;word-spacing:normal;font-size:16px}
+@media(min-width:1121px){
+ .post-frame{width:min(1024px,calc(100% - 72px));max-width:none;padding:0 0 88px}
+ .post-layout{width:100%;max-width:none;margin:0;display:grid;grid-template-columns:minmax(0,720px) 232px;column-gap:clamp(24px,2vw,30px);grid-template-rows:auto auto auto;grid-template-areas:'lead aside' 'body aside' 'end aside';align-items:start;justify-content:center}
+ .post-lead{grid-area:lead}.post-content{grid-area:body}.post-end{grid-area:end}
+ .post-aside{grid-area:aside;position:static;left:auto;top:auto;width:auto;height:100%;min-width:0;padding-top:196px;align-self:stretch}
+ .post-aside .aside-inner.ui-card{padding:24px 19px 21px}
+}
+@media(max-width:1120px){.post-layout{--reader-width:780px;width:min(780px,100%)}}
+@media(max-width:760px){.post-layout{width:min(680px,100%)}}
+/* Keep the title and links in distinct, naturally flowing rows on every size. */
+.toc-section .aside-label{display:block;position:static;clear:both;white-space:normal;overflow-wrap:break-word;line-height:1.55;margin:0 0 15px;letter-spacing:.09em}
+.post-toc{position:static;clear:both;margin:0;min-width:0}
+@media(max-width:1120px){.toc-section .aside-label{margin-bottom:10px}}
+
+
+/* Article small type: readable metadata, captions, code labels and TOC. */
+.post-kicker { font-size: 12px; }
+.post-meta { font-size: 13px; }
+.post-meta time { font-size: 12.5px; }
+.post-tag { font-size: 12.5px; }
+.code-label { font-size: 12px; }
+.copy-code { font-size: 12.5px; }
+.post-content :not(pre)>code { font-size: 13px; }
+.post-content pre { font-size: 13px; }
+.post-content img+em, .post-content figcaption { font-size: 13px; }
+.post-end>span { font-size: 12px; }
+.end-back, .project-repo-link { font-size: 13px; }
+.aside-label { font-size: 13px; }
+.toc-link[data-level="3"] { font-size: 14px; }
+@media(max-width:760px) {
+  .post-content pre { font-size: 12.5px; }
+}
+
+/* Slightly tighter article top spacing, unchanged reading column. */
+.post-return{padding-top:61px;margin-bottom:35px}
+.article-head h1{margin-top:13px}
+@media(max-width:760px){.post-return{padding-top:35px;margin-bottom:27px}.article-head h1{margin-top:11px}}

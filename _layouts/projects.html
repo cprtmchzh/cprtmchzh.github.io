@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css" crossorigin>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Abril+Fatface&display=swap" rel="stylesheet">
+ <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+ <meta name="theme-color" content="#f8f6ef">
+ <title>{{ page.title | escape }} — {{ site.title | escape }}</title>
+ <meta name="description" content="{{ page.description | default: site.description | escape }}">
+ <link rel="icon" href="{{ '/assets/favicon.svg' | relative_url }}" type="image/svg+xml">
+ <link rel="stylesheet" href="{{ '/assets/css/list-common.css' | relative_url }}">
+<link rel="stylesheet" href="{{ '/assets/css/ui-components.css' | relative_url }}">
+ <link rel="stylesheet" href="{{ '/assets/css/projects-minimal.css' | relative_url }}">
+ <script defer src="{{ '/assets/js/projects-minimal.js' | relative_url }}"></script>
+  <script src="{{ '/assets/js/theme-switch.js' | relative_url }}"></script>
+  <link rel="stylesheet" href="{{ '/assets/css/theme-switch.css' | relative_url }}">
+  <link rel="stylesheet" href="{{ '/assets/css/entrance-motion.css' | relative_url }}">
+<link rel="stylesheet" href="{{ '/assets/css/editorial-display.css' | relative_url }}">
+</head>
+<body data-page-accent="projects">
+
+
+ <a class="skip" href="#main">본문 바로가기</a>
+ <div class="page">
+  <main id="main"><div class="content-return"><a class="back-home" href="{{ '/' | relative_url }}"><span aria-hidden="true" class="back-arrow">←</span> Home</a></div>{{ content }}</main>
+  <footer class="simple-footer"><span>cprtmchzh.</span></footer>
+ </div>
+</body>
+</html>

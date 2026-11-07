@@ -1,0 +1,89 @@
+/* Quiet first-load motion; entry uses individual translate, not transform,
+   so hover lift, sticky sidebars and interactive filters remain unaffected.
+   CSS-only (no script or timers), with a reduced-motion fallback. */
+@media (prefers-reduced-motion: no-preference) {
+  @keyframes ui-enter {
+    from { opacity: 0; translate: 0 12px; }
+    to   { opacity: 1; translate: 0 0; }
+  }
+
+  /* Home: bulb then three links in reading order. */
+  .home-stage > .theme-bulb {
+    animation: ui-enter 345ms cubic-bezier(.19,.75,.25,1) 30ms both;
+  }
+  .home-links > .home-box {
+    animation: ui-enter 395ms cubic-bezier(.19,.75,.25,1) both;
+  }
+  .home-links > .home-box:nth-child(1) { animation-delay: 90ms; }
+  .home-links > .home-box:nth-child(2) { animation-delay: 155ms; }
+  .home-links > .home-box:nth-child(3) { animation-delay: 220ms; }
+
+  /* Projects / Archive: return control, heading, toolbar, then list/panels. */
+  .content-return,
+  .profile-stack > .back-home,
+  .post-return {
+    animation: ui-enter 330ms ease-out 20ms both;
+  }
+  .hero .eyebrow { animation: ui-enter 330ms ease-out 60ms both; }
+  .hero .hero-title { animation: ui-enter 360ms ease-out 105ms both; }
+  .hero .hero-copy { animation: ui-enter 360ms ease-out 150ms both; }
+  .section-top,
+  .workspace-top { animation: ui-enter 355ms ease-out 185ms both; }
+  .category-panel { animation: ui-enter 405ms ease-out 230ms both; }
+  .post-panel { animation: ui-enter 405ms ease-out 275ms both; }
+  .project-card { animation: ui-enter 390ms ease-out 240ms both; }
+  .project-card:nth-child(2) { animation-delay: 300ms; }
+  .project-card:nth-child(3) { animation-delay: 355ms; }
+  .project-card:nth-child(4) { animation-delay: 415ms; }
+  .project-card:nth-child(5) { animation-delay: 470ms; }
+  .project-card:nth-child(n+6) { animation-delay: 530ms; }
+  .simple-footer { animation: ui-enter 405ms ease-out 290ms both; }
+
+  /* About: portrait and text are separate, but remain one centered layout. */
+  .profile-photo { animation: ui-enter 405ms ease-out 90ms both; }
+  .profile-content { animation: ui-enter 410ms ease-out 155ms both; }
+
+  /* Both Markdown article types use the same entrance sequence. */
+  .post-kicker { animation: ui-enter 330ms ease-out 55ms both; }
+  .article-head h1 { animation: ui-enter 380ms ease-out 90ms both; }
+  .article-head .post-summary,
+  .article-head .post-meta,
+  .article-head .post-tags,
+  .article-head .project-repo-link {
+    animation: ui-enter 375ms ease-out 135ms both;
+  }
+  /* Body article rises as one unit without moving the layout/sidebar. */
+  .post-content { animation: ui-enter 560ms cubic-bezier(.20,.74,.25,1) 165ms both; }
+  .post-aside .aside-inner { animation: ui-enter 420ms ease-out 240ms both; }
+  .post-end { animation: ui-enter 395ms ease-out 265ms both; }
+}
+
+/* Subheadings additionally reveal once as they enter the viewport.
+   The article container itself already uses the 12px upward ui-enter above. */
+@media (prefers-reduced-motion: no-preference) {
+  .post-content .scroll-enter-heading {
+    opacity: .76;
+    translate: 0 6px;
+    transition: opacity 410ms ease, translate 410ms cubic-bezier(.2,.75,.25,1);
+  }
+  .post-content .scroll-enter-heading.is-visible {
+    opacity: 1;
+    translate: 0 0;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .post-content, .post-content h2, .post-content h3 {
+    animation: none!important;
+    transition: none!important;
+    opacity: 1!important;
+    translate: none!important;
+  }
+}
+
+/* Replay subtle entry motion on each viewport re-entry, with a no-JS fallback. */
+@media(prefers-reduced-motion:no-preference){
+ .replay-enter{animation:none!important;opacity:0;translate:0 16px;transition:opacity .48s cubic-bezier(.2,.75,.25,1),translate .48s cubic-bezier(.2,.75,.25,1)}
+ .replay-enter.replay-visible{opacity:1;translate:0 0}
+ .replay-enter.home-box{transition:opacity .48s ease,translate .48s ease,background-color .32s ease,border-color .32s ease,color .32s ease}
+}
+@media(prefers-reduced-motion:reduce){.replay-enter{animation:none!important;opacity:1!important;translate:none!important}}

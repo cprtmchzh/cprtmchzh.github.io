@@ -1,0 +1,2 @@
+/* Shared surface primitive: project cards and article sidebar use the same box. */
+.ui-card{background:#fffefb;border:1px solid #d9d6cc;border-radius:0}

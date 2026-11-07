@@ -1,0 +1,25 @@
+---
+layout: archive-minimal
+title: Archive
+permalink: /archive/index.html
+description: "개발, CTF/Wargame, Bug Bounty, 블로그/기술문서, 논문/컨퍼런스, 공모전/자격증 기록"
+---
+<section class="hero" aria-labelledby="archive-heading"><h1 class="hero-title" id="archive-heading">Archive<span aria-hidden="true">.</span></h1>
+<p class="hero-copy">Notes from learning, building, and exploring.<br>Browse by topic or search the archive.</p></section>
+<section aria-label="Explore notes" class="workspace">
+<div class="workspace-top"><div class="index-label"><strong>NOTE INDEX</strong> &nbsp; / &nbsp; {{ site.posts.size }} {% if site.posts.size == 1 %}note{% else %}notes{% endif %}</div>
+<label class="search-box"><span class="search-icon" aria-hidden="true">⌕</span><input type="search" id="archive-search" placeholder="Search" autocomplete="off" aria-label="Search notes by title or description"><kbd>/</kbd></label></div>
+<div class="archive-columns"><aside class="category-panel" aria-label="Categories"><div class="panel-heading"><h2>Topics</h2><span>06 CATEGORIES</span></div><div class="category-list"><div class="category-line is-active"><button class="category-button" type="button" data-archive-filter="all" aria-pressed="true"><span class="category-number">00</span><span class="category-name">All notes</span><span class="category-count">{{ site.posts.size }}</span></button></div>
+{% for cat in site.data.categories %}{% assign found = site.posts | where: 'category_slug', cat.slug %}
+<div class="category-line"><button class="category-button" type="button" data-archive-filter="{{ cat.slug | escape }}" aria-pressed="false"><span class="category-number">{{ cat.number | escape }}</span><span class="category-name">{{ cat.ui_name | default: cat.name | escape }}</span><span class="category-count">{{ found.size }}</span></button></div>
+{% endfor %}</div></aside>
+<section class="post-panel" aria-label="기록 목록"><div class="panel-heading"><h2>Latest notes</h2><span id="result-count" aria-live="polite">{{ site.posts.size }} {% if site.posts.size == 1 %}note{% else %}notes{% endif %}</span></div>
+<div class="posts-list" id="posts-list">{% for post in site.posts %}
+{% assign cat = site.data.categories | where: 'slug', post.category_slug | first %}
+<article class="entry" data-category="{{ post.category_slug | escape }}" data-search="{{ post.title | append: ' ' | append: post.description | append: ' ' | append: post.tags | downcase | escape }}">
+<a class="entry-link" href="{{ post.url | relative_url }}">
+<div class="entry-top"><time class="entry-date" datetime="{{ post.date | date: '%Y-%m-%d' }}">{{ post.date | date: '%Y.%m.%d' }}</time><span class="entry-category">{{ cat.name | default: '기록' | escape }}</span></div>
+<h3 class="entry-title"><span>{{ post.title | escape }}</span><span class="entry-arrow" aria-hidden="true">↗</span></h3>
+<p class="entry-desc">{{ post.description | escape }}</p>
+</a></article>
+{% endfor %}<p class="empty-state" id="empty-state" role="status" hidden>Not found.</p></div></section></div></section>

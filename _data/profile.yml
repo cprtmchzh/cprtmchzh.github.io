@@ -1,0 +1,23 @@
+# 이 파일을 수정해 자신의 포트폴리오로 만드세요.
+name: "cprtmchzh"
+role: "DEVELOPER · SECURITY LEARNER"
+headline_first: "만들고, 분석하고,"
+headline_second: "기록합니다."
+intro: "코드를 만드는 과정부터 보안을 이해하는 과정까지. 배운 것을 구조화하고, 결과를 다시 꺼내 볼 수 있도록 남깁니다."
+about: "개발과 정보보안을 공부하며 실험하고 기록하는 사람입니다. 결과만 나열하기보다 문제를 정의한 이유, 선택한 방법, 배운 점을 함께 정리합니다."
+profile_image: "/assets/uploads/cprtmchzh-profile.png"
+profile_image_dark: "/assets/uploads/cprtmchzh-profile-dark.png"
+# Cropped transparent versions are used only in the compact homepage About tile.
+dashboard_profile_image: "/assets/uploads/cprtmchzh-profile-dashboard.png"
+dashboard_profile_image_dark: "/assets/uploads/cprtmchzh-profile-dashboard-dark.png"
+focus:
+  - "AppSec·SecEng"
+  - "Infrastructure"
+  - "DFIR"
+email: ""      # 공개할 이메일 주소가 있다면 입력
+location: ""   # 선택 사항. 비워두면 노출되지 않음
+github: "https://github.com/cprtmchzh"
+resume: ""     # 예: /assets/uploads/resume.pdf
+
+# About 페이지에 나타나는 짧은 소개 (1~2문장 권장)
+summary: "개발과 보안을 공부하며, 작업 결과와 배운 내용을 기록합니다."

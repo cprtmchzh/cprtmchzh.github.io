@@ -1,0 +1,473 @@
+/* The original light-theme styles are intentionally untouched.
+   Dark: restrained neon-sign accents on a deep midnight background.
+   Toggle: unboxed, outlined bulb shown only on Home. */
+.theme-bulb {
+  position:static; display:grid; place-items:center;
+  width:44px; height:48px; padding:3px;
+  border:0; border-radius:0; background:transparent;
+  color:#1c1c1c; cursor:pointer; box-shadow:none;
+  -webkit-appearance:none; appearance:none; -webkit-tap-highlight-color:transparent;
+  transition:color .18s ease,transform .14s ease;
+}
+.theme-bulb:hover { color:#000; transform:translateY(-2px); background:transparent; }
+.theme-bulb:focus-visible {outline:2px solid #9b6f20; outline-offset:4px; border-radius:0}
+.bulb-art {width:30px;height:36px;display:block;fill:none;stroke:currentColor;stroke-width:2.25;stroke-linecap:round;stroke-linejoin:round;overflow:visible}
+.theme-bulb.bulb-bounce .bulb-art {animation:bulb-nod .21s ease-out}
+@keyframes bulb-nod {0%,100%{transform:rotate(0deg)}50%{transform:rotate(-9deg)}}
+.home-stage .theme-bulb {position:static;flex:none}
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --bg:#0b0e17;
+  --surface:#181e2d;
+  --ink:#f2f5ff;
+  --text:#f2f5ff;
+  --body:#d3def1;
+  --muted:#a6b4c9;
+  --subtle:#9aabc2;
+  --line:#30394e;
+  --border:#30394e;
+  --soft:#252c3c;
+  --accent:#142f3a;
+  --highlight:#183642;
+  --focus:#66f3df;
+  --tag:#222b3a;
+  --neon-cyan:#68f4e3;
+  --neon-purple:#c6a1ff;
+  --neon-pink:#ff83be;
+  background:var(--bg);
+}
+:root[data-theme="dark"] body {background:var(--bg);color:var(--ink)}
+:root[data-theme="dark"] ::selection {background:#195c6b;color:#fff}
+:root[data-theme="dark"] .theme-bulb {color:#d7e5f4;}
+:root[data-theme="dark"] .theme-bulb:hover {color:var(--neon-cyan);}
+
+/* Home: same three boxes. Neon only reacts to interaction; no traveling glows. */
+:root[data-theme="dark"] .home-box {
+  color:var(--ink);background:#181e2d;border-color:#384259;
+  box-shadow:none;
+  transition:background-color .18s ease,border-color .18s ease,
+             color .18s ease,box-shadow .18s ease,transform .15s ease;
+}
+:root[data-theme="dark"] .home-box:nth-child(1) {--card-neon:var(--neon-cyan)}
+:root[data-theme="dark"] .home-box:nth-child(2) {--card-neon:var(--neon-purple)}
+:root[data-theme="dark"] .home-box:nth-child(3) {--card-neon:var(--neon-pink)}
+:root[data-theme="dark"] .home-box {
+  color:color-mix(in srgb,var(--card-neon) 67%,white);
+  border-color:color-mix(in srgb,var(--card-neon) 24%,#384259);
+}
+:root[data-theme="dark"] .home-box:hover {
+  background:color-mix(in srgb,var(--card-neon) 82%,#202a3a);color:#142632;border-color:var(--card-neon);
+  box-shadow:none;
+}
+:root[data-theme="dark"] .home-box:focus-visible {outline-color:var(--card-neon)}
+
+/* Shared list/card surfaces and catalog filters. */
+:root[data-theme="dark"] .ui-card {background:var(--surface);border-color:var(--line)}
+:root[data-theme="dark"] .hero-copy,
+:root[data-theme="dark"] .category-button,
+:root[data-theme="dark"] .filter {color:var(--muted)}
+:root[data-theme="dark"] .section-label,
+:root[data-theme="dark"] .index-label,
+:root[data-theme="dark"] .card-top,
+:root[data-theme="dark"] .card-type,
+:root[data-theme="dark"] .entry-category,
+:root[data-theme="dark"] .entry-date,
+:root[data-theme="dark"] .panel-heading h2,
+:root[data-theme="dark"] .panel-heading span,
+:root[data-theme="dark"] .simple-footer {color:#a1abc0}
+:root[data-theme="dark"] .card-num,
+:root[data-theme="dark"] .card-main h2,
+:root[data-theme="dark"] .entry-title {color:var(--ink)}
+:root[data-theme="dark"] .card-desc,
+:root[data-theme="dark"] .entry-desc,
+:root[data-theme="dark"] .empty-state,
+:root[data-theme="dark"] .posts-list .empty-state,
+:root[data-theme="dark"] .project-empty-state {color:var(--muted)}
+:root[data-theme="dark"] .card-foot {border-color:var(--line)}
+:root[data-theme="dark"] .card-tags span {background:#242d41;color:#c4d9ee}
+:root[data-theme="dark"] .card-open,
+:root[data-theme="dark"] .entry-arrow,
+:root[data-theme="dark"] .category-number,
+:root[data-theme="dark"] .category-count {color:#a5b7cb}
+:root[data-theme="dark"] .project-card-link {
+  background:var(--surface);border-color:var(--line);
+  transition:background-color .18s ease,border-color .18s ease,
+             transform .15s ease,box-shadow .18s ease;
+}
+:root[data-theme="dark"] .project-card-link:hover {
+  background:#1c2938;border-color:var(--neon-cyan);
+  box-shadow:0 0 0 1px #68f4e329,0 7px 19px #2df5dc14;
+}
+:root[data-theme="dark"] .project-card-link:hover .card-open,
+:root[data-theme="dark"] .entry-link:hover .entry-arrow {color:var(--neon-cyan)}
+:root[data-theme="dark"] .filter:hover {background:#202b3b;border-color:#53677e;color:var(--ink)}
+:root[data-theme="dark"] .filter[aria-pressed="true"] {background:#243749;border-color:#64e5d2;color:#86ffea}
+:root[data-theme="dark"] .search-box {background:var(--surface);border-color:var(--line)}
+:root[data-theme="dark"] .search-box:focus-within {border-color:var(--neon-cyan)}
+:root[data-theme="dark"] .search-box input {color:var(--ink)}
+:root[data-theme="dark"] .search-box input::placeholder,
+:root[data-theme="dark"] .search-icon,
+:root[data-theme="dark"] .search-box kbd {color:var(--muted)}
+:root[data-theme="dark"] .category-line:hover,
+:root[data-theme="dark"] .entry-link:hover {background:#1d2839}
+:root[data-theme="dark"] .category-line.is-active {background:#49305d;border-color:var(--neon-purple)}
+:root[data-theme="dark"] .category-line.is-active .category-button {color:var(--neon-cyan)}
+:root[data-theme="dark"] .entry {border-color:var(--line)}
+:root[data-theme="dark"] .posts-list.has-internal-scroll,
+:root[data-theme="dark"] .project-grid.has-internal-scroll {scrollbar-color:#638fa8 transparent}
+
+/* Profile — original image switch is preserved. */
+.profile-image-dark {display:none!important}
+:root[data-theme="dark"] .profile-image-light {display:none!important}
+:root[data-theme="dark"] .profile-image-dark {display:block!important}
+:root[data-theme="dark"] .profile-photo {background:#202532;border-color:#414960}
+:root[data-theme="dark"] .info-label {color:var(--muted)}
+:root[data-theme="dark"] .interest-list li {background:#1d2839;border-color:#40536c;color:var(--ink)}
+:root[data-theme="dark"] .github-link {border-color:#68f4e3;color:#83ffed}
+:root[data-theme="dark"] .github-link:hover {color:#c4a1ff;border-color:#c4a1ff}
+:root[data-theme="dark"] .github-placeholder {color:var(--muted);border-color:var(--line)}
+
+/* Shared Markdown reader, TOC and related posts. */
+:root[data-theme="dark"] .post-summary,
+:root[data-theme="dark"] .post-meta,
+:root[data-theme="dark"] .post-kicker,
+:root[data-theme="dark"] .post-end>span,
+:root[data-theme="dark"] .aside-label {color:var(--muted)}
+:root[data-theme="dark"] .post-category,
+:root[data-theme="dark"] .post-content a:not(.download-link):not(.heading-anchor),
+:root[data-theme="dark"] .project-repo-link {color:var(--neon-cyan);border-color:#62c6bb}
+:root[data-theme="dark"] .post-category span,
+:root[data-theme="dark"] .heading-anchor {color:#95b4c7}
+:root[data-theme="dark"] .article-head,
+:root[data-theme="dark"] .post-content h2,
+:root[data-theme="dark"] .post-end {border-color:var(--border)}
+:root[data-theme="dark"] .post-tag {color:#bfd4ed;background:#202a3a;border-color:#3d5067}
+:root[data-theme="dark"] .post-content strong {color:#fff}
+:root[data-theme="dark"] .post-content li::marker {color:var(--neon-purple)}
+:root[data-theme="dark"] .post-content blockquote {background:#202537;border-color:var(--neon-purple);color:#d6d8ef}
+:root[data-theme="dark"] .post-content :not(pre)>code {background:#1d2d3c;border-color:#34546a;color:#9cefe5}
+:root[data-theme="dark"] .table-shell {background:#151d2b;border-color:#3d4960}
+:root[data-theme="dark"] .post-content thead th {background:#26334a;border-color:#40506c;color:#e9f7fe}
+:root[data-theme="dark"] .post-content th,
+:root[data-theme="dark"] .post-content td {border-color:#354158}
+:root[data-theme="dark"] .post-content tbody tr:nth-child(even) {background:#1d2737}
+:root[data-theme="dark"] .post-content img {border-color:#414f65}
+:root[data-theme="dark"] .post-content .download-link {background:var(--surface);color:var(--ink)}
+:root[data-theme="dark"] .post-content .download-link:hover {background:#1b3040;border-color:#68e9d8}
+:root[data-theme="dark"] .aside-section+.aside-section,
+:root[data-theme="dark"] .post-aside .aside-inner.ui-card .aside-section+.aside-section {border-color:var(--border)}
+:root[data-theme="dark"] .post-toc {border-color:#4b5a73}
+:root[data-theme="dark"] .toc-link {color:#bacbdf}
+:root[data-theme="dark"] .toc-link[data-level="3"] {color:#99abc2}
+:root[data-theme="dark"] .toc-link:hover,
+:root[data-theme="dark"] .toc-link.is-active {color:#8bffea}
+:root[data-theme="dark"] .toc-link.is-active {border-color:var(--neon-cyan)}
+:root[data-theme="dark"] .related-category {color:var(--ink)}
+:root[data-theme="dark"] .related-posts li,
+:root[data-theme="dark"] .related-posts li::marker {color:var(--neon-purple)}
+:root[data-theme="dark"] .related-link {color:#e1e9ff}
+:root[data-theme="dark"] .related-link:hover,
+:root[data-theme="dark"] .related-all:hover {color:var(--neon-pink)}
+:root[data-theme="dark"] .related-all {color:#a8c1d7}
+:root[data-theme="dark"] .toc-section {background:#1b2838;border-color:#3b5667}
+:root[data-theme="dark"] .toc-link::before {color:var(--neon-purple)}
+:root[data-theme="dark"] .post-aside .aside-inner.ui-card {background:#171e2d;border-color:#34435b}
+:root[data-theme="dark"] .code-shell,
+:root[data-theme="dark"] .post-content pre {background:#121924;color:#deebef}
+:root[data-theme="dark"] .code-toolbar {background:#1d293a;border-color:#3e546b}
+:root[data-theme="dark"] .copy-code {color:#c7d9ee;border-color:#566987}
+:root[data-theme="dark"] .copy-code:hover {background:#29374e}
+@media(max-width:1120px) {
+  :root[data-theme="dark"] .post-aside .aside-inner.ui-card {background:transparent;border:0}
+  :root[data-theme="dark"] .toc-section {background:#1b2838;border-color:#3b5667}
+}
+@media(prefers-reduced-motion:reduce) {
+  .theme-bulb,.home-box {transition:none!important}
+  .theme-bulb.bulb-bounce .bulb-art {animation:none}
+  :root[data-theme="dark"] .project-card-link {transition:none!important}
+}
+
+/* True inverse-theme preview, clipped around the unboxed bulb.
+   The same circle expands to the viewport on click. */
+.theme-reveal-frame {
+  position:fixed; inset:0; width:100vw; height:100vh; height:100dvh;
+  border:0; margin:0; padding:0; background:transparent;
+  pointer-events:none; z-index:1000; display:block;
+  contain:strict;
+}
+.theme-preview-ring {
+  position:fixed; z-index:1001; width:416px; height:416px;
+  transform:translate(-50%,-50%) scale(.86);
+  border-radius:50%; border:1px solid rgba(140,141,146,.44);
+  box-shadow:0 0 0 5px rgba(132,132,142,.07);
+  pointer-events:none; opacity:0;
+  transition:opacity .14s ease,transform .15s ease;
+}
+.theme-preview-ring.is-visible {opacity:1;transform:translate(-50%,-50%) scale(1)}
+@media (prefers-reduced-motion:reduce) {
+  .theme-preview-ring {transition:none}
+}
+
+/* Dark mode retains section colors as constant neon accents, with brighter
+   interaction feedback. Do not change existing card label text colors. */
+:root[data-theme="dark"] .home-box {background:#202a3a;border-color:var(--card-neon)}
+:root[data-theme="dark"] .project-card-link:hover,
+:root[data-theme="dark"] .project-card-link:focus-visible {
+  background:#203b37;border-color:var(--neon-cyan);
+  box-shadow:0 0 0 1px #68f4e329,0 7px 19px #2df5dc14;
+}
+:root[data-theme="dark"] .interest-list li {border-color:#74465e;background:#322231;transition:background .16s,border-color .16s}
+:root[data-theme="dark"] .interest-list li:hover {background:#533046;border-color:var(--neon-pink)}
+:root[data-theme="dark"] .profile-photo {border-color:#74465e}
+:root[data-theme="dark"] .github-link:hover {color:inherit;border-color:var(--neon-pink)}
+/* Dark articles remain light-on-dark; black is applied only in light mode. */
+:root[data-theme="dark"] .post-content {color:var(--body)}
+
+/* Main navigation uses the same full-panel hover in both themes. */
+:root[data-theme="dark"] .home-box:hover,:root[data-theme="dark"] .home-box:focus-visible{background:#202a3a;color:#fffefa;box-shadow:none!important;transform:none!important}
+
+[data-preview-copy="true"] .home-links::before{display:none!important;content:none!important}
+[data-preview-copy="true"] #main,[data-preview-copy="true"] body,[data-preview-copy="true"] html{background:#f8f6ef}
+:root[data-theme="dark"] [data-preview-copy="true"] #main,:root[data-theme="dark"] [data-preview-copy="true"] body,:root[data-theme="dark"] [data-preview-copy="true"] html{background:#0b0e17}
+
+/* Home cards: the same three distinct brand colors in dark mode.
+   Backgrounds and hover fills are hue-specific; there is no shared green tint. */
+:root[data-theme="dark"] .home-box {
+  box-shadow:none!important;
+  transform:none!important;
+}
+:root[data-theme="dark"] .home-box--projects {
+  --card-neon:#82e8b7;
+  background:#174337;
+  color:#b6f8d7;
+  border-color:#529d83;
+}
+:root[data-theme="dark"] .home-box--archive {
+  --card-neon:#ceacff;
+  background:#38264d;
+  color:#e6cdff;
+  border-color:#9873be;
+}
+:root[data-theme="dark"] .home-box--about {
+  --card-neon:#ff9bc6;
+  background:#4b283d;
+  color:#ffd1e5;
+  border-color:#be789c;
+}
+:root[data-theme="dark"] .home-box--projects:hover,
+:root[data-theme="dark"] .home-box--projects:focus-visible {
+  background:#23634c;
+  color:#e3ffef;
+  border-color:#82e8b7;
+}
+:root[data-theme="dark"] .home-box--archive:hover,
+:root[data-theme="dark"] .home-box--archive:focus-visible {
+  background:#573771;
+  color:#f5e8ff;
+  border-color:#ceacff;
+}
+:root[data-theme="dark"] .home-box--about:hover,
+:root[data-theme="dark"] .home-box--about:focus-visible {
+  background:#713551;
+  color:#fff0f6;
+  border-color:#ff9bc6;
+}
+:root[data-theme="dark"] .home-box:focus-visible {outline-color:var(--card-neon)}
+
+
+/* Scoped dark-mode palette by section. Keep light mode and Home untouched.
+   Use a specific page marker so shared dark rules never leak the green Projects
+   accent into Archive/Articles or the pink About view. */
+:root[data-theme="dark"] body[data-page-accent="archive"],
+:root[data-theme="dark"] body.article-archive {
+  --section-accent:#ceacff;
+  --section-accent-soft:#a985d6;
+  --section-accent-surface:#322443;
+  --section-accent-hover:#413052;
+  --section-accent-text:#f3e9ff;
+}
+:root[data-theme="dark"] body[data-page-accent="projects"],
+:root[data-theme="dark"] body.article-project {
+  --section-accent:#82e8b7;
+  --section-accent-soft:#5ebc99;
+  --section-accent-surface:#193a33;
+  --section-accent-hover:#21483c;
+  --section-accent-text:#d9ffeb;
+}
+:root[data-theme="dark"] body[data-page-accent="about"] {
+  --section-accent:#ff9bc6;
+  --section-accent-soft:#df79a5;
+  --section-accent-surface:#392237;
+  --section-accent-hover:#492b41;
+  --section-accent-text:#ffe1ee;
+}
+/* Archive list, filters, focus and active selection */
+:root[data-theme="dark"] body[data-page-accent="archive"] .category-panel {
+  background:transparent;border-color:transparent;
+}
+:root[data-theme="dark"] body[data-page-accent="archive"] .category-line {
+  background:transparent;border-color:transparent;
+}
+:root[data-theme="dark"] body[data-page-accent="archive"] .category-line:hover,
+:root[data-theme="dark"] body[data-page-accent="archive"] .entry-link:hover {
+  background:var(--section-accent-surface);
+}
+:root[data-theme="dark"] body[data-page-accent="archive"] .category-line.is-active {
+  background:#49305d;border-color:var(--section-accent);
+}
+:root[data-theme="dark"] body[data-page-accent="archive"] .category-line.is-active .category-button {
+  color:var(--section-accent-text);
+}
+:root[data-theme="dark"] body[data-page-accent="archive"] .category-line.is-active .category-number,
+:root[data-theme="dark"] body[data-page-accent="archive"] .category-line.is-active .category-count,
+:root[data-theme="dark"] body[data-page-accent="archive"] .entry-link:hover .entry-arrow {
+  color:var(--section-accent);
+}
+:root[data-theme="dark"] body[data-page-accent="archive"] .search-box:focus-within {
+  border-color:var(--section-accent);
+}
+:root[data-theme="dark"] body[data-page-accent="archive"] .category-button:focus-visible,
+:root[data-theme="dark"] body[data-page-accent="archive"] .entry-link:focus-visible,
+:root[data-theme="dark"] body[data-page-accent="archive"] .search-box:focus-within {
+  outline-color:var(--section-accent);
+}
+:root[data-theme="dark"] body[data-page-accent="archive"] .posts-list.has-internal-scroll {
+  scrollbar-color:var(--section-accent-soft) transparent;
+}
+/* Projects: explicitly keep the mint palette on list UI */
+:root[data-theme="dark"] body[data-page-accent="projects"] .filter[aria-pressed="true"] {
+  color:var(--section-accent-text);border-color:var(--section-accent);
+  background:var(--section-accent-surface);
+}
+:root[data-theme="dark"] body[data-page-accent="projects"] .filter:hover:not([aria-pressed="true"]) {
+  border-color:var(--section-accent-soft);background:var(--section-accent-hover);
+}
+:root[data-theme="dark"] body[data-page-accent="projects"] .project-card-link:hover,
+:root[data-theme="dark"] body[data-page-accent="projects"] .project-card-link:focus-visible {
+  background:var(--section-accent-hover);border-color:var(--section-accent);
+  box-shadow:0 0 0 1px #82e8b729;
+}
+:root[data-theme="dark"] body[data-page-accent="projects"] .project-card-link:hover .card-open {
+  color:var(--section-accent);
+}
+/* About: no cyan/purple on the profile's interactive accents */
+:root[data-theme="dark"] body[data-page-accent="about"] .github-link {
+  color:var(--section-accent-text);border-color:var(--section-accent);
+}
+:root[data-theme="dark"] body[data-page-accent="about"] .github-link:hover {
+  color:var(--section-accent);border-color:var(--section-accent);
+}
+:root[data-theme="dark"] body[data-page-accent="about"] .interest-list li {
+  background:var(--section-accent-surface);border-color:#67445c;
+}
+:root[data-theme="dark"] body[data-page-accent="about"] .interest-list li:hover {
+  background:var(--section-accent-hover);border-color:var(--section-accent);
+}
+:root[data-theme="dark"] body[data-page-accent="about"] .profile-photo {
+  border-color:var(--section-accent-soft);
+}
+/* All post details inherit their parent section's accent. Archive articles are
+   purple; project articles stay mint. Code syntax highlighting remains untouched. */
+:root[data-theme="dark"] body:is(.article-archive,.article-project) .post-category,
+:root[data-theme="dark"] body:is(.article-archive,.article-project) .post-content a:not(.download-link):not(.heading-anchor),
+:root[data-theme="dark"] body:is(.article-archive,.article-project) .project-repo-link {
+  color:var(--section-accent);border-color:var(--section-accent-soft);
+}
+:root[data-theme="dark"] body:is(.article-archive,.article-project) .post-category:hover,
+:root[data-theme="dark"] body:is(.article-archive,.article-project) .related-link:hover,
+:root[data-theme="dark"] body:is(.article-archive,.article-project) .related-all:hover,
+:root[data-theme="dark"] body:is(.article-archive,.article-project) .heading-anchor:hover {
+  color:var(--section-accent);
+}
+:root[data-theme="dark"] body:is(.article-archive,.article-project) .toc-link:hover,
+:root[data-theme="dark"] body:is(.article-archive,.article-project) .toc-link.is-active {
+  color:var(--section-accent);
+}
+:root[data-theme="dark"] body:is(.article-archive,.article-project) .toc-link.is-active,
+:root[data-theme="dark"] body:is(.article-archive,.article-project) .post-content .download-link:hover {
+  border-color:var(--section-accent);
+}
+:root[data-theme="dark"] body:is(.article-archive,.article-project) .toc-link::before,
+:root[data-theme="dark"] body:is(.article-archive,.article-project) .related-posts li::marker,
+:root[data-theme="dark"] body:is(.article-archive,.article-project) .post-content li::marker {
+  color:var(--section-accent-soft);
+}
+:root[data-theme="dark"] body:is(.article-archive,.article-project) .post-content blockquote {
+  border-color:var(--section-accent);background:var(--section-accent-surface);
+}
+:root[data-theme="dark"] body:is(.article-archive,.article-project) .post-content .download-link:hover {
+  background:var(--section-accent-surface);
+}
+:root[data-theme="dark"] body:is(.article-archive,.article-project) .toc-section {
+  background:var(--section-accent-surface);
+}
+:root[data-theme="dark"] body:is(.article-archive,.article-project) .post-aside .aside-inner.ui-card {
+  border-color:var(--section-accent-soft);
+}
+@media (max-width:1120px){
+  :root[data-theme="dark"] body:is(.article-archive,.article-project) .post-aside .aside-inner.ui-card {
+    border:0;
+  }
+}
+:root[data-theme="dark"] body:is(.article-archive,.article-project) :focus-visible {
+  outline-color:var(--section-accent);
+}
+
+
+/* Main navigation: unfilled dark cards, colored on hover only.
+   A short background-color transition replaces the previous abrupt switch. */
+:root[data-theme="dark"] .home-box,
+:root[data-theme="dark"] .home-box--projects,
+:root[data-theme="dark"] .home-box--archive,
+:root[data-theme="dark"] .home-box--about {
+  background-color:transparent;
+  border-color:rgba(169,185,204,.55);
+  transition:background-color .32s cubic-bezier(.22,1,.36,1),
+             border-color .32s ease, color .32s ease;
+  box-shadow:none!important;
+  transform:none!important;
+}
+:root[data-theme="dark"] .home-box--projects {color:#b6f8d7;--card-neon:#82e8b7;}
+:root[data-theme="dark"] .home-box--archive {color:#e6cdff;--card-neon:#ceacff;}
+:root[data-theme="dark"] .home-box--about {color:#ffd1e5;--card-neon:#ff9bc6;}
+:root[data-theme="dark"] .home-box--projects:is(:hover,:focus-visible) {
+  background-color:#23634c;border-color:#82e8b7;color:#e3ffef;
+}
+:root[data-theme="dark"] .home-box--archive:is(:hover,:focus-visible) {
+  background-color:#573771;border-color:#ceacff;color:#f5e8ff;
+}
+:root[data-theme="dark"] .home-box--about:is(:hover,:focus-visible) {
+  background-color:#713551;border-color:#ff9bc6;color:#fff0f6;
+}
+@media (prefers-reduced-motion:reduce) {
+  :root[data-theme="dark"] .home-box {transition:none!important;}
+}
+
+/* Detail TOC: remove only the inset colored panel, keeping the outer sidebar
+   card, TOC labels, active-item rule, and Related section unchanged. */
+.post-aside .aside-inner.ui-card > .toc-section,
+:root[data-theme="dark"] body:is(.article-project,.article-archive) .post-aside .aside-inner.ui-card > .toc-section {
+  background: transparent;
+  border: 0;
+  border-radius: 0;
+  padding: 0;
+  box-shadow: none;
+}
+
+/* Single-DOM theme switching: browser view transition screenshots share layout. */
+::view-transition-old(root),::view-transition-new(root){animation:none;mix-blend-mode:normal}
+::view-transition-old(root){z-index:1}
+::view-transition-new(root){z-index:2}
+
+/* The preview iframe is a static opposite-theme rendering, not an animation
+   participant. Otherwise it freezes mid-fold and its cards look broken in the
+   bulb's circle (especially after switching into dark mode). */
+[data-preview-copy="true"] .fold-panel{clip-path:none!important;--fold-reveal:100%!important;opacity:1!important;animation:none!important;transition:none!important}
+
+/* Theme commit happens behind the fully revealed preview iframe. Prevent a
+   second background/color transition underneath it (visible as a flash). */
+:root.theme-committing #main,:root.theme-committing #main *,
+:root.theme-committing #main *::before,:root.theme-committing #main *::after{
+  transition:none!important;
+}

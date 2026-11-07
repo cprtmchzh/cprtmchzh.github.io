@@ -1,0 +1,35 @@
+---
+layout: about-minimal
+title: About
+permalink: /about/
+description: "프로필과 관심 분야, GitHub"
+---
+<section class="profile" aria-label="개인 프로필">
+  <div class="profile-photo">
+    {% if site.data.profile.profile_image %}
+    <img class="profile-image-light" src="{{ site.data.profile.profile_image | relative_url }}" alt="{{ site.data.profile.name | default: '프로필' | escape }} 프로필 사진 (라이트 모드)" width="240" height="240">
+    <img class="profile-image-dark" src="{{ site.data.profile.profile_image_dark | default: '/assets/uploads/cprtmchzh-profile-dark.png' | relative_url }}" alt="{{ site.data.profile.name | default: '프로필' | escape }} 프로필 사진 (다크 모드)" width="240" height="240">
+    {% else %}
+    <img src="{{ '/assets/illustrations/avatar-placeholder.svg' | relative_url }}" alt="기본 프로필 이미지" width="240" height="240">
+    {% endif %}
+  </div>
+  <div class="profile-content">
+    <h1 class="name">{{ site.data.profile.name | default: 'YOUR NAME' | escape }}</h1>
+    {% if site.data.profile.focus and site.data.profile.focus.size > 0 %}
+    <div class="info-group interests">
+      <h2 class="info-label">Interests</h2>
+      <ul class="interest-list">
+        {% for item in site.data.profile.focus %}<li>{{ item | escape }}</li>{% endfor %}
+      </ul>
+    </div>
+    {% endif %}
+    <div class="info-group github-group">
+      <h2 class="info-label">GitHub</h2>
+      {% if site.data.profile.github %}
+      <a class="github-link" href="{{ site.data.profile.github | escape }}" target="_blank" rel="noopener noreferrer">{{ site.data.profile.github | remove: 'https://' | remove: 'http://' | remove: 'www.' | escape }} <span aria-hidden="true">↗</span></a>
+      {% else %}
+      <span class="github-placeholder">github.com/your-username</span>
+      {% endif %}
+    </div>
+  </div>
+</section>

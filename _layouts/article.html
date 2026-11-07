@@ -1,0 +1,92 @@
+---
+---
+<!doctype html>
+<html lang="ko">
+<head>
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css" crossorigin>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Abril+Fatface&display=swap" rel="stylesheet">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f8f6ef">
+  <title>{{ page.title | escape }} — {{ site.title | escape }}</title>
+  <meta name="description" content="{{ page.description | default: site.description | escape }}">
+  <link rel="icon" type="image/svg+xml" href="{{ '/assets/favicon.svg' | relative_url }}">
+  <link rel="stylesheet" href="{{ '/assets/css/ui-components.css' | relative_url }}">
+  <link rel="stylesheet" href="{{ '/assets/css/post-minimal.css' | relative_url }}">
+  <script defer src="{{ '/assets/js/post-minimal.js' | relative_url }}"></script>
+  <script src="{{ '/assets/js/theme-switch.js' | relative_url }}"></script>
+  <link rel="stylesheet" href="{{ '/assets/css/theme-switch.css' | relative_url }}">
+  <link rel="stylesheet" href="{{ '/assets/css/entrance-motion.css' | relative_url }}">
+<link rel="stylesheet" href="{{ '/assets/css/editorial-display.css' | relative_url }}">
+</head>
+<body class="{% if page.collection == 'projects' or page.article_type == 'project' %}article-project{% else %}article-archive{% endif %}">
+
+
+<a class="skip-link" href="#post-content">본문 바로가기</a>
+{% assign is_project = false %}
+{% if page.collection == 'projects' or page.article_type == 'project' %}{% assign is_project = true %}{% endif %}
+{% if is_project %}
+  {% assign return_path = '/projects/' %}
+  {% assign return_label = 'Projects' %}
+  {% assign related_items = site.projects | where: 'category', page.category %}
+  {% assign category_name = page.category_ko | default: '프로젝트' %}
+{% else %}
+  {% assign return_path = '/archive/index.html' %}
+  {% assign return_label = 'Archive' %}
+  {% assign cat = site.data.categories | where: 'slug', page.category_slug | first %}
+  {% assign related_items = site.posts | where: 'category_slug', page.category_slug %}
+  {% assign category_name = cat.name | default: '기록' %}
+{% endif %}
+<main class="post-frame" id="main">
+  <div class="post-layout">
+    <div class="post-lead">
+      <div class="post-return"><a class="back-link" href="{{ return_path | relative_url }}"><span class="back-arrow" aria-hidden="true">←</span> {{ return_label }}</a></div>
+      <header class="article-head">
+        <h1>{{ page.title | escape }}</h1>
+        {% if page.description %}<p class="post-summary">{{ page.description | escape }}</p>{% endif %}
+        <div class="post-meta">
+          {% if is_project %}
+            <span>{{ page.status | default: '프로젝트' | escape }}</span>
+            <span class="meta-separator" aria-hidden="true">·</span>
+            <a class="post-category" href="{{ '/projects/' | relative_url }}">{{ category_name | escape }} <span aria-hidden="true">↗</span></a>
+          {% else %}
+            <time datetime="{{ page.date | date: '%Y-%m-%d' }}">{{ page.date | date: '%Y.%m.%d' }}</time>
+            <span class="meta-separator" aria-hidden="true">·</span>
+            <a class="post-category" href="{{ '/archive/index.html' | relative_url }}?category={{ page.category_slug | url_encode }}">{{ category_name | escape }} <span aria-hidden="true">↗</span></a>
+          {% endif %}
+        </div>
+        {% if page.tags.size > 0 %}<div class="post-tags" aria-label="태그">{% for tag in page.tags %}<span class="post-tag">#{{ tag | escape }}</span>{% endfor %}</div>{% endif %}
+        {% if is_project and page.repo_url %}<a class="project-repo-link" href="{{ page.repo_url | escape }}" target="_blank" rel="noopener noreferrer">GitHub 저장소 ↗</a>{% endif %}
+      </header>
+    </div>
+    <article id="post-content" class="post-content" aria-label="{% if is_project %}프로젝트 상세 내용{% else %}게시글 본문{% endif %}">{{ content }}</article>
+    <div class="post-end"><span>{% if is_project %}END / PROJECT{% else %}END / NOTE{% endif %}</span><a class="back-link end-back" href="{{ return_path | relative_url }}"><span class="back-arrow" aria-hidden="true">←</span> 목록으로</a></div>
+    <aside class="post-aside" aria-label="본문 탐색">
+      <div class="aside-inner ui-card">
+        <section class="aside-section toc-section" id="toc-section" aria-labelledby="toc-title">
+          <div class="aside-label" id="toc-title">{% if is_project %}PROJECT CONTENTS{% else %}ARTICLE CONTENTS{% endif %}</div>
+          <nav class="post-toc" id="post-toc" aria-label="이 글의 목차"></nav>
+        </section>
+        <section class="aside-section related-section" aria-labelledby="related-title">
+          <div class="aside-label" id="related-title">{% if is_project %}RELATED PROJECTS{% else %}RELATED NOTES{% endif %}</div>
+          <div class="related-category">{{ category_name | escape }}</div>
+          <ul class="related-posts" aria-label="{% if is_project %}다른 프로젝트{% else %}같은 카테고리의 다른 게시글{% endif %}">
+            {% assign related_count = 0 %}
+            {% for other in related_items %}
+              {% if other.url != page.url and related_count < 5 %}
+                <li><a class="related-link" href="{{ other.url | relative_url }}">{{ other.title | escape }}</a></li>
+                {% assign related_count = related_count | plus: 1 %}
+              {% endif %}
+            {% endfor %}
+          </ul>
+          <a class="related-all" href="{{ return_path | relative_url }}">{% if is_project %}프로젝트 전체 보기{% else %}카테고리 전체 보기{% endif %} <span aria-hidden="true">↗</span></a>
+        </section>
+      </div>
+    </aside>
+  </div>
+</main>
+</body>
+</html>

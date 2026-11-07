@@ -1,0 +1,33 @@
+---
+layout: projects
+title: Projects
+permalink: /projects/
+description: "프로젝트와 구현 기록을 모아둔 포트폴리오"
+---
+<section class="hero" aria-labelledby="projects-title">
+ <h1 id="projects-title" class="hero-title">Projects<span aria-hidden="true">.</span></h1>
+ <p class="hero-copy">Selected work in development, security, and documentation.</p>
+</section>
+<section aria-label="Project list">
+ <div class="section-top">
+  <div class="section-label"><strong>PROJECT INDEX</strong> &nbsp; / &nbsp; {{ site.data.projects.size }} {% if site.data.projects.size == 1 %}project{% else %}projects{% endif %}</div>
+  <div class="filters" role="group" aria-label="Project categories">
+   <button class="filter" type="button" data-project-filter="all" aria-pressed="true">All <span class="count">{{ site.data.projects.size }}</span></button>
+   <button class="filter" type="button" data-project-filter="development" aria-pressed="false">Dev <span class="count">{{ site.data.projects | where: 'category', 'development' | size }}</span></button>
+   <button class="filter" type="button" data-project-filter="security" aria-pressed="false">Sec <span class="count">{{ site.data.projects | where: 'category', 'security' | size }}</span></button>
+   <button class="filter" type="button" data-project-filter="documentation" aria-pressed="false">Docs <span class="count">{{ site.data.projects | where: 'category', 'documentation' | size }}</span></button>
+  </div>
+ </div>
+ <div class="project-grid">
+  {% for project in site.data.projects %}
+  <article class="project-card" data-project-category="{{ project.category | escape }}">
+   <a class="card-panel ui-card project-card-link" href="{{ project.detail_url | relative_url }}" aria-label="{{ project.title | escape }} 상세 보기">
+    <div class="card-top"><span class="card-num">{{ forloop.index | prepend:'0' | slice:-2,2 }}</span><span class="card-top-right"><span class="card-open" aria-hidden="true">↗</span></span></div>
+    <div class="card-main"><p class="card-type">{{ project.type | escape }}</p><h2>{{ project.title | escape }}</h2><p class="card-desc">{{ project.description | escape }}</p></div>
+    <div class="card-foot"><div class="card-tags">{% for tag in project.tags limit:3 %}<span>{{ tag | escape }}</span>{% endfor %}</div></div>
+   </a>
+  </article>
+  {% endfor %}
+  <p class="project-empty-state" id="project-empty-state" role="status" hidden>No projects found.</p>
+ </div>
+</section>

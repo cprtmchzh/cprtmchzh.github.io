@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" role="img" aria-label="기본 프로필 실루엣">
+  <rect width="200" height="200" fill="#eae6dc"/>
+  <circle cx="100" cy="81" r="34" fill="#b6b1a4"/>
+  <path d="M35 204c0-43 29-72 65-72s65 29 65 72" fill="#b6b1a4"/>
+</svg>

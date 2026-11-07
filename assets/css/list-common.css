@@ -1,0 +1,28 @@
+/* Shared design foundation for Projects and Archive. */
+/* Matching top/bottom section rules and a slightly taller desktop list area. */
+:root{--catalog-toolbar-height:87px;--catalog-body-height:660px;--catalog-project-scroll-height:620px;--catalog-archive-scroll-height:542px}
+:root{color-scheme:light;--bg:#f8f6ef;--surface:#fffefb;--ink:#272722;--muted:#747269;--line:#d9d6cc;--soft:#e8e5db;--accent:#fff0ae;--focus:#a67616;--max:1080px}
+*,*::before,*::after{box-sizing:border-box}
+html{background:var(--bg);scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);font:400 15px/1.65 "Pretendard Variable", Pretendard,"Apple SD Gothic Neo","Noto Sans KR",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;-webkit-font-smoothing:antialiased;word-break:keep-all}
+a{color:inherit;text-decoration:none}
+:focus-visible{outline:3px solid var(--focus);outline-offset:4px}
+::selection{background:var(--accent)}
+[hidden]{display:none!important}
+.skip:focus{top:12px}
+.page{max-width:var(--max);width:calc(100% - 76px);margin:auto}
+.back-home{display:inline-flex;align-items:center;gap:13px;min-height:40px;font-size:13px;letter-spacing:-.02em;font-weight:600}
+.back-arrow{font-size:22px;font-weight:300;line-height:1;transition:transform .15s}
+.back-home:hover .back-arrow{transform:translateX(-4px)}
+.content-return{padding-top:90px;margin-bottom:24px}
+.eyebrow{color:var(--muted);letter-spacing:.12em;font-size:11px;font-weight:600;text-transform:uppercase}
+.hero-title{margin:13px 0 15px;font-size:clamp(52px,6.7vw,87px);font-weight:650;letter-spacing:-.083em;line-height:1.16}
+.simple-footer{border-top:1px solid var(--line);padding:22px 0 38px;display:flex;justify-content:space-between;gap:12px;color:#8a887f;font-size:11px}
+
+/* Footer copy is right-aligned below the existing separator. */
+.simple-footer {justify-content:flex-end}
+
+
+/* Typography legibility pass — auxiliary labels only (2026-11-04). */
+.eyebrow { font-size: 12.5px; }
+.simple-footer { font-size: 12.5px; }
