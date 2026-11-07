@@ -25,9 +25,9 @@
       root.classList.add('home-loading');
       // Never leave the page covered when another asset fails or loads slowly.
       setTimeout(finish,4500);
-      // 1.8s hold + 480ms staggered tile exit + 220ms overlay fade = 2.5s.
+      // 1.3s hold + 480ms staggered tile exit + 220ms overlay fade = 2s.
       document.addEventListener('DOMContentLoaded',() => {
-        if (root.classList.contains('home-loading')) exitTimer = setTimeout(beginExit,1800);
+        if (root.classList.contains('home-loading')) exitTimer = setTimeout(beginExit,1300);
       },{once:true});
       // Navigation and user input always take precedence over the introduction.
       for (const name of ['pointerdown','keydown','wheel','touchstart','focusin']) {

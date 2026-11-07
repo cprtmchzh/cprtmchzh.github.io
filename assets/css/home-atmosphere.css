@@ -45,8 +45,8 @@
   .home-loader-exiting .home-loader__name,
   .home-loader-exiting .home-loader__title,
   .home-loader-exiting .home-loader__caption { animation:home-loader-type-leave .30s ease .16s forwards; }
-  @keyframes home-loader-leave { from { opacity:1;transform:translateY(0) scale(1); } to { opacity:0;transform:translateY(-8px) scale(.94); } }
-  @keyframes home-loader-type-leave { to { opacity:0;transform:translateY(-3px); } }
+  @keyframes home-loader-leave { from { opacity:1;transform:translateY(0); } to { opacity:0;transform:translateY(9px); } }
+  @keyframes home-loader-type-leave { to { opacity:0;transform:translateY(3px); } }
 }
 @media(prefers-reduced-motion:reduce) {
   .home-loader { display:none;transition:none; }
