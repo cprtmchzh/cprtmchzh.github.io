@@ -1,82 +1,37 @@
-/* A quiet starfield for the dark homepage only.
-   CSS-only: no pointer tracking, canvas, or extra JavaScript.
-   All layers are inside the cloned <main>, so the bulb's circular opposite-theme
-   preview contains the same night sky. Reduced motion freezes the stars. */
-#main { position: relative; isolation: isolate; overflow: hidden; }
-#main .home-stage { position: relative; z-index: 1; }
-.night-sky {
-  position: absolute; inset: 0; z-index: 0;
-  overflow: hidden; pointer-events: none; user-select: none;
-  opacity: 0; visibility: hidden;
-  transition: opacity .22s ease, visibility .22s step-end;
-  background:
-    radial-gradient(ellipse 52% 40% at 10% 8%, rgba(76, 70, 128, .08), transparent 100%),
-    radial-gradient(ellipse 45% 42% at 91% 86%, rgba(27, 84, 100, .07), transparent 100%),
-    radial-gradient(ellipse 34% 27% at 54% 102%, rgba(60, 41, 95, .05), transparent 100%),
-    linear-gradient(180deg, #04070f 0%, #060a14 55%, #050912 100%);
-}
-:root[data-theme="dark"] .night-sky {
-  opacity: 1; visibility: visible;
-  transition: opacity .22s ease, visibility 0s;
-}
-.night-sky__stars, .night-sky__twinkle {
-  position: absolute; inset: 0;
-  background-position: center; background-size: cover;
-  background-repeat: no-repeat;
-  will-change: auto;
-}
-.night-sky__stars { background-image: url('../illustrations/night-stars.svg'); }
-.night-sky__twinkle {
-  background-image: url('../illustrations/night-twinkle.svg');
-  opacity: .36;
-  animation: night-twinkle 5.8s ease-in-out infinite alternate;
-}
-@keyframes night-twinkle { from { opacity: .18; } to { opacity: .62; } }
-/* A very occasional faint shooting star near the upper right, behind the cards. */
-.night-sky__meteor {
-  position: absolute; top: 15%; left: 74%;
-  width: 115px; height: 1px; border-radius: 50%;
-  background: linear-gradient(90deg, transparent, rgba(255,255,255,.02) 24%, rgba(255,255,255,.72));
-  box-shadow: 0 0 6px rgba(255,255,255,.18);
-  opacity: 0; transform: rotate(-33deg) translateX(-95px);
-  transform-origin: right center;
-  animation: night-meteor 10s ease-out 1.5s infinite;
-}
-@keyframes night-meteor {
-  0%, 79%, 93%, 100% { opacity: 0; transform: rotate(-33deg) translateX(-95px); }
-  82% { opacity: .52; transform: rotate(-33deg) translateX(0); }
-  87% { opacity: 0; transform: rotate(-33deg) translateX(150px); }
-}
-@media (prefers-reduced-motion: reduce) {
-  .night-sky { transition: none; }
-  .night-sky__twinkle, .night-sky__meteor { animation: none; }
-  .night-sky__twinkle { opacity: .58; }
-  .night-sky__meteor { display: none; }
-}
-
-
-/* Subtle sky-map accents: two real constellation outlines, well clear of cards.
-   Positioned independently so they remain visible without distortion on phones. */
-.night-sky__constellation {
-  position:absolute;display:block;pointer-events:none;
-  background-repeat:no-repeat;background-position:center;background-size:contain;
-  opacity:.8;
-}
-.night-sky__constellation--cassiopeia {
-  left:13%;top:11%;width:215px;aspect-ratio:240/122;
-  background-image:url('../illustrations/cassiopeia.svg');
-}
-.night-sky__constellation--dipper {
-  right:10%;top:12%;width:255px;aspect-ratio:260/154;
-  background-image:url('../illustrations/big-dipper.svg');
+/* Small white stars, stationary relative to the document; no parallax. */
+#main { position:relative;isolation:isolate;overflow:hidden; }
+#main .home-stage { position:relative;z-index:1; }
+.night-sky { position:absolute;inset:0;z-index:0;overflow:hidden;pointer-events:none;user-select:none;opacity:0;visibility:hidden;transition:opacity .22s ease,visibility .22s step-end;background:linear-gradient(180deg,#07090e,#090c12 55%,#070a10); }
+:root[data-theme="dark"] .night-sky { opacity:1;visibility:visible;transition:opacity .22s ease,visibility 0s; }
+.night-sky__stars,.night-sky__twinkle { position:absolute;inset:0;background-position:center top;background-size:1200px 750px;background-repeat:repeat; }
+.night-sky__stars { background-image:url('../illustrations/night-stars.svg?v=white-small-1'); }
+.night-sky__twinkle { background-image:url('../illustrations/night-twinkle.svg?v=white-small-1');opacity:.44; }
+.night-sky__constellation { position:absolute;display:block;background-repeat:no-repeat;background-position:center;background-size:contain;opacity:.7; }
+.night-sky__constellation--cassiopeia { left:13%;top:11%;width:215px;aspect-ratio:240/122;background-image:url('../illustrations/cassiopeia.svg?v=white-small-1'); }
+.night-sky__constellation--dipper { right:10%;top:12%;width:255px;aspect-ratio:260/154;background-image:url('../illustrations/big-dipper.svg?v=white-small-1'); }
+/* Four short streaks arrive as a shower, followed by roughly 20 quiet seconds. */
+.night-sky__meteors { position:absolute;inset:0;overflow:hidden; }
+.night-sky__meteor { --meteor-delay:3s;--meteor-x:-320px;--meteor-y:224px;position:absolute;left:78%;top:10vh;width:150px;height:1px;border-radius:50%;background:linear-gradient(90deg,rgba(255,255,255,.95),rgba(255,255,255,.22) 32%,transparent);box-shadow:0 0 4px rgba(255,255,255,.16);opacity:0;transform:rotate(-35deg); }
+.night-sky__meteor:nth-child(2) { --meteor-delay:3.7s;left:60%;top:18vh;width:110px; }
+.night-sky__meteor:nth-child(3) { --meteor-delay:4.4s;left:95%;top:26vh;width:180px; }
+.night-sky__meteor:nth-child(4) { --meteor-delay:5.1s;left:85%;top:41vh;width:125px; }
+@media(prefers-reduced-motion:no-preference) {
+ :root[data-theme="dark"] .night-sky__twinkle { animation:night-twinkle 7s ease-in-out infinite alternate; }
+ :root[data-theme="dark"] .night-sky__meteor { animation:night-meteor-shower 24s linear var(--meteor-delay) infinite both; }
+ @keyframes night-twinkle { from { opacity:.24; } to { opacity:.58; } }
+ @keyframes night-meteor-shower {
+  0% { opacity:0;transform:translate3d(0,0,0) rotate(-35deg); }
+  1% { opacity:.85; }
+  5%,100% { opacity:0;transform:translate3d(var(--meteor-x),var(--meteor-y),0) rotate(-35deg); }
+ }
 }
 @media(max-width:700px) {
-  .night-sky__constellation--cassiopeia {left:4%;top:3%;width:143px}
-  .night-sky__constellation--dipper {right:4%;top:auto;bottom:3%;width:174px}
+ .night-sky__constellation--cassiopeia { left:4%;top:3%;width:143px; }
+ .night-sky__constellation--dipper { right:4%;top:auto;bottom:3%;width:174px; }
+ .night-sky__meteor { --meteor-x:-190px;--meteor-y:133px;max-width:100px; }
+ .night-sky__meteor:nth-child(4) { display:none; }
 }
-
-/* Dark sky: stars descend slightly through the document as the user scrolls. */
-@media(prefers-reduced-motion:no-preference){
- .night-sky__stars,.night-sky__twinkle{transform:translate3d(0,var(--sky-scroll-shift,0px),0) scale(1.055);transition:transform .12s linear;transform-origin:center}
- .night-sky__constellation{translate:0 var(--sky-constellation-shift,0px);transition:translate .12s linear}
+@media(prefers-reduced-motion:reduce) {
+ .night-sky { transition:none; }
+ .night-sky__meteor { display:none; }
 }

@@ -75,24 +75,6 @@
       requestAnimationFrame(restore);
       window.addEventListener('pageshow',restore,{once:true});
     }
-    // RAF-throttled sky parallax, updated only while scrolling in the home page.
-    let skyTick = false;
-    const moveStars = () => {
-      if (skyTick) return;
-      skyTick=true;
-      requestAnimationFrame(() => {
-        skyTick=false;
-        if(reduced.matches) return;
-        const progress=Math.max(0,Math.min(window.scrollY,explore.offsetTop));
-        const sky=document.querySelector('.night-sky');
-        if(sky){
-          sky.style.setProperty('--sky-scroll-shift',`${Math.round(progress*.14)}px`);
-          sky.style.setProperty('--sky-constellation-shift',`${Math.round(progress*.085)}px`);
-        }
-      });
-    };
-    window.addEventListener('scroll',moveStars,{passive:true});
-    moveStars();
     const updatePosition = () => {
       document.body.classList.toggle('is-exploring',window.scrollY > Math.min(innerHeight * .48,explore.offsetTop - 80));
     };
