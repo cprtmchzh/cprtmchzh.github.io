@@ -68,12 +68,28 @@
         reduced.addEventListener('change',reveal,{once:true});
         setTimeout(reveal,1000);
       }
-      const tileObserver = new IntersectionObserver(entries => {
-        for (const entry of entries) togglePanel(entry.target,entry.isIntersecting);
-      },{rootMargin:'0px 0px -2% 0px',threshold:0});
+      // IntersectionObserver sees the clipped 2px strip, which can sit outside
+      // its viewport margin forever. Use stable layout rectangles for tile entry.
+      let tileFrame = 0;
+      const updateTiles = () => {
+        tileFrame = 0;
+        const limit = innerHeight * .98;
+        const visibility = tiles.map(tile => {
+          const rect = tile.getBoundingClientRect();
+          return rect.bottom > 0 && rect.top < limit;
+        });
+        tiles.forEach((tile,index) => togglePanel(tile,visibility[index]));
+      };
+      const scheduleTiles = () => {
+        if (!tileFrame) tileFrame = requestAnimationFrame(updateTiles);
+      };
+      window.addEventListener('scroll',scheduleTiles,{passive:true});
+      window.addEventListener('resize',scheduleTiles,{passive:true});
+      window.addEventListener('pageshow',scheduleTiles);
+      if ('ResizeObserver' in window) new ResizeObserver(scheduleTiles).observe(explore);
       requestAnimationFrame(() => {
         heroObserver.observe(landing);
-        tiles.forEach(tile => tileObserver.observe(tile));
+        updateTiles();
       });
     }
     // Translate vertical wheel input to horizontal project-card browsing only while
