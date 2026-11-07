@@ -1,24 +1,10 @@
-/* Home entrance: one short sequence, with a fully visible no-script default. */
-.home-links > .home-box { animation:none; }
-.home-card-outline { display:none;position:absolute;inset:-1px;width:calc(100% + 2px);height:calc(100% + 2px);overflow:visible;pointer-events:none; }
-.home-card-outline rect { width:calc(100% - 1px);height:calc(100% - 1px);fill:none;stroke:currentColor;stroke-width:1;vector-effect:non-scaling-stroke; }
-.home-box { --intro-delay:0ms;--intro-fill:#b5eed0; }
-.home-box:nth-child(2) { --intro-delay:80ms;--intro-fill:#d8b9f8; }
-.home-box:nth-child(3) { --intro-delay:160ms;--intro-fill:#fbbfd5; }
-:root[data-theme="dark"] .home-box { --intro-fill:transparent; }
+/* Ambient background; hero panel unfolding is controlled by home-scroll. */
 .home-atmosphere { position:absolute;inset:0;z-index:0;overflow:hidden;pointer-events:none;user-select:none;opacity:.65; }
 .home-atmosphere span { position:absolute;display:block;width:min(78vw,1000px);aspect-ratio:1;border-radius:50%;background:radial-gradient(circle,rgba(148,217,180,.28),rgba(148,217,180,.08) 40%,transparent 70%);left:-20%;top:-18vh; }
 .home-atmosphere span:nth-child(2) { left:40%;top:8vh;background:radial-gradient(circle,rgba(198,154,234,.22),rgba(198,154,234,.06) 40%,transparent 70%); }
 .home-atmosphere span:nth-child(3) { left:5%;top:55vh;background:radial-gradient(circle,rgba(238,168,195,.23),rgba(238,168,195,.06) 40%,transparent 70%); }
 :root[data-theme="dark"] .home-atmosphere { opacity:.32; }
 @media(prefers-reduced-motion:no-preference) {
-  .home-intro .home-links > .home-box { border-color:transparent!important;animation:home-card-fill 480ms ease calc(var(--intro-delay) + 230ms) both; }
-  .home-intro .home-card-outline { display:block; }
-  .home-intro .home-card-outline rect { stroke-dasharray:1;animation:home-outline-draw 540ms cubic-bezier(.4,0,.2,1) var(--intro-delay) both; }
-  .home-intro .home-box__title { animation:home-title-enter 360ms ease calc(var(--intro-delay) + 390ms) both; }
-  @keyframes home-outline-draw { from { stroke-dashoffset:1; } to { stroke-dashoffset:0; } }
-  @keyframes home-card-fill { from { background-color:transparent; } to { background-color:var(--intro-fill); } }
-  @keyframes home-title-enter { from { opacity:0;translate:0 8px; } to { opacity:1;translate:0 0; } }
   .home-atmosphere span { animation:home-ambient-drift 26s ease-in-out infinite alternate; }
   .home-atmosphere span:nth-child(2) { animation-duration:32s;animation-delay:-12s;animation-direction:alternate-reverse; }
   .home-atmosphere span:nth-child(3) { animation-duration:29s;animation-delay:-7s; }
@@ -29,7 +15,5 @@
 .home-motion-paused .home-atmosphere span,.home-motion-paused .night-sky__twinkle,.home-motion-paused .night-sky__meteor { animation-play-state:paused; }
 @media(max-width:700px) { .home-atmosphere span { width:115vw; } .home-atmosphere span:nth-child(2) { left:15%; } }
 @media(prefers-reduced-motion:reduce) {
-  .home-intro .home-links > .home-box,.home-intro .home-box__title { animation:none!important; }
-  .home-card-outline { display:none!important; }
   .home-atmosphere span { animation:none; }
 }

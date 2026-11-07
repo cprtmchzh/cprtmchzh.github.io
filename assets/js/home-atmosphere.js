@@ -1,18 +1,8 @@
-/* Set the entrance flag before first paint; returning home stays immediate. */
+/* Ambient sky interaction, independent of the hero panel entrance. */
 (() => {
   const root = document.documentElement;
   const reduced = matchMedia('(prefers-reduced-motion: reduce)');
   const pointer = matchMedia('(hover: hover) and (pointer: fine)');
-  let seen = false;
-  try { seen = sessionStorage.getItem('portfolio-home-intro') === 'seen'; } catch (_) {}
-  const finishIntro = () => root.classList.remove('home-intro');
-  if (!seen && !reduced.matches && location.hash !== '#explore') {
-    root.classList.add('home-intro');
-    // Always restore normal rendering, even if initialization is interrupted.
-    setTimeout(finishIntro, 1400);
-  }
-  try { sessionStorage.setItem('portfolio-home-intro', 'seen'); } catch (_) {}
-  window.addEventListener('pageshow', event => { if (event.persisted) finishIntro(); });
   document.addEventListener('DOMContentLoaded', () => {
     const sky = document.querySelector('.night-sky');
     let frame = 0, x = 0, y = 0;
@@ -37,8 +27,7 @@
       root.classList.toggle('home-motion-paused', document.hidden);
       if (document.hidden) reset();
     });
-    reduced.addEventListener('change', () => { finishIntro();reset(); });
+    reduced.addEventListener('change', reset);
     pointer.addEventListener('change', reset);
-    document.querySelector('[data-theme-toggle]')?.addEventListener('click', finishIntro);
   }, { once:true });
 })();
