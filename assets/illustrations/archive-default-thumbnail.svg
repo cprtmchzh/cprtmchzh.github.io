@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 1600 900" role="img" aria-labelledby="title desc">
+  <title id="title">Archive 기본 썸네일</title>
+  <desc id="desc">크림색 바탕에 보라색 문서와 민트색 원, Archive 글자가 있는 기본 이미지</desc>
+  <rect width="1600" height="900" fill="#F8F6EF"/>
+  <path d="M0 0h1600v900H0z" fill="none" stroke="#223137" stroke-width="24"/>
+  <path d="M70 76h1460M70 824h1460" stroke="#223137" stroke-width="4"/>
+  <text x="88" y="140" fill="#223137" font-family="Arial, Helvetica, sans-serif" font-size="30" font-weight="700" letter-spacing="8">CPRTMCHZH / WRITING ARCHIVE</text>
+  <text x="1340" y="140" fill="#223137" font-family="Arial, Helvetica, sans-serif" font-size="30" font-weight="700" letter-spacing="3">01 — ∞</text>
+  <rect x="88" y="242" width="840" height="480" fill="#D8B9F8" stroke="#223137" stroke-width="6"/>
+  <rect x="120" y="274" width="776" height="416" fill="none" stroke="#223137" stroke-width="3"/>
+  <path d="M168 365h300M168 408h226M168 451h272" stroke="#223137" stroke-width="11" stroke-linecap="square"/>
+  <circle cx="670" cy="480" r="154" fill="#B5EED0" stroke="#223137" stroke-width="6"/>
+  <path d="M564 480h212M670 374v212" stroke="#223137" stroke-width="5"/>
+  <circle cx="670" cy="480" r="72" fill="#FBBFD5" stroke="#223137" stroke-width="5"/>
+  <path d="M1014 259h486M1014 293h274" stroke="#223137" stroke-width="5"/>
+  <text x="1004" y="494" fill="#223137" font-family="Arial, Helvetica, sans-serif" font-size="128" font-weight="800" letter-spacing="-10">ARCHIVE</text>
+  <text x="1012" y="558" fill="#223137" font-family="Arial, Helvetica, sans-serif" font-size="32" font-weight="700" letter-spacing="6">NOTES &amp; IDEAS</text>
+  <path d="M1014 618h486M1014 650h330M1014 682h404" stroke="#223137" stroke-width="5"/>
+  <text x="88" y="786" fill="#223137" font-family="Arial, Helvetica, sans-serif" font-size="28" font-weight="700" letter-spacing="4">LEARN · BUILD · EXPLORE</text>
+  <text x="1408" y="786" fill="#223137" font-family="Arial, Helvetica, sans-serif" font-size="28" font-weight="700">↗</text>
+</svg>
