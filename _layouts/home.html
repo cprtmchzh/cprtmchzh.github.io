@@ -52,7 +52,7 @@
     {% assign featured_post = site.posts | first %}
     <a class="home-tile home-tile--feature" href="{{ featured_post.url | default: '/archive/index.html' | relative_url }}" aria-label="Latest post">
       <div class="home-tile__feature-image">
-        {% assign featured_thumbnail = featured_post.thumbnail | default: '/assets/illustrations/archive-default-thumbnail.svg?v=notebook-1' %}
+        {% assign featured_thumbnail = featured_post.thumbnail | default: '/assets/illustrations/archive-default-thumbnail.png?v=transparent-1' %}
         <img src="{{ featured_thumbnail | relative_url }}" alt="" loading="lazy">
       </div>
       <div class="home-tile__feature-copy">
