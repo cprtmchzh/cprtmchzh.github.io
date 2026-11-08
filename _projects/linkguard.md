@@ -6,6 +6,7 @@ thumbnail: ""
 description: "URL과 웹페이지에서 수집한 증거로 위험성을 판단하고, 판정 이유와 근거를 함께 제공하는 AI 보안 서비스."
 tags: ["AI", "Cybersecurity", "URL Analysis", "LLM", "AI Agent"]
 sample: false
+repo_url: "https://github.com/KISIA-AI-Security-Project/url_detection"
 ---
 
 > **LinkGuard는 URL과 웹페이지에서 수집한 자체 증거를 바탕으로 위험성을 판단하고, 판정 이유와 관련 근거를 함께 제공하는 AI 보안 서비스다.**
