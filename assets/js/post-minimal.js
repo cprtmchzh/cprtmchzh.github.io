@@ -32,6 +32,12 @@ document.addEventListener('DOMContentLoaded',()=>{
     if(section)section.hidden=true;
   }else if(tocLinks.length){
     const rail=toc;
+    const panel=document.querySelector('.aside-inner');
+    const fitPanel=()=>{
+      if(!panel||compactToc.matches)return;
+      const top=Math.max(28,panel.getBoundingClientRect().top);
+      panel.style.setProperty('--contents-top',Math.ceil(top)+'px');
+    };
     const compactToc=window.matchMedia('(max-width:1120px)');
     let activeIndex=-1;
     // Use the heading nearest the reading position, not the middle of the page.
@@ -72,7 +78,7 @@ document.addEventListener('DOMContentLoaded',()=>{
     const scheduleActive=()=>{
       if(scheduled)return;
       scheduled=true;
-      requestAnimationFrame(()=>{scheduled=false;updateActive();});
+      requestAnimationFrame(()=>{scheduled=false;fitPanel();updateActive();});
     };
     window.addEventListener('scroll',scheduleActive,{passive:true});
     window.addEventListener('resize',scheduleActive,{passive:true});
@@ -82,6 +88,7 @@ document.addEventListener('DOMContentLoaded',()=>{
       // the highlight at each actual position, rather than on click alone.
       scheduleActive();
     }));
+    fitPanel();
     updateActive();
   }
   // Reveal section headings once as the reader scrolls. Body paragraphs never move.

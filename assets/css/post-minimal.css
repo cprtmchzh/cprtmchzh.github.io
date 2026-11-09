@@ -207,7 +207,7 @@ body {-webkit-font-smoothing:auto;text-rendering:optimizeLegibility}
 
 /* Keep long contents panels compact even on tall desktop displays. */
 @media(min-width:1121px){
- .post-aside .aside-inner{display:flex;flex-direction:column;max-height:min(700px,calc(100dvh - 56px));overflow:hidden}
+ .post-aside .aside-inner{display:flex;flex-direction:column;max-height:min(700px,calc(100dvh - var(--contents-top,196px) - 28px));overflow:hidden}
  .post-aside .toc-section:not([hidden]){display:flex;flex-direction:column;flex:1 1 auto;min-height:0}
  .post-aside .toc-section .aside-label{flex:0 0 auto}
  .post-aside .post-toc{min-height:0;overflow-y:auto;overscroll-behavior-y:contain;scrollbar-width:thin;scrollbar-color:#bcb5a7 transparent;padding-right:6px}
