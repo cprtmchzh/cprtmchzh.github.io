@@ -58,7 +58,7 @@ document.addEventListener('DOMContentLoaded',()=>{
     };
     const updateActive=()=>{
       const next=currentHeadingIndex();
-      if(next===activeIndex){keepLinkVisible(tocLinks[next]);return;}
+      if(next===activeIndex)return;
       activeIndex=next;
       tocLinks.forEach((link,index)=>{
         const active=index===next;
