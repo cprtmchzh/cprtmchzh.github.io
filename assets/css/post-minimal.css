@@ -204,3 +204,8 @@ body {-webkit-font-smoothing:auto;text-rendering:optimizeLegibility}
 .post-return{padding-top:61px;margin-bottom:35px}
 .article-head h1{margin-top:13px}
 @media(max-width:760px){.post-return{padding-top:35px;margin-bottom:27px}.article-head h1{margin-top:11px}}
+
+/* Keep long contents panels compact even on tall desktop displays. */
+@media(min-width:1121px){
+ .post-aside .aside-inner{max-height:min(560px,calc(100dvh - 56px));overflow-y:auto}
+}
