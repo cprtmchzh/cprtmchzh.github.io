@@ -36,10 +36,11 @@
   <button class="theme-bulb" type="button" data-theme-toggle aria-label="전구 끄기 — 다크 모드" aria-pressed="false" title="다크 모드로 전환"><svg class="bulb-art" viewBox="0 0 40 46" aria-hidden="true" focusable="false"><path d="M20 4C11.6 4 6.5 10 6.5 17.2c0 5 2.5 8.8 6 11.7 1.3 1.1 2.2 4h10.6c.2-1.7.9-2.9 2.2-4 3.5-2.9 6-6.7 6-11.7C33.5 10 28.4 4 20 4Z"/><path d="M15 33h10M15.8 37.5h8.4M18 41h4M15.7 19.8l4.3 4.7 4.3-4.7M20 24.5v8"/></svg></button>
 </div>
 {{ content }}</div><a class="home-scroll-cue" href="#explore" aria-label="Scroll to more content" title="Explore more"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 9 7 7 7-7"/></svg></a></section>
+{% assign project_items = site.projects | where_exp: "project", "project.published != false" | sort: "date" | reverse %}
 <section class="home-explore" id="explore" aria-label="Recent work and notes">
   <div class="home-explore__grid">
     <div class="home-tile__archive-stack">
-    <section class="home-tile home-tile--update" aria-label="Total projects and archive posts"><span class="home-update__heading">Total</span><div class="home-update__numbers"><strong class="home-update__metric-count" title="Projects" aria-label="Projects: {{ site.data.projects.size }}">{{ site.data.projects.size }}</strong><span class="home-update__divider" aria-hidden="true"></span><strong class="home-update__metric-count" title="Archive" aria-label="Archive posts: {{ site.posts.size }}">{{ site.posts.size }}</strong></div></section>
+    <section class="home-tile home-tile--update" aria-label="Total projects and archive posts"><span class="home-update__heading">Total</span><div class="home-update__numbers"><strong class="home-update__metric-count" title="Projects" aria-label="Projects: {{ project_items.size }}">{{ project_items.size }}</strong><span class="home-update__divider" aria-hidden="true"></span><strong class="home-update__metric-count" title="Archive" aria-label="Archive posts: {{ site.posts.size }}">{{ site.posts.size }}</strong></div></section>
     <section class="home-tile home-tile--archive" aria-label="Recent Archive posts">
       <h2 class="home-tile__title">Archive</h2>
       <div class="home-tile__notes" aria-label="Latest posts, newest first">
@@ -67,11 +68,11 @@
     </a>
     <section class="home-tile home-tile--projects" aria-label="Recent projects">
       <div class="home-tile__projects-list" aria-label="Recent projects, scroll horizontally" tabindex="0">
-        {% assign recent_projects = site.data.projects | reverse %}
+        {% assign recent_projects = project_items %}
         {% for project in recent_projects limit:8 %}
-        <a class="home-tile__project-item" href="{{ project.detail_url | default: '/projects/' | relative_url }}" aria-label="{{ project.title | escape }}">
+        <a class="home-tile__project-item" href="{{ project.url | relative_url }}" aria-label="{{ project.title | escape }}">
           <div class="home-project__top"><span class="home-project__number">{{ forloop.index }}</span><span aria-hidden="true" class="home-project__open">↗</span></div>
-          <div class="home-project__main"><p class="home-project__type">{{ project.type | default: project.category | upcase | escape }}</p><h3>{{ project.title | escape }}</h3><p class="home-project__desc">{{ project.description | escape }}</p></div>
+          <div class="home-project__main"><p class="home-project__type">{{ project.type | default: project.category | upcase | escape }}</p><h3>{{ project.title | escape }}</h3>{% capture project_summary %}{% include project-summary.html project=project %}{% endcapture %}<p class="home-project__desc">{{ project_summary | strip | escape }}</p></div>
           <div class="home-project__foot">{% for tag in project.tags limit:3 %}<span>{{ tag | escape }}</span>{% endfor %}</div>
         </a>
         {% else %}<p class="home-tile__empty">No projects yet.</p>{% endfor %}
@@ -82,7 +83,7 @@
       <div class="home-tile__tags">
         {% assign seen_tags = '|' %}{% assign tag_count = 0 %}
         {% for post in site.posts limit:5 %}{% for tag in post.tags %}{% assign token = tag | prepend: '|' | append: '|' %}{% unless seen_tags contains token %}{% if tag_count < 8 %}<span>{{ tag | escape }}</span>{% assign tag_count = tag_count | plus: 1 %}{% endif %}{% assign seen_tags = seen_tags | append: tag | append: '|' %}{% endunless %}{% endfor %}{% endfor %}
-        {% for project in site.data.projects limit:5 %}{% for tag in project.tags %}{% assign token = tag | prepend: '|' | append: '|' %}{% unless seen_tags contains token %}{% if tag_count < 8 %}<span>{{ tag | escape }}</span>{% assign tag_count = tag_count | plus: 1 %}{% endif %}{% assign seen_tags = seen_tags | append: tag | append: '|' %}{% endunless %}{% endfor %}{% endfor %}
+        {% for project in project_items limit:5 %}{% for tag in project.tags %}{% assign token = tag | prepend: '|' | append: '|' %}{% unless seen_tags contains token %}{% if tag_count < 8 %}<span>{{ tag | escape }}</span>{% assign tag_count = tag_count | plus: 1 %}{% endif %}{% assign seen_tags = seen_tags | append: tag | append: '|' %}{% endunless %}{% endfor %}{% endfor %}
       </div>
     </section>
     <section class="home-tile home-tile--about" aria-label="About {{ site.data.profile.name | escape }}">

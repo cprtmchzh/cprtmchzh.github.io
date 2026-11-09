@@ -1,17 +1,14 @@
 ---
-layout: article
-article_type: project
 title: 프로젝트 이름
-description: 한 줄 소개를 입력하세요.
+date: 2026-11-09 00:00:00 +0900
+description: "" # 비우면 본문 첫 문단이 메인과 목록의 요약으로 표시됩니다.
 type: DEVELOPMENT
 category: development
 category_ko: 개발
-status: 진행 중
 tags:
   - Python
   - CLI
 sample: false
-permalink: /projects/my-project/
 # repo_url: https://github.com/YOUR_ID/YOUR_REPO
 ---
 

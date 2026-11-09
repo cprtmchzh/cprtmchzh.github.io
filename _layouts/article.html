@@ -32,7 +32,7 @@
 {% if is_project %}
   {% assign return_path = '/projects/' %}
   {% assign return_label = 'Projects' %}
-  {% assign related_items = site.projects | where: 'category', page.category %}
+  {% assign related_items = site.projects | where_exp: "project", "project.published != false" | where: 'category', page.category | sort: 'date' | reverse %}
   {% assign category_name = page.category_ko | default: '프로젝트' %}
 {% else %}
   {% assign return_path = '/archive/index.html' %}
@@ -47,7 +47,7 @@
       <div class="post-return"><a class="back-link" href="{{ return_path | relative_url }}"><span class="back-arrow" aria-hidden="true">←</span> {{ return_label }}</a></div>
       <header class="article-head">
         <h1>{{ page.title | escape }}</h1>
-        {% if page.description %}<p class="post-summary">{{ page.description | escape }}</p>{% endif %}
+        {% if is_project %}{% capture project_summary %}{% include project-summary.html project=page %}{% endcapture %}{% assign project_summary = project_summary | strip %}{% if project_summary != empty %}<p class="post-summary">{{ project_summary | escape }}</p>{% endif %}{% elsif page.description %}<p class="post-summary">{{ page.description | escape }}</p>{% endif %}
         <div class="post-meta">
           {% if is_project %}
             {% if page.date %}

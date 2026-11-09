@@ -4,7 +4,7 @@
 
 ## 남긴 초기 콘텐츠
 
-- Projects 1개 (작성 예시): `_data/projects.yml` + `_projects/python-automation.md` (파일 정리 CLI 설계 노트)
+- 프로젝트 원본: `_projects/*.md` — 메인, Projects 목록, 상세 페이지가 같은 파일을 사용합니다.
 - Archive 1개: `_posts/2026-10-23-tech-writing-note-template.md` (기술문서 작성법)
 - 6개 Archive 카테고리는 글 수가 0개여도 그대로 유지됩니다.
 - 공개 화면의 예시 배지·시안 안내문·빈 관련글 안내문은 제거했습니다.
@@ -18,14 +18,22 @@
 3. Markdown 내용은 `##`, `###`, 코드 블록, 표, 이미지로 작성합니다. 오른쪽 목차가 자동 생성됩니다.
 4. GitHub에 커밋하면 Jekyll이 새 페이지를 빌드합니다.
 
-프로젝트를 추가하려면 `_data/projects.yml`에 카드 정보를 추가하고 `_projects/ID.md`를 만듭니다. `detail_url`과 `permalink`를 일치시키세요.
+프로젝트는 `_templates/PROJECT_TEMPLATE.md`를 복사해 `_projects/ID.md` 하나만 작성합니다.
+
+- `title`, `description`, `tags`, `category`, `type`이 메인과 Projects 목록에도 함께 반영됩니다.
+- `description`을 비우면 본문 첫 문단을 자동으로 요약으로 사용합니다. 직접 작성한 요약이 있으면 그 내용을 우선합니다.
+- 분류는 `development`(개발), `security`(보안), `documentation`(문서) 중 하나를 사용합니다. `category_ko`는 상세 페이지의 분류 이름입니다.
+- `date`를 기준으로 최신순 정렬합니다. 링크는 프로젝트 파일 이름에서 자동 생성됩니다.
+- 파일을 삭제하면 메인·목록·프로젝트 개수·Focus 태그에서도 함께 제거됩니다.
+- `published: false`인 프로젝트는 메인과 목록에 표시하지 않습니다.
+- 본문의 `##`, `###` 제목으로 상세 페이지 목차를 자동 생성합니다.
 
 이미지·PDF는 `assets/uploads/`에 올리고 Markdown에서 `{{ '/assets/uploads/파일명' | relative_url }}`을 참조할 수 있습니다.
 
 ## 사이트 설정과 디자인
 
 - `_data/profile.yml` — 이름, 프로필, 관심 분야, GitHub
-- `_data/projects.yml` — 프로젝트 목록
+- `_projects/*.md` — 프로젝트 제목·설명·태그·분류·본문의 단일 원본
 - `_data/categories.yml` — 6개 아카이브 카테고리
 - `_layouts/article.html` — Projects/Archive 공통 상세 페이지
 - `assets/css/ui-components.css` — 프로젝트 카드와 우측 박스의 공통 스타일
@@ -64,7 +72,7 @@ Projects와 Archive의 목록 시작/끝 구분선 높이를 통일했습니다.
 - Projects 및 Archive 상세 페이지는 공통 `article.html`과 `post-minimal.css`를 공유합니다.
 - 우측 목차와 관련 콘텐츠 글꼴을 키워 가독성을 개선했습니다.
 - 관련 콘텐츠는 같은 카테고리의 다른 항목 중 최대 5개를 글머리표 목록으로 표시합니다.
-- 현재 공개 예시는 Projects 1개, Archive 1개뿐이라 관련 콘텐츠 목록은 비어 있습니다. 새 항목을 추가하면 자동으로 나타납니다.
+- 같은 분류의 프로젝트·게시글이 추가되면 관련 콘텐츠 목록에 자동으로 나타납니다.
 - sticky 박스, 본문 스크롤에 따른 목차 강조, 모바일에서 관련 글을 본문 아래 배치하는 동작은 유지합니다.
 
 ## 전구 다크모드 버튼

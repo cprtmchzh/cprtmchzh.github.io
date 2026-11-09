@@ -1,7 +1,9 @@
 ---
 title: "LinkGuard: 악성 URL 분석 서비스"
 date: 2026-10-23 00:00:00 +0900
-category_slug: project
+category: security
+category_ko: 보안
+type: SECURITY
 thumbnail: ""
 description: "URL과 웹페이지에서 수집한 증거로 위험성을 판단하고, 판정 이유와 근거를 함께 제공하는 AI 보안 서비스."
 tags: ["URL", "Agent", "Development"]

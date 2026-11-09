@@ -1,0 +1,6 @@
+{%- assign summary = include.project.description | default: '' | strip -%}
+{%- if summary == empty -%}
+  {%- assign paragraphs = include.project.content | markdownify | split: '<p>' -%}
+  {%- assign summary = paragraphs[1] | split: '</p>' | first | strip_html | normalize_whitespace -%}
+{%- endif -%}
+{{- summary | markdownify | strip_html | normalize_whitespace -}}
