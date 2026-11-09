@@ -31,7 +31,7 @@ document.addEventListener('DOMContentLoaded',()=>{
   if(!headings.length){
     if(section)section.hidden=true;
   }else if(tocLinks.length){
-    const rail=document.querySelector('.aside-inner');
+    const rail=toc;
     const compactToc=window.matchMedia('(max-width:1120px)');
     let activeIndex=-1;
     // Use the heading nearest the reading position, not the middle of the page.
@@ -58,7 +58,7 @@ document.addEventListener('DOMContentLoaded',()=>{
     };
     const updateActive=()=>{
       const next=currentHeadingIndex();
-      if(next===activeIndex)return;
+      if(next===activeIndex){keepLinkVisible(tocLinks[next]);return;}
       activeIndex=next;
       tocLinks.forEach((link,index)=>{
         const active=index===next;
