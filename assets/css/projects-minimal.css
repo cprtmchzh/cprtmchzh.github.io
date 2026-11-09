@@ -162,3 +162,6 @@ button{font:inherit;cursor:pointer}button,a{-webkit-tap-highlight-color:transpar
 :root[data-theme="dark"] body[data-page-accent="projects"] .filters .filter:focus-visible:not([aria-pressed="true"]) {
   background:#1f4939;border-color:#88e3b5;color:#d4ffe8;
 }
+
+/* Filtering controls its own motion; preserve the initial page entrance only. */
+.project-grid.has-filtered .project-card{animation:none!important;opacity:1;translate:none}
