@@ -1,5 +1,5 @@
 ---
-title: "LinkGuard: 증거 기반 악성 URL 분석 서비스"
+title: "LinkGuard: 악성 URL 분석 서비스"
 date: 2026-10-23 00:00:00 +0900
 category_slug: project
 thumbnail: ""
