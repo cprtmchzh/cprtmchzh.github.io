@@ -50,8 +50,10 @@
         {% if page.description %}<p class="post-summary">{{ page.description | escape }}</p>{% endif %}
         <div class="post-meta">
           {% if is_project %}
-            <span>{{ page.status | default: '프로젝트' | escape }}</span>
-            <span class="meta-separator" aria-hidden="true">·</span>
+            {% if page.date %}
+              <time datetime="{{ page.date | date: '%Y-%m-%d' }}">{{ page.date | date: '%Y.%m.%d' }}</time>
+              <span class="meta-separator" aria-hidden="true">·</span>
+            {% endif %}
             <a class="post-category" href="{{ '/projects/' | relative_url }}">{{ category_name | escape }} <span aria-hidden="true">↗</span></a>
           {% else %}
             <time datetime="{{ page.date | date: '%Y-%m-%d' }}">{{ page.date | date: '%Y.%m.%d' }}</time>
