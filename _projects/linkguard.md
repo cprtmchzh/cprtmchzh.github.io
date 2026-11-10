@@ -11,6 +11,15 @@ sample: false
 repo_url: "https://github.com/KISIA-AI-Security-Project/url_detection"
 ---
 
+<figure style="margin: 0; text-align: center;">
+  <img src="{{ '/assets/uploads/urlguard_main.png' | relative_url }}"
+       alt="URLGuard 메인 페이지"
+       style="display: block; margin: 0 auto;">
+  <figcaption style="margin-top: 0; font-size: 0.85em;">
+    [그림 1] URL Guard 시스템 메인 페이지
+  </figcaption>
+</figure>
+
 > **웹페이지에서 수집한 증거를 바탕으로 악성 URL을 판단, 판정 이유와 관련 근거를 제공하는 AI 보안 서비스**
 
 | 항목 | 내용 |
@@ -61,10 +70,9 @@ LinkGuard는 URL 구조, 도메인·인프라, HTTP·TLS, HTML·JavaScript 정�
        alt="URLGuard 시스템 아키텍처"
        style="display: block; margin: 0 auto;">
   <figcaption style="margin-top: 0; font-size: 0.85em;">
-    [그림 1] URL Guard 시스템 전체 아키텍쳐
+    [그림 2] URL Guard 시스템 전체 아키텍쳐
   </figcaption>
 </figure>
-
 
 | 계층 | 분석 대상 | 주요 관측 내용 |
 | :--- | :--- | :--- |
@@ -233,7 +241,7 @@ Context Builder가 구성한 문서를 바탕으로 LLM이 최종 판정, 요약
        alt="URL Guard 웹사이트 분석 결과"
        style="display: block; margin: 0 auto;">
   <figcaption style="margin-top: 0; font-size: 0.85em;">
-    [그림 2] URL Guard 웹사이트 분석 결과
+    [그림 3] URL Guard 웹사이트 분석 결과
   </figcaption>
 </figure>
 
