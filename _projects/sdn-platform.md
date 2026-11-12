@@ -85,6 +85,10 @@ Analyzer는 실험망 내부를 흐르는 트래픽을 비침투적으로 관찰
 
 네트워크 스캔이나 플러딩 공격은 탐지 강도에 따라 즉각적인 제어 후보를 함께 생성하며, 보호 서버의 이상 행위(외부 유출, C2 통신 등)는 정상 업무 트래픽과의 구분을 위해 관측 근거를 상세히 남겨 운영자가 판단할 수 있도록 설계했다.
 
+![실험망에서 탐지된 C2 Beacon, Server Egress, ICMP Flood 보안 이벤트]({{ '/assets/uploads/sdn-security-events.png' | relative_url }})
+
+*실험망에서 실제 발생한 보안 이벤트. C2 Beacon, Server Egress, ICMP Flood의 위험도와 출발지, 대응 상태를 확인할 수 있다.*
+
 ### 3) SQLite Outbox를 통한 전송 신뢰성 확보
 탐지된 이벤트와 분석 지표를 Backend로 전송하기 전, 로컬 **SQLite 기반 Outbox**에 먼저 기록한다. 네트워크 지연이나 Backend의 일시적 장애로 전송에 실패하면 지수 백오프(Exponential Backoff) 방식으로 재시도 간격을 늘리며 대기하고, 복구 불가능한 응답 오류는 Dead Letter로 분리 보존한다. 이를 통해 탐지 엔진의 동작과 네트워크 전송 상태를 분리하여 데이터 유실을 방지했다.
 
@@ -128,6 +132,10 @@ Backend가 이벤트 심각도와 자동 대응 설정에 따라 정책 적용�
 
 `RATE_LIMIT` 적용 시 동일 스위치 내에서 같은 PPS 제한값을 쓰는 규칙들은 하나의 **OVS Meter ID를 공유**하도록 설계했다. 규칙이 삭제되거나 만료될 때 참조 카운트(Reference Count)를 차감하며, 참조하는 규칙이 하나도 남지 않게 되면 스위치에서 해당 Meter 객체도 함께 정리해 리소스 누수를 막는다.
 
+![스위치에 적용된 Flow Rule과 차단 규칙 목록]({{ '/assets/uploads/sdn-flow-rules.png' | relative_url }})
+
+*Flow Rule 관리 화면. 보안 이벤트에서 생성된 DROP 규칙 2개와 수동으로 생성한 전달 규칙 1개가 `APPLIED` 상태로 표시된다.*
+
 ### 2) Barrier 기반 명령 검증과 Flow 생명주기
 비동기 프로토콜인 OpenFlow의 특성상 명령 전송 성공이 곧 스위치 적용 성공을 의미하지는 않는다. Controller는 `Flow-Mod`와 `Meter-Mod`를 전송한 직후 **Barrier Request**를 보내고, 중간에 에러 메시지가 수신되지 않는지 추적하며 `Barrier Reply`가 도착할 때까지 대기한다.
 
@@ -154,6 +162,10 @@ Backend는 이 응답을 바탕으로 규칙의 생명주기를 엄격하게 추
 | **Flow Rules** | 현재 스위치에 설치된 규칙 목록, 매칭 카운터 확인, 수동 규칙 생성 및 삭제 |
 | **Topology** | 스위치 간 링크 연결 상태 및 현재 활성화된 라우팅 경로 시각화 |
 | **Settings** | 이벤트 유형별 자동 대응(Auto-Response) 활성화 여부 및 임계값 설정 |
+
+![SDN Platform 메인 대시보드]({{ '/assets/uploads/sdn-dashboard.png' | relative_url }})
+
+*메인 대시보드에서 실시간 트래픽 추이, 프로토콜 비율, 분석 서버 상태와 활성 Flow를 한눈에 확인할 수 있다.*
 
 ### 2) 하이브리드 개발 및 실험 환경
 개발 편의성과 네트워크 격리를 동시에 확보하기 위해 호스트 머신과 리눅스 VM으로 실행 환경을 분리했다. (macOS·Windows 환경에서는 Multipass를 활용해 Linux 데이터 플레인을 구동한다.)
