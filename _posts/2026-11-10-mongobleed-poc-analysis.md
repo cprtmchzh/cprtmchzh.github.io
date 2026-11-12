@@ -45,6 +45,17 @@ MongoBleed는 MongoDB의 **zlib 압축 메시지 처리 과정에서 초기화�
 
 MongoDB는 네트워크 통신량을 줄이기 위해 기존 메시지를 압축하고, 이를 `OP_COMPRESSED` 구조로 감싸 전송한다.
 
+<figure style="margin: 0; text-align: center;">
+  <img src="{{ '/assets/archive/mongobleed-poc-analysis/op-compressed-message-structure.png' | relative_url }}"
+       alt="OP_COMPRESSED 메시지의 MsgHeader, originalOpcode, uncompressedSize, compressorId, 압축 데이터 배치. uncompressedSize 필드가 강조되어 있다."
+       style="display: block; margin: 0 auto;">
+  <figcaption style="margin-top: 0; font-size: 0.85em;">
+    [그림 1] OP_COMPRESSED 메시지 구조와 uncompressedSize 필드. 출처: <a href="https://asec.ahnlab.com/ko/92039/">AhnLab ASEC</a>.
+  </figcaption>
+</figure>
+
+> **그림 표기 정정:** 이미지 안의 `compressorId` 번호는 공식 명세와 다르다. 실제 값은 **`0 = noop`, `1 = snappy`, `2 = zlib`, `3 = zstd`**이며, 이 글의 실습 코드는 zlib을 뜻하는 `2`를 사용한다. ([MongoDB 공식 명세](https://www.mongodb.com/docs/manual/reference/mongodb-wire-protocol/))
+
 | 필드 | 역할 |
 | :--- | :--- |
 | `MsgHeader` | 메시지 길이, 요청 식별자, opcode 등 공통 헤더 |
@@ -253,7 +264,7 @@ def extract_ascii_strings(data: bytes, min_len: int = 4):
        alt="수집 파일을 문자열로 확인한 화면. 읽기 어려운 바이트 사이에 desktop-containerd와 overlayfs 스냅샷 경로가 나타난다."
        style="display: block; margin: 0 auto;">
   <figcaption style="margin-top: 0; font-size: 0.85em;">
-    [그림 1] 수집된 데이터를 문자열로 확인한 결과 일부. 출처: 실습 발표자료 16쪽.
+    [그림 2] 수집된 데이터를 문자열로 확인한 결과 일부. 출처: 실습 발표자료 16쪽.
   </figcaption>
 </figure>
 
@@ -272,7 +283,7 @@ def extract_ascii_strings(data: bytes, min_len: int = 4):
        alt="수집 결과에서 골라낸 테스트 문자열 조각과 Docker 볼륨, /data/db, /etc/hosts 등의 경로."
        style="display: block; margin: 0 auto;">
   <figcaption style="margin-top: 0; font-size: 0.85em;">
-    [그림 2] 발표자료에서 주요 문자열을 필터링해 정리한 화면. 테스트 문자열 조각과 실행 환경의 경로가 함께 나타난다. 출처: 실습 발표자료 16쪽.
+    [그림 3] 발표자료에서 주요 문자열을 필터링해 정리한 화면. 테스트 문자열 조각과 실행 환경의 경로가 함께 나타난다. 출처: 실습 발표자료 16쪽.
   </figcaption>
 </figure>
 
@@ -314,7 +325,7 @@ PoC 실행과 동시에 Wireshark로 로컬 루프백 패킷을 캡처해 실제
        alt="Wireshark에서 선택한 MongoDB 오류 응답. 압축 해제된 데이터의 문자열 영역에 BSON 오류 메시지와 containerd·overlayfs 관련 경로가 함께 표시된다."
        style="display: block; margin: 0 auto;">
   <figcaption style="margin-top: 0; font-size: 0.85em;">
-    [그림 3] 로컬 MongoDB의 오류 응답을 확인한 Wireshark 화면. 오른쪽 문자열 영역에서 BSON 파싱 오류와 환경 관련 경로를 볼 수 있다. 출처: 실습 발표자료 13쪽.
+    [그림 4] 로컬 MongoDB의 오류 응답을 확인한 Wireshark 화면. 오른쪽 문자열 영역에서 BSON 파싱 오류와 환경 관련 경로를 볼 수 있다. 출처: 실습 발표자료 13쪽.
   </figcaption>
 </figure>
 
@@ -349,7 +360,7 @@ zlib 압축 해제 로직의 핵심 수정 사항은 **할당된 버퍼 크기�
        alt="MongoDB 6.0.27로 업데이트한 뒤 재테스트 중 촬영한 Wireshark 화면. 선택된 항목은 클라이언트에서 서버의 27017 포트로 보낸 요청 패킷이다."
        style="display: block; margin: 0 auto;">
   <figcaption style="margin-top: 0; font-size: 0.85em;">
-    [그림 4] MongoDB 6.0.27에서 재테스트한 당시의 패킷 화면. 선택된 항목은 서버로 보낸 요청이며, 화면의 <code>Malformed Packet</code> 표시는 Wireshark의 패킷 해석 결과다. 출처: 실습 발표자료 20쪽.
+    [그림 5] MongoDB 6.0.27에서 재테스트한 당시의 패킷 화면. 선택된 항목은 서버로 보낸 요청이며, 화면의 <code>Malformed Packet</code> 표시는 Wireshark의 패킷 해석 결과다. 출처: 실습 발표자료 20쪽.
   </figcaption>
 </figure>
 
