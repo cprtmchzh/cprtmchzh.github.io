@@ -8,6 +8,12 @@ tags: ["KnightFrontier", "Reflection"]
 sample: false
 ---
 
+- [LinkGuard]({{ '/projects/linkguard/' | relative_url }})
+- [SDN 기반 네트워크 보안 플랫폼]({{ '/projects/sdn-platform/' | relative_url }}
+- [2026 AI보안 기술개발 교육과정(네트워크반) 수료 후기]({{ '/writing/ai-security-development-review/' | relative_url }})
+- [MongoBleed(CVE-2025-14847) 취약점 분석 및 PoC]({{ '/writing/mongobleed-poc-analysis/' | relative_url }})
+- [네트워크 패킷 캡처 프로그램 구현]({{ '/writing/packet-capture-tool/' | relative_url }})
+
 이번 미션을 진행하면서 지금까지 참여했던 활동들을 하나씩 돌아보았다. 개발 프로젝트부터 보안 교육, CTF, 컨퍼런스까지 생각보다 다양한 활동을 경험했지만, 막상 블로그에 정리하려고 보니 기록이 남아 있지 않은 경우가 꽤 많았다.
 
 특히 최근에는 CTF나 컨퍼런스에도 종종 참여했는데, 당시의 경험이나 배운 내용을 따로 정리해 두지 않은 점이 아쉬웠다. 시간이 지나면서 어떤 문제를 해결했고, 무엇이 어려웠는지 기억이 흐릿해진 경우도 있었다. 이번에는 이전에 진행했던 활동 중 일부를 다시 아카이빙했지만, 앞으로는 활동을 마친 뒤 하나씩 기록하는 습관을 들여야겠다고 생각했다.
