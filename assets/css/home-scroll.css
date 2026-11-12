@@ -510,3 +510,6 @@ body.is-exploring .home-up-cue{opacity:.75;visibility:visible;pointer-events:aut
  .home-tile__avatar { height:84px; }
 }
 @media(max-width:350px) { .home-explore { padding-inline:12px; } }
+
+/* Center each wrapped row of Focus tags. */
+.home-tile__tags{justify-content:center}
