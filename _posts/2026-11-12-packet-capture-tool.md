@@ -1,10 +1,10 @@
 ---
-title: "C와 libpcap으로 패킷 캡처 프로그램 만들기"
-date: 2026-11-12 00:00:00 +0900
+title: "PCAP을 이용한 패킷 캡처 프로그램 제작"
+date: 2026-05-17 00:00:00 +0900
 category_slug: development
 thumbnail: ""
-description: "C와 libpcap으로 실시간 패킷 캡처 프로그램을 구현했다. raw packet에서 Ethernet·IPv4·TCP 헤더와 Payload의 위치를 계산하며 패킷 구조를 분석한 기록."
-tags: ["C", "libpcap", "Network", "Packet Capture", "TCP/IP"]
+description: "네트워크 패킷 구조 분석 및 C와 PCAP을 이용한 실시간 패킷 캡처 프로그램 구현."
+tags: ["C", "Network", "PCAP", "TCP/IP"]
 sample: false
 ---
 
