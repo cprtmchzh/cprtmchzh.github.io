@@ -35,8 +35,8 @@ repo_url: "https://github.com/netxt-level/sdn-platform"
 
 시스템은 크게 네 개의 코어 애플리케이션과 데이터 성격에 따라 분리된 세 종류의 저장소, 그리고 이를 검증하기 위한 가상 네트워크 실험망으로 구성된다.
 
- <figure style="margin: 0; text-align: center;">
-  <img src="{{ '/assets/uploads/SDNplatform_architecture.png' | relative_url }}"
+<figure style="margin: 0; text-align: center;">
+  <img src="{{ '/assets/project/sdn-platform/SDNplatform_architecture.png' | relative_url }}"
        alt="SDN Platform 시스템 아키텍처"
        style="display: block; margin: 0 auto;">
   <figcaption style="margin-top: 0; font-size: 0.85em;">
@@ -58,7 +58,7 @@ repo_url: "https://github.com/netxt-level/sdn-platform"
 ## 03. 트래픽 관측과 이상 징후 탐지 (Analyzer)
 
 <figure style="margin: 0; text-align: center;">
-  <img src="{{ '/assets/uploads/sdn-security-events.png' | relative_url }}"
+  <img src="{{ '/assets/project/sdn-platform/sdn-security-events.png' | relative_url }}"
        alt="SDN Platform 보안 이벤트 페이지"
        style="display: block; margin: 0 auto;">
   <figcaption style="margin-top: 0; font-size: 0.85em;">
@@ -117,7 +117,7 @@ Controller는 `Packet-In` 메시지에서 호스트의 MAC, IPv4, 접속 스위�
 ## 05. 보안 정책 적용과 상태 동기화 (Backend ↔ Controller)
 
 <figure style="margin: 0; text-align: center;">
-  <img src="{{ '/assets/uploads/sdn-flow-rules.png' | relative_url }}"
+  <img src="{{ '/assets/project/sdn-platform/sdn-flow-rules.png' | relative_url }}"
        alt="SDN Platform 제어 및 규칙 관리 페이지"
        style="display: block; margin: 0 auto;">
   <figcaption style="margin-top: 0; font-size: 0.85em;">
@@ -153,7 +153,7 @@ Backend는 이 응답을 바탕으로 규칙의 생명주기를 엄격하게 추
 ## 06. 운영 대시보드와 격리 실험 환경
 
 <figure style="margin: 0; text-align: center;">
-  <img src="{{ '/assets/uploads/sdn-dashboard.png' | relative_url }}"
+  <img src="{{ '/assets/project/sdn-platform/sdn-dashboard.png' | relative_url }}"
        alt="SDN Platform 메인 대시보드 페이지"
        style="display: block; margin: 0 auto;">
   <figcaption style="margin-top: 0; font-size: 0.85em;">

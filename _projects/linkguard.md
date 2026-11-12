@@ -12,7 +12,7 @@ repo_url: "https://github.com/KISIA-AI-Security-Project/url_detection"
 ---
 
 <figure style="margin: 0; text-align: center;">
-  <img src="{{ '/assets/uploads/urlguard_main.png' | relative_url }}"
+  <img src="{{ '/assets/project/linkguard/urlguard_main.png' | relative_url }}"
        alt="URLGuard 메인 페이지"
        style="display: block; margin: 0 auto;">
   <figcaption style="margin-top: 0; font-size: 0.85em;">
@@ -66,7 +66,7 @@ LinkGuard는 URL 구조, 도메인·인프라, HTTP·TLS, HTML·JavaScript 정�
 기본 처리 흐름은 **증거 수집(L0~L3) → 판단 맥락 구성(Context Builder) → LLM 판정(Judgment) → 결과 제공**으로 이어진다. 심층 분석(L4)은 빠른 분석 결과를 확인한 뒤 사용자가 요청할 때 실행되는 별도 파이프라인이다.
 
 <figure style="margin: 0; text-align: center;">
-  <img src="{{ '/assets/uploads/urlguard_architecture.png' | relative_url }}"
+  <img src="{{ '/assets/project/linkguard/urlguard_architecture.png' | relative_url }}"
        alt="URLGuard 시스템 아키텍처"
        style="display: block; margin: 0 auto;">
   <figcaption style="margin-top: 0; font-size: 0.85em;">
@@ -237,7 +237,7 @@ Context Builder가 구성한 문서를 바탕으로 LLM이 최종 판정, 요약
 ## 07. 실제 분석 사례
 
 <figure style="margin: 0; text-align: center;">
-  <img src="{{ '/assets/uploads/urlguard_result.png' | relative_url }}"
+  <img src="{{ '/assets/project/linkguard/urlguard_result.png' | relative_url }}"
        alt="URL Guard 웹사이트 분석 결과"
        style="display: block; margin: 0 auto;">
   <figcaption style="margin-top: 0; font-size: 0.85em;">

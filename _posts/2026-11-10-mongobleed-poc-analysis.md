@@ -130,9 +130,14 @@ PoC는 응답 본문에서 **BSON 오류 메시지에 포함된 필드명과 인
 
 수집된 데이터를 확인한 결과, **테스트를 위해 DB에 입력해 둔 문자열 일부와 Docker·컨테이너 환경 관련 경로**가 노출된 것을 확인했다.
 
-[![수집 파일을 문자열로 확인한 화면. 읽기 어려운 바이트 사이에 desktop-containerd와 overlayfs 스냅샷 경로가 나타난다.]({{ '/assets/uploads/mongobleed/leaked-memory-strings.png' | relative_url }})]({{ '/assets/uploads/mongobleed/leaked-memory-strings.png' | relative_url }})
-
-*그림 1. 수집된 데이터를 문자열로 확인한 결과 일부. 출처: 실습 발표자료 16쪽. 이미지를 누르면 원본 크기로 볼 수 있다.*
+<figure style="margin: 0; text-align: center;">
+  <img src="{{ '/assets/archive/mongobleed-poc-analysis/leaked-memory-strings.png' | relative_url }}"
+       alt="수집 파일을 문자열로 확인한 화면. 읽기 어려운 바이트 사이에 desktop-containerd와 overlayfs 스냅샷 경로가 나타난다."
+       style="display: block; margin: 0 auto;">
+  <figcaption style="margin-top: 0; font-size: 0.85em;">
+    [그림 1] 수집된 데이터를 문자열로 확인한 결과 일부. 출처: 실습 발표자료 16쪽.
+  </figcaption>
+</figure>
 
 | 구분 | 확인된 내용 | 의미 |
 | :--- | :--- | :--- |
@@ -144,9 +149,14 @@ PoC는 응답 본문에서 **BSON 오류 메시지에 포함된 필드명과 인
 
 사전에 입력해 둔 테스트용 토큰과 Secret Key 문자열 일부가 결과 파일에서 확인됐다. 서버가 이전에 처리했던 데이터가 프로세스 힙 메모리에 남아 있을 때, 본 취약점을 통해 외부로 유출될 수 있음을 보여준다.
 
-[![수집 결과에서 골라낸 테스트 문자열 조각과 Docker 볼륨, /data/db, /etc/hosts 등의 경로.]({{ '/assets/uploads/mongobleed/filtered-strings.png' | relative_url }})]({{ '/assets/uploads/mongobleed/filtered-strings.png' | relative_url }})
-
-*그림 2. 발표자료에서 주요 문자열을 필터링해 정리한 화면. 테스트 문자열 조각과 실행 환경의 경로가 함께 나타난다. 출처: 실습 발표자료 16쪽.*
+<figure style="margin: 0; text-align: center;">
+  <img src="{{ '/assets/archive/mongobleed-poc-analysis/filtered-strings.png' | relative_url }}"
+       alt="수집 결과에서 골라낸 테스트 문자열 조각과 Docker 볼륨, /data/db, /etc/hosts 등의 경로."
+       style="display: block; margin: 0 auto;">
+  <figcaption style="margin-top: 0; font-size: 0.85em;">
+    [그림 2] 발표자료에서 주요 문자열을 필터링해 정리한 화면. 테스트 문자열 조각과 실행 환경의 경로가 함께 나타난다. 출처: 실습 발표자료 16쪽.
+  </figcaption>
+</figure>
 
 ### Docker 및 컨테이너 관련 경로 노출
 
@@ -181,9 +191,14 @@ PoC 실행과 동시에 Wireshark로 로컬 루프백 패킷을 캡처해 실제
 | **응답 패킷** | MongoDB가 반환한 BSON 파싱 오류 응답 확인 |
 | **노출 문자열** | 오류 응답 페이로드 내부에 포함된 overlayfs·containerd 경로 문자열 확인 |
 
-[![Wireshark에서 선택한 MongoDB 오류 응답. 압축 해제된 데이터의 문자열 영역에 BSON 오류 메시지와 containerd·overlayfs 관련 경로가 함께 표시된다.]({{ '/assets/uploads/mongobleed/wireshark-error-response.png' | relative_url }})]({{ '/assets/uploads/mongobleed/wireshark-error-response.png' | relative_url }})
-
-*그림 3. 로컬 MongoDB의 오류 응답을 확인한 Wireshark 화면. 오른쪽 문자열 영역에서 BSON 파싱 오류와 환경 관련 경로를 볼 수 있다. 출처: 실습 발표자료 13쪽.*
+<figure style="margin: 0; text-align: center;">
+  <img src="{{ '/assets/archive/mongobleed-poc-analysis/wireshark-error-response.png' | relative_url }}"
+       alt="Wireshark에서 선택한 MongoDB 오류 응답. 압축 해제된 데이터의 문자열 영역에 BSON 오류 메시지와 containerd·overlayfs 관련 경로가 함께 표시된다."
+       style="display: block; margin: 0 auto;">
+  <figcaption style="margin-top: 0; font-size: 0.85em;">
+    [그림 3] 로컬 MongoDB의 오류 응답을 확인한 Wireshark 화면. 오른쪽 문자열 영역에서 BSON 파싱 오류와 환경 관련 경로를 볼 수 있다. 출처: 실습 발표자료 13쪽.
+  </figcaption>
+</figure>
 
 패킷에서 확인한 오류 응답을 앞서 설명한 압축 해제·BSON 파싱 과정과 연결해 살펴봤다.
 
@@ -211,9 +226,14 @@ zlib 압축 해제 로직의 핵심 수정 사항은 **할당된 버퍼 크기�
 | **테스트 방식** | 공개 PoC 요청 전송 | 동일 조건에서 재전송 |
 | **메모리 정보 노출** | 테스트 문자열 및 컨테이너 경로 노출 확인 | 메모리 노출 현상 발생하지 않음 |
 
-[![MongoDB 6.0.27로 업데이트한 뒤 재테스트 중 촬영한 Wireshark 화면. 선택된 항목은 클라이언트에서 서버의 27017 포트로 보낸 요청 패킷이다.]({{ '/assets/uploads/mongobleed/patched-retest-request.png' | relative_url }})]({{ '/assets/uploads/mongobleed/patched-retest-request.png' | relative_url }})
-
-*그림 4. MongoDB 6.0.27에서 재테스트한 당시의 패킷 화면. 선택된 항목은 서버로 보낸 요청이며, 화면의 `Malformed Packet` 표시는 Wireshark의 패킷 해석 결과다. 출처: 실습 발표자료 20쪽.*
+<figure style="margin: 0; text-align: center;">
+  <img src="{{ '/assets/archive/mongobleed-poc-analysis/patched-retest-request.png' | relative_url }}"
+       alt="MongoDB 6.0.27로 업데이트한 뒤 재테스트 중 촬영한 Wireshark 화면. 선택된 항목은 클라이언트에서 서버의 27017 포트로 보낸 요청 패킷이다."
+       style="display: block; margin: 0 auto;">
+  <figcaption style="margin-top: 0; font-size: 0.85em;">
+    [그림 4] MongoDB 6.0.27에서 재테스트한 당시의 패킷 화면. 선택된 항목은 서버로 보낸 요청이며, 화면의 <code>Malformed Packet</code> 표시는 Wireshark의 패킷 해석 결과다. 출처: 실습 발표자료 20쪽.
+  </figcaption>
+</figure>
 
 버전 업데이트 후 동일한 PoC를 실행했을 때, 이전과 같은 메모리 조각 노출은 발생하지 않았다. 반환 길이 수정만으로 초기화되지 않은 메모리 영역에 대한 접근이 차단된 것을 확인할 수 있다.
 

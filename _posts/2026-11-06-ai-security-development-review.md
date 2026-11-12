@@ -12,7 +12,14 @@ sample: false
 
 지난여름부터 참여한 **2026 AI보안 기술개발 교육과정 네트워크반**을 최근 수료했다. 약 한 달간의 교육과 이후 세 달간의 프로젝트를 무사히 마친 김에, 처음 지원했던 순간부터 최종 발표까지의 경험을 차분히 정리해 보려고 한다.
 
-![2026 AI보안 기술개발 교육과정 모집 포스터]({{ '/assets/uploads/2026-ai-security-development-poster.jpg' | relative_url }})
+<figure style="margin: 0; text-align: center;">
+  <img src="{{ '/assets/archive/ai-security-development-review/2026-ai-security-development-poster.jpg' | relative_url }}"
+       alt="2026 AI보안 기술개발 교육과정 모집 포스터"
+       style="display: block; margin: 0 auto;">
+  <figcaption style="margin-top: 0; font-size: 0.85em;">
+    [그림 1] 2026 AI보안 기술개발 교육과정 모집 포스터
+  </figcaption>
+</figure>
 
 ---
 

@@ -28,7 +28,28 @@
 - `published: false`인 프로젝트는 메인과 목록에 표시하지 않습니다.
 - 본문의 `##`, `###` 제목으로 상세 페이지 목차를 자동 생성합니다.
 
-이미지·PDF는 `assets/uploads/`에 올리고 Markdown에서 `{{ '/assets/uploads/파일명' | relative_url }}`을 참조할 수 있습니다.
+본문 이미지는 글 종류와 파일명에서 날짜·확장자를 제외한 슬러그에 따라 보관합니다.
+
+- 프로젝트 `_projects/ID.md`: `assets/project/ID/`
+- 아카이브 `_posts/YYYY-MM-DD-title.md`: `assets/archive/title/`
+- 프로필 등 공통 이미지: 기존 공통 경로를 사용합니다.
+
+예를 들어 MongoBleed 캡처는 `assets/archive/mongobleed-poc-analysis/`, LinkGuard 이미지는 `assets/project/linkguard/`에 둡니다. 이미지가 없는 글의 폴더는 `.gitkeep`으로 유지합니다. 썸네일을 지정할 때도 해당 글의 폴더 경로를 사용합니다.
+
+모든 본문 이미지는 아래처럼 `<figure>`와 `<figcaption>`으로 작성합니다. 이미지와 설명을 가운데 정렬하고, 설명은 작은 글씨로 이미지 바로 아래에 둡니다. `[그림 N]` 번호는 글마다 1부터 시작하며, 필요한 출처도 설명에 함께 적습니다.
+
+```html
+<figure style="margin: 0; text-align: center;">
+  <img src="{{ '/assets/archive/글-슬러그/파일명.png' | relative_url }}"
+       alt="이미지가 전달하는 내용을 설명"
+       style="display: block; margin: 0 auto;">
+  <figcaption style="margin-top: 0; font-size: 0.85em;">
+    [그림 1] 이미지 설명. 출처가 있다면 함께 표기.
+  </figcaption>
+</figure>
+```
+
+이미지를 옮길 때는 본문의 `src`, 썸네일과 관련 링크를 함께 수정합니다. 이미지 아래에 별도 Markdown 기울임 문단을 붙이지 않고 `<figcaption>` 안에 설명을 작성합니다.
 
 ## 사이트 설정과 디자인
 
