@@ -384,5 +384,4 @@ zlib 압축 해제 로직의 핵심 수정 사항은 **할당된 버퍼 크기�
 - [MongoDB 수정 소스 · zlib 압축 해제 길이 반환](https://github.com/mongodb/mongo/blob/505b660a14698bd2b5233bd94da3917b585c5728/src/mongo/transport/message_compressor_zlib.cpp)
 - [NVD · CVE-2025-14847](https://nvd.nist.gov/vuln/detail/CVE-2025-14847)
 - [cprtmchzh · MongoBleed 실습 저장소](https://github.com/cprtmchzh/mongobleed-poc)
-- [본문 코드 발췌 기준 · `65b7944`](https://github.com/cprtmchzh/mongobleed-poc/commit/65b7944c90efb1510ef8d786101d3c978e23dcb9)
 - [ASEC · MongoBleed(CVE-2025-14847): 8년간 숨겨져 있던 치명적 MongoDB 메모리 유출 취약점](https://asec.ahnlab.com/ko/92039/)
