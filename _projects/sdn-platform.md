@@ -1,4 +1,4 @@
----
+<img width="1276" height="570" alt="image" src="https://github.com/user-attachments/assets/dd26e322-dbf5-424f-abe2-d87a94c37524" />---
 title: "네트워크 이상 징후 탐지 플랫폼"
 date: 2026-08-11 00:00:00 +0900
 description: "네트워크 이상 징후를 탐지하고 SDN 컨트롤러로 차단·속도 제한 정책을 적용한 뒤 상태를 추적하는 보안 자동화 플랫폼"
@@ -29,65 +29,60 @@ repo_url: "https://github.com/netxt-level/sdn-platform"
 
 이 프로젝트에서는 **SDN(Software-Defined Networking) 컨트롤러가 스위치의 전달 규칙(Flow Rule)을 프로그래밍 방식으로 제어하는 구조**를 해법으로 택했다. 각 모듈의 책임을 명확히 분리해 다음과 같은 단일 파이프라인으로 연결했다.
 
-```mermaid
-flowchart LR
-    S["OVS 스위치 (Mirror)"] -->|"패킷 복제"| A["Analyzer (관측·탐지)"]
-    A -->|"이벤트·후보 전달"| B["Backend (정책 판단·상태 관리)"]
-    B <-->|"정책 요청 / 상태 동기화"| C["Controller (OpenFlow 제어)"]
-    C -->|"Flow-Mod / Meter-Mod"| S
-```
-
-1. **관측 (Observation):** OVS Mirror로 실험망 패킷을 복제하고 Analyzer에서 프로토콜별 메타데이터를 집계한다.
-2. **탐지 (Detection):** 시간창(Time Window)과 임계값을 기준으로 이상 패턴을 식별해 보안 이벤트를 생성한다.
-3. **정책 판단 (Decision):** Backend가 이벤트 심각도와 자동 대응 설정을 평가해 실제 적용할 제어 정책을 결정한다.
-4. **대응 적용 (Enforcement):** Controller가 정책을 OpenFlow 규칙(`DROP`, `RATE_LIMIT` 등)으로 변환해 스위치에 설치한다.
-5. **상태 확인 (Reconciliation):** Barrier 응답으로 스위치 반영 여부를 확인하고, Backend와 Controller 간 규칙 상태를 주기적으로 동기화한다.
-
 ---
 
 ## 02. 시스템 아키텍처
 
 시스템은 크게 네 개의 코어 애플리케이션과 데이터 성격에 따라 분리된 세 종류의 저장소, 그리고 이를 검증하기 위한 가상 네트워크 실험망으로 구성된다.
 
-| 구분 | 구성요소 | 주요 기술 스택 | 핵심 역할 |
-| :--- | :--- | :--- | :--- |
-| **애플리케이션** | **Analyzer** | Python, Scapy, SQLite | 패킷 캡처, 트래픽 집계, 이상 징후 탐지, 전송 대기 데이터(Outbox) 보존 |
-| | **Backend** | Python, FastAPI, SQLAlchemy | 이벤트 처리, 자동 대응 정책 판단, Flow 생명주기 관리, Controller 연동 |
-| | **Controller** | OS-Ken, OpenFlow 1.3, FastAPI | 스위치 연결 관리, 호스트 학습, 경로 계산, Flow Rule 및 Meter 제어 |
-| | **Frontend** | Next.js, React, TypeScript | 실시간 트래픽·이벤트·토폴로지 시각화, 규칙 조회 및 수동 대응 제어 |
-| **데이터 저장소** | **PostgreSQL** | Relational DB | Flow Rule 상태, 대응 이력, Analyzer 상태 및 런타임 설정 관리 |
-| | **InfluxDB** | Time-Series DB | 트래픽 대역폭, 프로토콜 비율, 호스트별 시계열 지표 저장 |
-| | **Elasticsearch** | Search Engine | 탐지된 보안 이벤트 전문 및 패킷 요약 문서 인덱싱 |
-| **인프라·실험망** | **Lab 환경** | Mininet, OVS, Docker, Multipass | 다중 경로 가상 네트워크 토폴로지 구성 및 공격·대응 시나리오 실행 |
+ <figure style="margin: 0; text-align: center;">
+  <img src="{{ '/assets/uploads/SDNplatform_architecture.png' | relative_url }}"
+       alt="SDN Platform 시스템 아키텍처"
+       style="display: block; margin: 0 auto;">
+  <figcaption style="margin-top: 0; font-size: 0.85em;">
+    [그림 1] SDN Platform 시스템 아키텍처
+  </figcaption>
+</figure>
 
-* **Controller의 이중 인터페이스 구조:** Controller는 `OS-Ken` 프레임워크를 통해 스위치와 OpenFlow 이벤트를 주고받으면서, 동일 프로세스 내 별도 스레드에서 `FastAPI` 서버를 함께 실행한다. 이를 통해 Backend의 HTTP API 요청을 즉시 OpenFlow 메시지로 변환해 스위치에 전달한다.
+| 구성요소 | 역할 | 주요 동작 |
+|---|---|---|
+| **Host (h1~h4)** | 사용자·공격자·관리자·서비스 서버 역할 | h1은 정상 사용자, h2는 공격 트래픽 발생 주체, h3는 관리자, h4는 보호 대상 서버로 구성 |
+| **Switch (S1~S4)** | SDN 기반 트래픽 전달 및 경로 구성 | S1에서 트래픽 진입, S2는 기본 경로, S3는 우회 경로, S4는 목적지 스위치 역할 수행 |
+| **SDN Controller** | 네트워크 전달 정책 중앙 제어 | 토폴로지·호스트 정보 관리, 경로 계산, Flow Rule 설치·삭제, 장애 시 경로 재계산, 대응 정책 적용 |
+| **분석 서버** | 네트워크 트래픽 분석 및 위협 탐지 | S1에서 관찰한 트래픽을 기반으로 Port Scan, ICMP Flood 등의 이상 행위 탐지 |
+| **API 서버** | 분석·제어 계층 연결 | 탐지 이벤트 저장, 대응 정책 판단, Controller에 Flow Rule 적용 요청, Dashboard용 데이터 제공 |
+| **Dashboard** | 관리자용 모니터링 및 제어 화면 | 트래픽, 보안 이벤트, Flow Rule, 네트워크 상태 확인 및 수동 대응 |
 
 ---
 
 ## 03. 트래픽 관측과 이상 징후 탐지 (Analyzer)
 
+<figure style="margin: 0; text-align: center;">
+  <img src="{{ '/assets/uploads/sdn-security-events.png' | relative_url }}"
+       alt="SDN Platform 보안 이벤트 페이지"
+       style="display: block; margin: 0 auto;">
+  <figcaption style="margin-top: 0; font-size: 0.85em;">
+    [그림 2] SDN Platform 보안 이벤트 페이지
+  </figcaption>
+</figure>
+
 ### 1) OVS Mirror와 veth 기반 패킷 수집
-Analyzer는 실험망 내부를 흐르는 트래픽을 비침투적으로 관찰한다. 코어 스위치인 `s1`의 지정 포트로 유입되는 패킷을 **OVS Mirror**로 복제하고, `veth pair`로 연결된 전용 가상 인터페이스(`sdn-sensor0`)에서 이를 캡처한다. 
+Analyzer는 실험망 내부를 흐르는 트래픽을 비침투적으로 관찰한다. 코어 스위치인 `s1`의 지정 포트로 유입되는 패킷을 **OVS Mirror**로 복제하고, 연결된 전용 가상 인터페이스(`sdn-sensor0`)에서 이를 캡처한다. 
 
 기본 경로와 우회 경로 양쪽의 트래픽을 모두 수집할 수 있는 위치에 미러링을 구성해, 경로가 변경되더라도 클라이언트와 웹 서버 간의 전체 통신에서 Ethernet, IPv4, TCP, UDP, ICMP 메타데이터를 누락 없이 추출하고 시간창 단위로 집계한다.
 
 ### 2) 시간창과 임계값 기반 탐지
-일정 시간 내의 연결 시도 횟수, 초당 패킷 수(PPS), 누적 송신량, 접속 주기 등을 기준으로 6가지 이상 징후를 탐지한다.
 
 | 탐지 항목 | 주요 관측 지표 및 패턴 | 기본 대응 방향 |
 | :--- | :--- | :--- |
 | **Port Scan** | 동일 출발지·목적지 간 SYN 패킷(ACK 없음)의 고유 목적지 포트 수 급증 | 관찰 및 알림 기록 |
-| **ICMP Flood** | 동일 구간 내 임계값을 초과하는 ICMP 초당 패킷 수(PPS) 및 누적 패킷 수 | 속도 제한(`RATE_LIMIT`) 또는 차단 후보 |
+| **ICMP Flood** | 동일 구간 내 임계값을 초과하는 ICMP 초당 패킷 수(PPS) 및 누적 패킷 수 | 속도 제한 또는 차단 후보 |
 | **Lateral Movement** | 보호 대상 서버가 짧은 시간 동안 내부의 여러 목적지로 연결을 시도하는 패턴 | Critical 정책에 따른 즉시 차단 후보 |
 | **Server Egress** | 보호 대상 서버가 사전 허용 목록(Whitelist) 외부의 목적지로 시작한 TCP 연결 | 근거 기록 및 운영자 확인 유도 |
 | **Data Exfiltration** | 보호 대상 서버에서 시작된 Flow에서 지속적으로 발생하는 비정상 대용량 송신 | 근거 기록 및 운영자 확인 유도 |
 | **C2 Beacon** | 동일 목적지·포트로 반복되는 연결의 시간 간격 주기성과 낮은 변동성(Jitter) | 근거 기록 및 운영자 확인 유도 |
 
-네트워크 스캔이나 플러딩 공격은 탐지 강도에 따라 즉각적인 제어 후보를 함께 생성하며, 보호 서버의 이상 행위(외부 유출, C2 통신 등)는 정상 업무 트래픽과의 구분을 위해 관측 근거를 상세히 남겨 운영자가 판단할 수 있도록 설계했다.
-
-![실험망에서 탐지된 C2 Beacon, Server Egress, ICMP Flood 보안 이벤트]({{ '/assets/uploads/sdn-security-events.png' | relative_url }})
-
-*실험망에서 실제 발생한 보안 이벤트. C2 Beacon, Server Egress, ICMP Flood의 위험도와 출발지, 대응 상태를 확인할 수 있다.*
+일정 시간 내의 연결 시도 횟수, 초당 패킷 수(PPS), 누적 송신량, 접속 주기 등을 기준으로 6가지 이상 징후를 탐지한다. 네트워크 스캔이나 플러딩 공격은 탐지 강도에 따라 즉각적인 제어 후보를 함께 생성하며, 특정 이상 행위는 정상 업무 트래픽과의 구분을 위해 관측 근거를 남겨 운영자가 판단할 수 있도록 설계했다.
 
 ### 3) SQLite Outbox를 통한 전송 신뢰성 확보
 탐지된 이벤트와 분석 지표를 Backend로 전송하기 전, 로컬 **SQLite 기반 Outbox**에 먼저 기록한다. 네트워크 지연이나 Backend의 일시적 장애로 전송에 실패하면 지수 백오프(Exponential Backoff) 방식으로 재시도 간격을 늘리며 대기하고, 복구 불가능한 응답 오류는 Dead Letter로 분리 보존한다. 이를 통해 탐지 엔진의 동작과 네트워크 전송 상태를 분리하여 데이터 유실을 방지했다.
@@ -121,6 +116,15 @@ Controller는 `Packet-In` 메시지에서 호스트의 MAC, IPv4, 접속 스위�
 
 ## 05. 보안 정책 적용과 상태 동기화 (Backend ↔ Controller)
 
+<figure style="margin: 0; text-align: center;">
+  <img src="{{ '/assets/uploads/sdn-flow-rules.png' | relative_url }}"
+       alt="SDN Platform 제어 및 규칙 관리 페이지"
+       style="display: block; margin: 0 auto;">
+  <figcaption style="margin-top: 0; font-size: 0.85em;">
+    [그림 3] SDN Platform 제어 및 규칙 관리 페이지
+  </figcaption>
+</figure>
+
 ### 1) 제어 정책 변환과 OVS Meter 참조 관리
 Backend가 이벤트 심각도와 자동 대응 설정에 따라 정책 적용을 요청하면, Controller는 이를 스위치 명령으로 변환한다.
 
@@ -131,10 +135,6 @@ Backend가 이벤트 심각도와 자동 대응 설정에 따라 정책 적용�
 | **OUTPUT** | 지정된 출력 포트로 패킷 전달 |
 
 `RATE_LIMIT` 적용 시 동일 스위치 내에서 같은 PPS 제한값을 쓰는 규칙들은 하나의 **OVS Meter ID를 공유**하도록 설계했다. 규칙이 삭제되거나 만료될 때 참조 카운트(Reference Count)를 차감하며, 참조하는 규칙이 하나도 남지 않게 되면 스위치에서 해당 Meter 객체도 함께 정리해 리소스 누수를 막는다.
-
-![스위치에 적용된 Flow Rule과 차단 규칙 목록]({{ '/assets/uploads/sdn-flow-rules.png' | relative_url }})
-
-*Flow Rule 관리 화면. 보안 이벤트에서 생성된 DROP 규칙 2개와 수동으로 생성한 전달 규칙 1개가 `APPLIED` 상태로 표시된다.*
 
 ### 2) Barrier 기반 명령 검증과 Flow 생명주기
 비동기 프로토콜인 OpenFlow의 특성상 명령 전송 성공이 곧 스위치 적용 성공을 의미하지는 않는다. Controller는 `Flow-Mod`와 `Meter-Mod`를 전송한 직후 **Barrier Request**를 보내고, 중간에 에러 메시지가 수신되지 않는지 추적하며 `Barrier Reply`가 도착할 때까지 대기한다.
@@ -152,6 +152,15 @@ Backend는 이 응답을 바탕으로 규칙의 생명주기를 엄격하게 추
 
 ## 06. 운영 대시보드와 격리 실험 환경
 
+<figure style="margin: 0; text-align: center;">
+  <img src="{{ '/assets/uploads/sdn-dashboard.png' | relative_url }}"
+       alt="SDN Platform 메인 대시보드 페이지"
+       style="display: block; margin: 0 auto;">
+  <figcaption style="margin-top: 0; font-size: 0.85em;">
+    [그림 4] SDN Platform 메인 대시보드 페이지
+  </figcaption>
+</figure>
+
 ### 1) 실시간 관제 화면 (Frontend)
 운영자는 웹 대시보드를 통해 네트워크 상태와 자동 대응 현황을 실시간으로 모니터링하고 개입할 수 있다. Backend와는 단기 토큰으로 인증된 **WebSocket**을 연결해 이벤트와 상태 변화를 지연 없이 수신한다.
 
@@ -163,12 +172,8 @@ Backend는 이 응답을 바탕으로 규칙의 생명주기를 엄격하게 추
 | **Topology** | 스위치 간 링크 연결 상태 및 현재 활성화된 라우팅 경로 시각화 |
 | **Settings** | 이벤트 유형별 자동 대응(Auto-Response) 활성화 여부 및 임계값 설정 |
 
-![SDN Platform 메인 대시보드]({{ '/assets/uploads/sdn-dashboard.png' | relative_url }})
-
-*메인 대시보드에서 실시간 트래픽 추이, 프로토콜 비율, 분석 서버 상태와 활성 Flow를 한눈에 확인할 수 있다.*
-
 ### 2) 하이브리드 개발 및 실험 환경
-개발 편의성과 네트워크 격리를 동시에 확보하기 위해 호스트 머신과 리눅스 VM으로 실행 환경을 분리했다. (macOS·Windows 환경에서는 Multipass를 활용해 Linux 데이터 플레인을 구동한다.)
+개발 편의성과 네트워크 격리를 동시에 확보하기 위해 호스트 머신과 리눅스 VM으로 실행 환경을 분리했다.
 
 * **호스트 환경:** Frontend, Backend, 데이터 저장소(PostgreSQL, InfluxDB, Elasticsearch)
 * **Ubuntu VM (데이터 플레인):** Analyzer, Controller, Mininet, Open vSwitch
