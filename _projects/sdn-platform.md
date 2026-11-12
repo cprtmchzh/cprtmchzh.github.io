@@ -1,4 +1,3 @@
-<img width="1276" height="570" alt="image" src="https://github.com/user-attachments/assets/dd26e322-dbf5-424f-abe2-d87a94c37524" />---
 title: "네트워크 이상 징후 탐지 플랫폼"
 date: 2026-08-11 00:00:00 +0900
 description: "네트워크 이상 징후를 탐지하고 SDN 컨트롤러로 차단·속도 제한 정책을 적용한 뒤 상태를 추적하는 보안 자동화 플랫폼"
