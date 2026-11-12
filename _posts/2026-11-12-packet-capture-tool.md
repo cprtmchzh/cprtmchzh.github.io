@@ -1,5 +1,5 @@
 ---
-title: "PCAP을 이용한 패킷 캡처 프로그램 제작"
+title: "네트워크 패킷 캡처 프로그램 구현"
 date: 2026-05-17 00:00:00 +0900
 category_slug: development
 thumbnail: ""
