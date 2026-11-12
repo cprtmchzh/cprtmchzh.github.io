@@ -9,7 +9,7 @@ sample: false
 ---
 
 - [LinkGuard]({{ '/projects/linkguard/' | relative_url }})
-- [SDN 기반 네트워크 보안 플랫폼]({{ '/projects/sdn-platform/' | relative_url }}
+- [SDN 기반 네트워크 보안 플랫폼]({{ '/projects/sdn-platform/' | relative_url }})
 - [2026 AI보안 기술개발 교육과정(네트워크반) 수료 후기]({{ '/writing/ai-security-development-review/' | relative_url }})
 - [MongoBleed(CVE-2025-14847) 취약점 분석 및 PoC]({{ '/writing/mongobleed-poc-analysis/' | relative_url }})
 - [네트워크 패킷 캡처 프로그램 구현]({{ '/writing/packet-capture-tool/' | relative_url }})
