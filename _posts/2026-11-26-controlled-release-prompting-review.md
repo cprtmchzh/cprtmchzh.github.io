@@ -17,6 +17,7 @@ sample: false
 | **저자** | Jaiden Fairoze, Sanjam Garg, Keewoo Lee, Mingyuan Wang |
 | **연구 분야** | LLM Security, Jailbreak, Prompt Guard |
 | **핵심 키워드** | Resource Asymmetry, Controlled-Release Prompting, Safety Alignment |
+| **선정 이유** | 프롬프트 입력 필터링 우회에 대한 개인적인 흥미 |
 | **원문** | [학회 공식 페이지][1] · [USENIX PDF][2] · [arXiv v4][3] |
 
 <figcaption style="margin-top: 0; font-size: 0.85em;">[표 1] 논문 개요</figcaption>
