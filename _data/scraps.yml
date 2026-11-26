@@ -1,2 +1,8 @@
 # Add entries using _templates/SCRAP_TEMPLATE.yml. Dates must be quoted YYYY-MM-DD.
-[]
+- date: "2026-11-26"
+  title: "X의 패스키 로그인, 서버에는 무엇이 저장될까?"
+  summary: "X는 2024년 4월 iOS 패스키 로그인을 전 세계 사용자에게 열었다. 패스키를 등록하면 X는 공개키를 저장한다. 로그인할 때 기기가 개인키로 서명하면 X는 그 서명을 공개키로 확인한다."
+  note: "휴대폰을 잃어버리면 어떻게 다시 로그인할까? 패스키를 등록할 때 계정 복구 방법도 함께 확인해 두자."
+  tags: ["인증", "패스키"]
+  url: "https://x.com/Safety/status/1777415876620472799"
+  source_url: "https://help.x.com/en/managing-your-account/how-to-use-passkey"
