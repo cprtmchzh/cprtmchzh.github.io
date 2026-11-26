@@ -55,6 +55,7 @@ body{margin:0;background:var(--bg);color:var(--ink);font:400 15px/1.8 var(--sans
 .table-shell{width:100%;overflow-x:auto;margin:30px 0 36px;border:1px solid #dfdbd1;border-radius:0;background:#fdfcf7;overscroll-behavior-x:contain}
 .post-content table{width:100%;border-collapse:separate;border-spacing:0;margin:0;font-size:13px;line-height:1.65;min-width:530px}
 .post-content th,.post-content td{padding:13px 18px;border-bottom:1px solid #e9e5db;text-align:left;vertical-align:top;min-width:98px;overflow-wrap:normal;word-break:keep-all}
+.post-content th+th,.post-content td+td{border-left:1px solid #d7d0c2}
 .post-content thead th{background:#eeebdf;color:#48453b;font-weight:660;white-space:nowrap;border-bottom:1px solid #dbd6c9}
 .post-content tbody tr:nth-child(even){background:#f7f5ec}
 .post-content tbody tr:last-child td{border-bottom:0}

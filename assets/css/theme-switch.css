@@ -151,6 +151,8 @@
 :root[data-theme="dark"] .post-content thead th {background:#26334a;border-color:#40506c;color:#e9f7fe}
 :root[data-theme="dark"] .post-content th,
 :root[data-theme="dark"] .post-content td {border-color:#354158}
+:root[data-theme="dark"] .post-content th+th,
+:root[data-theme="dark"] .post-content td+td {border-left-color:#46556f}
 :root[data-theme="dark"] .post-content tbody tr:nth-child(even) {background:#1d2737}
 :root[data-theme="dark"] .post-content img {border-color:#414f65}
 :root[data-theme="dark"] .post-content .download-link {background:var(--surface);color:var(--ink)}
