@@ -1,0 +1,38 @@
+---
+layout: scraps
+title: "Scraps"
+description: "X에서 발견한 보안 자료와 짧은 생각을 날짜별로 기록합니다."
+permalink: /scraps/
+---
+<header class="scraps-hero">
+  <h1 class="hero-title">Scraps.</h1>
+  <p>X에서 발견한 보안 자료와 짧은 생각.<br>읽고, 저장하고, 다시 확인할 것들을 남깁니다.</p>
+</header>
+{% assign scraps = site.data.scraps | where_exp: "scrap", "scrap.published != false" | sort: 'date' | reverse %}
+<div class="scraps-index"><span>SECURITY NOTES</span><span>{{ scraps.size }} scraps</span></div>
+{% if scraps.size > 0 %}
+  {% assign days = scraps | group_by: 'date' %}
+  <div class="scraps-days">
+    {% for day in days %}
+    <section class="scraps-day" aria-labelledby="day-{{ day.name | date: '%Y-%m-%d' }}">
+      <h2 id="day-{{ day.name | date: '%Y-%m-%d' }}"><time datetime="{{ day.name | date: '%Y-%m-%d' }}">{{ day.name | date: '%Y.%m.%d' }}</time></h2>
+      <div class="scraps-entries">
+        {% for scrap in day.items %}
+        <article class="scrap-entry">
+          {% if scrap.tags.size > 0 %}<div class="scrap-tags">{% for tag in scrap.tags %}<span>{{ tag | escape }}</span>{% endfor %}</div>{% endif %}
+          <h3>{{ scrap.title | escape }}</h3>
+          <p class="scrap-summary">{{ scrap.summary | escape | newline_to_br }}</p>
+          {% if scrap.note and scrap.note != empty %}<p class="scrap-note"><span>메모</span>{{ scrap.note | escape | newline_to_br }}</p>{% endif %}
+          <div class="scrap-sources">
+            {% if scrap.url and scrap.url != empty %}<a href="{{ scrap.url | escape }}" target="_blank" rel="noopener noreferrer">X 원문 <span aria-hidden="true">↗</span></a>{% endif %}
+            {% if scrap.source_url and scrap.source_url != empty %}<a href="{{ scrap.source_url | escape }}" target="_blank" rel="noopener noreferrer">참고 자료 <span aria-hidden="true">↗</span></a>{% endif %}
+          </div>
+        </article>
+        {% endfor %}
+      </div>
+    </section>
+    {% endfor %}
+  </div>
+{% else %}
+  <div class="scraps-empty"><p>아직 기록한 스크랩이 없습니다.</p><span>읽어 둔 보안 자료와 짧은 메모가 이곳에 쌓입니다.</span></div>
+{% endif %}

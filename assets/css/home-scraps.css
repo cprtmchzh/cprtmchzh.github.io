@@ -1,0 +1,48 @@
+/* A short fourth link above About; the three main cards keep their baseline. */
+.home-links { --home-link-gap:22px; gap:var(--home-link-gap); }
+.home-box--scraps {
+  position:absolute;
+  right:0;
+  bottom:calc(100% + 12px);
+  width:calc((100% - 2 * var(--home-link-gap)) / 3);
+  min-height:64px;
+  height:64px;
+  padding:12px 22px;
+  flex-direction:row;
+  justify-content:space-between;
+  gap:12px;
+  background:#bfe0e8;
+  --hover-fill:#a7d4df;
+}
+.home-box--scraps .home-box__title { font-size:27px; }
+.home-scraps__arrow { font:400 22px/1 "Pretendard Variable",sans-serif; }
+:root[data-theme="dark"] .home-box--scraps {
+  color:#b5eaf6;
+  --card-neon:#8bd9ec;
+}
+:root[data-theme="dark"] .home-box--scraps:is(:hover,:focus-visible) {
+  background-color:#214e5b;
+  border-color:#8bd9ec;
+  color:#e6faff;
+}
+@media(max-width:700px) {
+  /* Let the stacked links set the height on short phones instead of overflowing
+     the viewport-height hero into the dashboard or its scroll cue. */
+  #main .home-landing {
+    height:auto;
+    min-height:100vh;
+    min-height:100dvh;
+    padding:104px 20px 88px;
+  }
+  .home-links { --home-link-gap:16px; }
+  .home-box--scraps {
+    position:relative;
+    right:auto;
+    bottom:auto;
+    width:100%;
+    min-height:52px;
+    height:52px;
+    padding:10px 22px;
+  }
+  .home-box--scraps .home-box__title { font-size:25px; }
+}

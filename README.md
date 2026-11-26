@@ -13,6 +13,21 @@
 
 ## 글 추가 / 수정
 
+### 매일 보안 스크랩 기록하기
+
+첫 화면의 About 바로 위에 있는 `Scraps` 박스는 `/scraps/`로 연결됩니다.
+스크랩은 `_data/scraps.yml` 한 파일에 작성하며 날짜별로 묶여 최신 날짜부터 표시됩니다.
+
+1. `_templates/SCRAP_TEMPLATE.yml`의 항목을 `_data/scraps.yml`에 복사합니다. 첫 기록을 넣을 때는 빈 배열 `[]`를 지웁니다.
+2. `date`는 `"2026-11-26"`처럼 따옴표로 감싼 날짜로 작성합니다. 같은 날짜의 자료를 여러 항목으로 추가할 수 있습니다.
+3. `title`, X 원문 `url`, 한두 문장 `summary`를 채우고, 필요하면 `note`, `tags`, `source_url`을 추가합니다.
+4. 원문을 확인한 후 `published: true`로 바꾸고 커밋합니다. `published: false`는 공개 목록에서 제외됩니다.
+
+공개 저장소이므로 게시하지 않은 항목도 소스에서는 보입니다. 초안에 비공개 정보는 넣지 않습니다.
+스크랩은 Archive 게시글 수와 목록에 포함되지 않습니다. 데이터가 비어 있으면 빈 상태 안내가 표시됩니다.
+
+### Archive 글 작성하기
+
 1. `_templates/POST_TEMPLATE.md`를 복사하여 `_posts/YYYY-MM-DD-title.md`로 저장합니다.
 2. `category_slug` 중 하나를 선택합니다: `development`, `ctf-wargame`, `bug-bounty`, `technical-writing`, `research-conference`, `achievements`.
 3. Markdown 내용은 `##`, `###`, 코드 블록, 표, 이미지로 작성합니다. 오른쪽 목차가 자동 생성됩니다.

@@ -1,0 +1,10 @@
+# Copy this entry into _data/scraps.yml. Remove its initial [] for the first entry.
+# Replace every placeholder, then set published: true to display the entry.
+- date: "YYYY-MM-DD"
+  title: "자료 제목"
+  url: "https://x.com/ACCOUNT/status/POST_ID"
+  summary: "핵심 내용을 한두 문장으로 요약합니다."
+  note: "왜 저장했는지, 무엇을 확인해 볼지 적습니다."
+  tags: ["Web Security"]
+  source_url: ""
+  published: false
