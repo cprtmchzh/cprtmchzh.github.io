@@ -58,7 +58,7 @@ Fairoze 등의 이번 연구는 바로 이 공백을 파고든다. 저자들은 
 
 <figure style="margin: 0; text-align: center;">
   <img src="{{ '/assets/archive/controlled-release-prompting-review/resource-asymmetry.png' | relative_url }}"
-       alt="입력 가드와 본 모델의 연산 예산 및 문맥 범위를 비교한 개념도. 실제 측정값은 아님"
+       alt="입력 가드와 본 모델이 사용하는 연산 예산과 문맥 범위 비교"
        style="display: block; margin: 0 auto;">
   <figcaption style="margin-top: 0; font-size: 0.85em;">
     [그림 2] 시간·공간 자원 비대칭
