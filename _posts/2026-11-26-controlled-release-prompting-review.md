@@ -41,9 +41,9 @@ sample: false
 
 이 취약점이 까다로운 이유는 단순히 특정 가드 모델의 성능이 부족해서가 아니라, **보안성과 서비스 운영 효율성 사이의 구조적 충돌**에서 비롯되기 때문이다. 가드를 여러 개 겹쳐 배치하더라도 각 가드에 할당된 연산 자원과 처리 가능한 문맥의 범위가 본 모델에 못 미친다면, 입력에 숨겨진 실제 의도를 끝내 파악하지 못할 수 있다. 기존 보안 벤치마크에서 높은 탐지율을 기록한 모델이라 해도, 자원 비대칭을 겨냥한 공격 앞에서는 무력해질 여지가 남는다.
 
-사실 입력 필터링의 이러한 한계는 앞서 이론적으로 예견된 바 있다. Ball 등의 선행 연구(*On the Impossibility of Separating Intelligence from Judgment: The Computational Intractability of Filtering for AI Alignment*)는 특정 암호학적 가정 아래, 본 모델보다 현저히 적은 연산 자원을 쓰는 입력 필터는 정상 프롬프트와 악의적 프롬프트를 항상 구별할 수 없음을 증명했다<sup class="source-cite"><a href="https://arxiv.org/abs/2507.07341" aria-label="출처 4">4</a></sup>. 다만 선행 연구는 검증을 위해 별도로 구성한 모델을 사용했기에, 이 이론적 한계가 실제 상용 LLM 서비스에서도 그대로 드러나는지는 확인되지 않았다.
+사실 입력 필터링의 이러한 한계는 앞서 이론적으로 예견된 바 있다. Ball 등의 선행 연구(*On the Impossibility of Separating Intelligence from Judgment: The Computational Intractability of Filtering for AI Alignment*)는 특정 암호학적 가정 아래, 본 모델보다 현저히 적은 연산 자원을 쓰는 입력 필터는 정상 프롬프트와 악의적 프롬프트를 항상 구별할 수 없음을 증명했다<sup class="source-cite"><a href="https://arxiv.org/abs/2507.07341" aria-label="참고문헌 2">2</a></sup>. 다만 선행 연구는 검증을 위해 별도로 구성한 모델을 사용했기에, 이 이론적 한계가 실제 상용 LLM 서비스에서도 그대로 드러나는지는 확인되지 않았다.
 
-Fairoze 등의 이번 연구는 바로 이 공백을 파고든다. 저자들은 모델에 어떠한 수정도 가하지 않은 상태에서, **가드 모델과 본 모델 사이의 자원 비대칭이 실제 상용 LLM 서비스의 보안 취약점으로 이어지는지**를 블랙박스 환경에서 검증하고자 했다<sup class="source-cite"><a href="https://www.usenix.org/conference/usenixsecurity26/presentation/fairoze" aria-label="출처 1">1</a>, <a href="https://www.usenix.org/system/files/usenixsecurity26-fairoze.pdf" aria-label="출처 2">2</a>, <a href="https://arxiv.org/abs/2507.07341" aria-label="출처 4">4</a></sup>. LLM 탈옥을 모델 내부의 정렬 실패로만 바라보던 기존 시각에서 벗어나, 서비스 효율성을 위해 택한 아키텍처 자체가 새로운 공격 표면(Attack Surface)이 될 수 있음을 정면으로 짚은 셈이다. 나아가 이러한 구조적 문제는 탈옥을 넘어 프롬프트 인젝션 탐지 시스템에서도 충분히 재현될 수 있다는 점에서 시사하는 바가 크다.
+Fairoze 등의 이번 연구는 바로 이 공백을 파고든다. 저자들은 모델에 어떠한 수정도 가하지 않은 상태에서, **가드 모델과 본 모델 사이의 자원 비대칭이 실제 상용 LLM 서비스의 보안 취약점으로 이어지는지**를 블랙박스 환경에서 검증하고자 했다<sup class="source-cite"><a href="https://www.usenix.org/conference/usenixsecurity26/presentation/fairoze" aria-label="참고문헌 1">1</a>, <a href="https://arxiv.org/abs/2507.07341" aria-label="참고문헌 2">2</a></sup>. LLM 탈옥을 모델 내부의 정렬 실패로만 바라보던 기존 시각에서 벗어나, 서비스 효율성을 위해 택한 아키텍처 자체가 새로운 공격 표면(Attack Surface)이 될 수 있음을 정면으로 짚은 셈이다. 나아가 이러한 구조적 문제는 탈옥을 넘어 프롬프트 인젝션 탐지 시스템에서도 충분히 재현될 수 있다는 점에서 시사하는 바가 크다.
 
 ---
 
@@ -80,7 +80,7 @@ Fairoze 등의 이번 연구는 바로 이 공백을 파고든다. 저자들은 
 
 여기서 짚고 넘어가야 할 점은 입력 토큰의 길이가 의미를 해석하는 데 필요한 추론 토큰 수와 반드시 비례하지는 않는다는 사실이다. CRP의 본질은 단순히 프롬프트를 길게 늘이는 데 있지 않다. 동일한 입력이 주어졌을 때, 각 모델이 동원할 수 있는 연산 예산과 문맥 범위의 차이에 따라 전혀 다른 해석 결과에 도달하도록 유도하는 것이 핵심이다.
 
-아울러 저자들은 블랙박스 환경에서 공격의 성패를 엄밀히 따지기 위해 입력 가드 우회와 실제 탈옥을 명확히 구분했다<sup class="source-cite"><a href="https://www.usenix.org/system/files/usenixsecurity26-fairoze.pdf" aria-label="출처 2">2</a>, <a href="https://arxiv.org/html/2510.01529v4" aria-label="출처 3">3</a></sup>. 입력 가드를 통과했다고 해서 본 모델이 곧바로 위험한 답변을 내놓는 것은 아니기 때문이다.
+아울러 저자들은 블랙박스 환경에서 공격의 성패를 엄밀히 따지기 위해 입력 가드 우회와 실제 탈옥을 명확히 구분했다<sup class="source-cite"><a href="https://www.usenix.org/conference/usenixsecurity26/presentation/fairoze" aria-label="참고문헌 1">1</a></sup>. 입력 가드를 통과했다고 해서 본 모델이 곧바로 위험한 답변을 내놓는 것은 아니기 때문이다.
 
 <figure class="review-table" markdown="1" style="text-align: center;">
 
@@ -107,6 +107,7 @@ Fairoze 등의 이번 연구는 바로 이 공백을 파고든다. 저자들은 
 
 <style>
 .post-content sup.source-cite { vertical-align: super; font-size: 0.72em; line-height: 0; white-space: nowrap; }
+#post-content sup.source-cite a { text-decoration: none; }
 .post-content .review-table > .table-shell { margin: 0; }
 </style>
 
@@ -167,7 +168,7 @@ Fairoze 등의 이번 연구는 바로 이 공백을 파고든다. 저자들은 
 
 ### 입력 가드 너머에서 드러난 위협
 
-저자들은 입력 가드 우회 외에도 저작권 보호 콘텐츠의 추출과 일부 모델의 중간 추론 과정에서 발생하는 정보 유출 사례를 함께 확인했다<sup class="source-cite"><a href="https://www.usenix.org/system/files/usenixsecurity26-fairoze.pdf" aria-label="출처 2">2</a>, <a href="https://arxiv.org/html/2510.01529v4" aria-label="출처 3">3</a></sup>. 특히 최종 응답 단계에서 악의적 요청을 정상적으로 거부했더라도, 사용자에게 공개되는 중간 추론 과정에 위험한 정보가 그대로 담겨 노출되는 사례는 시사하는 바가 크다. 입력 가드뿐 아니라 최종 출력만 검사하는 방어 방식 역시 완벽한 안전망이 될 수 없음을 보여주기 때문이다.
+저자들은 입력 가드 우회 외에도 저작권 보호 콘텐츠의 추출과 일부 모델의 중간 추론 과정에서 발생하는 정보 유출 사례를 함께 확인했다<sup class="source-cite"><a href="https://www.usenix.org/conference/usenixsecurity26/presentation/fairoze" aria-label="참고문헌 1">1</a></sup>. 특히 최종 응답 단계에서 악의적 요청을 정상적으로 거부했더라도, 사용자에게 공개되는 중간 추론 과정에 위험한 정보가 그대로 담겨 노출되는 사례는 시사하는 바가 크다. 입력 가드뿐 아니라 최종 출력만 검사하는 방어 방식 역시 완벽한 안전망이 될 수 없음을 보여주기 때문이다.
 
 ---
 
