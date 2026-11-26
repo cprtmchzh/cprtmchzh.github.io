@@ -23,19 +23,14 @@ sample: false
 
 상용 대규모 언어 모델(LLM) 서비스는 악의적인 요청을 차단하고 안전 정책에 어긋나는 응답을 막기 위해 다층적인 방어 체계를 갖춘다. 모델 자체에 안전 정렬(Safety Alignment)을 적용하는 데 그치지 않고, 사용자 입력과 모델 출력을 각각 별도의 가드 모델로 검사하는 구조가 대표적이다.
 
-```text
-사용자 입력
-    ↓
-Input Guard  — 입력의 위험성 판단
-    ↓
-Main LLM     — 입력 해석 및 응답 생성
-    ↓
-Output Guard — 생성된 응답의 위험성 판단
-    ↓
-최종 응답
-```
-
-*[그림 1] LLM 서비스의 다층 방어 구조*
+<figure style="margin: 0; text-align: center;">
+  <img src="{{ '/assets/archive/controlled-release-prompting-review/guard-pipeline.png' | relative_url }}"
+       alt="사용자 입력이 Input Guard, Main LLM, Output Guard를 거쳐 최종 응답으로 이어지는 흐름"
+       style="display: block; margin: 0 auto;">
+  <figcaption style="margin-top: 0; font-size: 0.85em;">
+    [그림 1] LLM 서비스의 다층 방어 구조
+  </figcaption>
+</figure>
 
 문제는 이러한 다중 방어 구조가 실제 서비스 운영 환경의 제약과 맞물릴 때 발생한다. 상용 LLM 서비스는 빠른 응답 속도와 낮은 운영 비용을 유지해야 하므로, 모든 사용자 요청을 최전선에서 걸러내는 입력 가드에 본 모델과 동일한 수준의 연산 자원을 투입하기 어렵다. 자연스럽게 입력 가드는 본 모델보다 훨씬 가벼운 모델이나 짧은 연산 예산으로 동작하게 된다. 그 결과 동일한 입력을 마주하더라도 가드와 본 모델 사이에 의미를 해석하는 능력의 격차가 생기는데, 이 논문은 이를 **자원 비대칭(Resource Asymmetry)**이라 부른다.
 
@@ -61,17 +56,14 @@ Fairoze 등의 이번 연구는 바로 이 공백을 파고든다. 저자들은 
 
 **Timed-Release Prompting**은 두 모델이 쓸 수 있는 계산량의 차이를 겨냥한다. 가드가 입력 토큰 전체를 빠짐없이 읽어 들인다 해도, 그 안에 담긴 의미를 온전히 해독할 만큼의 추론 예산이 부족하면 위험성을 알아채지 못한다. 반면 **Spaced-Release Prompting**은 한 번에 다룰 수 있는 문맥의 크기 차이를 이용한다. 가드의 컨텍스트 처리 범위가 제한되어 있으면, 넓게 분산된 단서들을 종합해 전체 의도를 파악하기 어렵다.
 
-```text
-[시간적 비대칭]
-가드의 연산 예산    : ━━━
-본 모델의 연산 예산 : ━━━━━━━━━━
-
-[공간적 비대칭]
-가드의 문맥 범위    : ■■■□□□□□□□
-본 모델의 문맥 범위 : ■■■■■■■■■■
-```
-
-*[그림 2] 시간·공간 자원 비대칭*
+<figure style="margin: 0; text-align: center;">
+  <img src="{{ '/assets/archive/controlled-release-prompting-review/resource-asymmetry.png' | relative_url }}"
+       alt="입력 가드와 본 모델의 연산 예산 및 문맥 범위를 비교한 개념도. 실제 측정값은 아님"
+       style="display: block; margin: 0 auto;">
+  <figcaption style="margin-top: 0; font-size: 0.85em;">
+    [그림 2] 시간·공간 자원 비대칭
+  </figcaption>
+</figure>
 
 여기서 짚고 넘어가야 할 점은 입력 토큰의 길이가 의미를 해석하는 데 필요한 추론 토큰 수와 반드시 비례하지는 않는다는 사실이다. CRP의 본질은 단순히 프롬프트를 길게 늘이는 데 있지 않다. 동일한 입력이 주어졌을 때, 각 모델이 동원할 수 있는 연산 예산과 문맥 범위의 차이에 따라 전혀 다른 해석 결과에 도달하도록 유도하는 것이 핵심이다.
 
@@ -173,15 +165,14 @@ Fairoze 등의 이번 연구는 바로 이 공백을 파고든다. 저자들은 
 
 가드의 컨텍스트 용량을 무작정 늘리지 않으면서 공간적 자원 비대칭을 완화하는 현실적인 대안으로, 긴 입력을 여러 조각으로 나누어 검사하는 **분할 기반 검사**를 떠올려 볼 수 있다. 그러나 입력의 각 부분을 빠짐없이 검사하는 것과 전체 문맥을 올바르게 이해하는 것은 전혀 다른 문제다. 입력을 쪼개는 과정에서 앞뒤 조각 사이의 의미적 연결이 끊어지거나, 전체 맥락 속에서만 드러나는 위험한 의도가 개별 조각에서는 무해하게 보일 수 있기 때문이다.
 
-```text
-전체 입력 검사
-[A + B + C + D] → 전체 문맥 종합 → 안전성 판단
-
-독립적 분할 검사
-[A] [B] [C] [D] → 각각 검사 → 결과 통합
-```
-
-*[그림 3] 전체 입력과 분할 검사 비교*
+<figure style="margin: 0; text-align: center;">
+  <img src="{{ '/assets/archive/controlled-release-prompting-review/whole-vs-split-checks.png' | relative_url }}"
+       alt="A부터 D까지 전체 입력을 종합해 검사하는 방식과 네 부분을 개별 검사한 뒤 결과를 통합하는 방식의 비교"
+       style="display: block; margin: 0 auto;">
+  <figcaption style="margin-top: 0; font-size: 0.85em;">
+    [그림 3] 전체 입력과 분할 검사 비교
+  </figcaption>
+</figure>
 
 이러한 문맥 손실과 판단 불일치가 실제로 어느 수준에서 발생하는지 확인하기 위해, 공개 가드 모델을 활용한 비교 실험을 구상해 보았다. 학부생 수준에서 새로운 의미 해석 알고리즘을 처음부터 설계하기보다는, 동일한 공개 가드 모델 위에서 대표적인 입력 분할 및 문맥 유지 기법을 구현하고 체계적으로 비교하는 접근이 현실적이다.
 
