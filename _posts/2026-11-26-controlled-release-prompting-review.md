@@ -48,7 +48,9 @@ Fairoze 등의 이번 연구는 바로 이 공백을 파고든다. 저자들은 
 
 저자들은 이러한 자원 비대칭을 **시간(연산량)**과 **공간(컨텍스트 용량)**이라는 두 축으로 나누어 공격 기법을 설계했다.
 
-| 구분 | Timed-Release Prompting | Spaced-Release Prompting |
+**T-R**은 Timed-Release Prompting, **S-R**은 Spaced-Release Prompting을 뜻한다.
+
+| 구분 | T-R | S-R |
 |---|---|---|
 | **활용하는 자원** | 시간 및 계산량 | 컨텍스트 처리 용량 |
 | **가드의 한계** | 의미를 해석하기 위한 연산 부족 | 전체 문맥을 처리하기 어려움 |
@@ -87,14 +89,23 @@ Fairoze 등의 이번 연구는 바로 이 공백을 파고든다. 저자들은 
 
 저자들은 AdvBench와 HarmBench에서 선정한 12개의 악의적 요청을 바탕으로, 네 개의 상용 LLM 서비스에 Timed-Release Prompting을 적용했다.
 
-| 모델 | Timed-Release 성공 건수 | 공격 성공률 |
+<style>
+.post-content .review-table > .table-shell { margin: 0; }
+</style>
+
+<figure class="review-table" markdown="1" style="text-align: center;">
+
+| 모델 | T-R 성공 건수 | 공격 성공률 |
 |---|---:|---:|
 | Gemini 2.5 Flash | 12/12 | 100% |
 | DeepSeek DeepThink | 12/12 | 100% |
 | Grok 3 | 12/12 | 100% |
 | Mistral Magistral | 11/12 | 91.7% |
 
-*표 1. 상용 LLM 서비스 대상 Timed-Release 실험 결과(원문 Section 4 및 Table 4·7 참고). 저자들의 공격 성공 판정 기준을 적용한 수치이다 [2][3].*
+<figcaption style="margin-top: 0; font-size: 0.85em;">[표 1] 상용 LLM 서비스의 T-R 실험 결과</figcaption>
+</figure>
+
+성공 건수는 저자들의 판정 기준을 따른다. [원문 §4, 표 4·7][2]
 
 네 서비스 모두에서 90%를 넘는 높은 성공률이 기록되었으며, 세 개 서비스에서는 12건 전부가 성공으로 판정되었다. 별도의 모델 수정 없이도 선행 연구의 이론적 경고가 상용 환경에서 현실화할 수 있음을 실증한 결과다.
 
@@ -113,7 +124,9 @@ Fairoze 등의 이번 연구는 바로 이 공백을 파고든다. 저자들은 
 
 주요 모델의 평가 결과는 다음과 같다.
 
-| 모델 | ROC-AUC | Timed-Release 탐지 점수 | Spaced-Release 탐지 점수 | 평균 추론 시간 |
+<figure class="review-table" markdown="1" style="text-align: center;">
+
+| 모델 | ROC-AUC | T-R 탐지 점수 | S-R 탐지 점수 | 평균 추론 시간 |
 |---|---:|---:|---:|---:|
 | Prompt Guard 1 | 0.831 | 0.99 | 0.91 | 52 ms |
 | Prompt Guard 2 (86M) | 0.853 | 0.21 | 0.12 | 277 ms |
@@ -121,7 +134,10 @@ Fairoze 등의 이번 연구는 바로 이 공백을 파고든다. 저자들은 
 | Qwen3-32B (Thinking) | 0.888 | 0.46 | 0.23 | 1,463 ms |
 | DeepSeek-R1 (Thinking) | 0.911 | 0.95 | 0.96 | 3,486 ms |
 
-*표 2. 공개 가드 모델 평가 결과 발췌(원문 Table 5 참고). 탐지 점수는 탐지 성공률이 아니라 평균 탐지 신뢰도이며, 모델마다 분류 임계값에도 차이가 있다 [2][3].*
+<figcaption style="margin-top: 0; font-size: 0.85em;">[표 2] 공개 가드 모델의 탐지 성능과 추론 시간</figcaption>
+</figure>
+
+탐지 점수는 평균 탐지 신뢰도이며, 분류 임계값은 모델마다 다르다. [원문 표 5][2]
 
 표 2에서 가장 눈에 띄는 대목은 Prompt Guard 1과 Prompt Guard 2(86M)의 대비다. 후속 버전인 Prompt Guard 2는 기존 벤치마크 기준 ROC-AUC가 0.853으로 이전 버전(0.831)보다 향상되었지만, Timed-Release와 Spaced-Release에 대한 평균 탐지 신뢰도는 각각 0.21과 0.12로 급락했다. 기존 벤치마크에서의 우수한 성적이 자원 비대칭 기반의 새로운 공격에 대한 내성까지 담보하지 않음을 여실히 보여주는 대목이다.
 
