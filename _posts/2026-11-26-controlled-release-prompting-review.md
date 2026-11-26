@@ -30,10 +30,10 @@ sample: false
 
 <figure style="margin: 0; text-align: center;">
   <img src="{{ '/assets/archive/controlled-release-prompting-review/guard-pipeline.png' | relative_url }}"
-       alt="사용자 입력이 Input Guard, Main LLM, Output Guard를 거쳐 최종 응답으로 이어지는 흐름"
+       alt="사용자 입력이 입력 가드, 본 모델, 출력 가드를 거쳐 최종 응답으로 이어지는 흐름"
        style="display: block; margin: 0 auto;">
   <figcaption style="margin-top: 0; font-size: 0.85em;">
-    [그림 1] LLM 서비스의 다층 방어 구조
+    [그림 1] 입력·출력 가드의 처리 흐름
   </figcaption>
 </figure>
 
@@ -68,13 +68,14 @@ Fairoze 등의 이번 연구는 바로 이 공백을 파고든다. 저자들은 
 
 **Timed-Release Prompting**은 두 모델이 쓸 수 있는 계산량의 차이를 겨냥한다. 가드가 입력 토큰 전체를 빠짐없이 읽어 들인다 해도, 그 안에 담긴 의미를 온전히 해독할 만큼의 추론 예산이 부족하면 위험성을 알아채지 못한다. 반면 **Spaced-Release Prompting**은 한 번에 다룰 수 있는 문맥의 크기 차이를 이용한다. 가드의 컨텍스트 처리 범위가 제한되어 있으면, 넓게 분산된 단서들을 종합해 전체 의도를 파악하기 어렵다.
 
-<figure style="margin: 0; text-align: center;">
-  <img src="{{ '/assets/archive/controlled-release-prompting-review/resource-asymmetry.png' | relative_url }}"
-       alt="입력 가드와 본 모델이 사용하는 연산 예산과 문맥 범위 비교"
-       style="display: block; margin: 0 auto;">
-  <figcaption style="margin-top: 0; font-size: 0.85em;">
-    [그림 2] 시간·공간 자원 비대칭
-  </figcaption>
+<figure class="review-table" markdown="1" style="text-align: center;">
+
+| 비교 항목 | 입력 가드 | 본 모델 |
+|---|---|---|
+| **연산 예산** | 적음 | 많음 |
+| **문맥 범위** | 좁음 | 넓음 |
+
+<figcaption style="margin-top: 0; font-size: 0.85em;">[표 3] 입력 가드와 본 모델의 자원 차이</figcaption>
 </figure>
 
 여기서 짚고 넘어가야 할 점은 입력 토큰의 길이가 의미를 해석하는 데 필요한 추론 토큰 수와 반드시 비례하지는 않는다는 사실이다. CRP의 본질은 단순히 프롬프트를 길게 늘이는 데 있지 않다. 동일한 입력이 주어졌을 때, 각 모델이 동원할 수 있는 연산 예산과 문맥 범위의 차이에 따라 전혀 다른 해석 결과에 도달하도록 유도하는 것이 핵심이다.
@@ -89,7 +90,7 @@ Fairoze 등의 이번 연구는 바로 이 공백을 파고든다. 저자들은 
 | **모델 탈옥(Jailbreak)** | 본 모델이 안전 정책에 위배되는 응답을 생성했는가? |
 | **서비스 수준의 공격 성공** | 안전 정책에 위배되는 정보가 실제 사용자에게 전달되었는가? |
 
-<figcaption style="margin-top: 0; font-size: 0.85em;">[표 3] 공격 성공 판정 기준</figcaption>
+<figcaption style="margin-top: 0; font-size: 0.85em;">[표 4] 공격 성공 판정 기준</figcaption>
 </figure>
 
 이처럼 단계별 기준을 분리함으로써, 가드의 탐지 실패가 실제 서비스 수준의 정보 유출로 이어지는 경로를 보다 입체적으로 평가할 수 있게 된다.
@@ -117,7 +118,7 @@ Fairoze 등의 이번 연구는 바로 이 공백을 파고든다. 저자들은 
 | Grok 3 | 12/12 | 100% |
 | Mistral Magistral | 11/12 | 91.7% |
 
-<figcaption style="margin-top: 0; font-size: 0.85em;">[표 4] 상용 LLM의 T-R 실험 결과</figcaption>
+<figcaption style="margin-top: 0; font-size: 0.85em;">[표 5] 상용 LLM의 T-R 실험 결과</figcaption>
 </figure>
 
 성공 건수는 저자들의 판정 기준을 따른다. [원문 §4, 표 4·7][2]
@@ -139,7 +140,7 @@ Fairoze 등의 이번 연구는 바로 이 공백을 파고든다. 저자들은 
 | **평가 지표** | ROC-AUC, F1-score, 평균 탐지 신뢰도 |
 | **자원 측정** | 평균 추론 시간 및 출력 토큰 수 |
 
-<figcaption style="margin-top: 0; font-size: 0.85em;">[표 5] 공개 가드 모델의 평가 조건</figcaption>
+<figcaption style="margin-top: 0; font-size: 0.85em;">[표 6] 공개 가드 모델의 평가 조건</figcaption>
 </figure>
 
 주요 모델의 평가 결과는 다음과 같다.
@@ -154,12 +155,12 @@ Fairoze 등의 이번 연구는 바로 이 공백을 파고든다. 저자들은 
 | Qwen3-32B (Thinking) | 0.888 | 0.46 | 0.23 | 1,463 ms |
 | DeepSeek-R1 (Thinking) | 0.911 | 0.95 | 0.96 | 3,486 ms |
 
-<figcaption style="margin-top: 0; font-size: 0.85em;">[표 6] 가드 모델별 탐지 성능과 추론 시간</figcaption>
+<figcaption style="margin-top: 0; font-size: 0.85em;">[표 7] 가드 모델별 탐지 성능과 추론 시간</figcaption>
 </figure>
 
 탐지 점수는 평균 탐지 신뢰도이며, 분류 임계값은 모델마다 다르다. [원문 표 5][2]
 
-표 6에서 가장 눈에 띄는 대목은 Prompt Guard 1과 Prompt Guard 2(86M)의 대비다. 후속 버전인 Prompt Guard 2는 기존 벤치마크 기준 ROC-AUC가 0.853으로 이전 버전(0.831)보다 향상되었지만, Timed-Release와 Spaced-Release에 대한 평균 탐지 신뢰도는 각각 0.21과 0.12로 급락했다. 기존 벤치마크에서의 우수한 성적이 자원 비대칭 기반의 새로운 공격에 대한 내성까지 담보하지 않음을 여실히 보여주는 대목이다.
+표 7에서 가장 눈에 띄는 대목은 Prompt Guard 1과 Prompt Guard 2(86M)의 대비다. 후속 버전인 Prompt Guard 2는 기존 벤치마크 기준 ROC-AUC가 0.853으로 이전 버전(0.831)보다 향상되었지만, Timed-Release와 Spaced-Release에 대한 평균 탐지 신뢰도는 각각 0.21과 0.12로 급락했다. 기존 벤치마크에서의 우수한 성적이 자원 비대칭 기반의 새로운 공격에 대한 내성까지 담보하지 않음을 여실히 보여주는 대목이다.
 
 반면 DeepSeek-R1(Thinking)처럼 많은 연산 자원을 투입하는 모델은 Timed-Release 0.95, Spaced-Release 0.96이라는 높은 탐지 점수를 기록했지만, 평균 추론 시간 역시 3,486 ms로 크게 늘어났다. 물론 각 모델은 구조와 학습 데이터가 서로 다르므로, 이 비교만으로 연산량과 탐지 성능 사이의 직접적인 인과관계를 단정할 수는 없다. 그럼에도 가드 모델을 평가할 때 기존 벤치마크 점수만이 아니라 새로운 유형의 공격에 대한 대응력과 실제 운영 비용을 함께 따져보아야 한다는 점은 분명해진다.
 
@@ -185,7 +186,7 @@ Fairoze 등의 이번 연구는 바로 이 공백을 파고든다. 저자들은 
 
 **둘째, 상용 서비스 내부 구조의 불투명성이 완전히 해소되지 않았다.** 저자들은 블랙박스 환경의 한계를 보완하기 위해 공개 가드 모델을 별도로 평가했지만, 이 공개 모델들이 실제 상용 서비스에 탑재된 가드와 동일하다는 보장은 없다. 따라서 상용 서비스에서 관찰된 모든 공격 성공의 원인을 자원 비대칭 하나로 귀결시키기에는 여전히 간극이 존재한다.
 
-**셋째, 자원과 탐지 성능 사이의 엄밀한 인과관계 검증이 아쉽다.** 표 6처럼 서로 다른 가드 모델의 결과를 비교할 때는 연산 자원 외에도 모델 구조, 학습 데이터, 학습 방식 같은 변수가 결과에 혼재된다. 동일한 가드 모델을 고정한 상태에서 다른 조건은 유지하고 추론 예산이나 컨텍스트 크기만 단계적으로 변화시키는 통제 실험이 추가된다면, 자원 비대칭이 탐지 성능에 미치는 순수한 영향을 훨씬 명확하게 규명할 수 있을 것이다.
+**셋째, 자원과 탐지 성능 사이의 엄밀한 인과관계 검증이 아쉽다.** 표 7처럼 서로 다른 가드 모델의 결과를 비교할 때는 연산 자원 외에도 모델 구조, 학습 데이터, 학습 방식 같은 변수가 결과에 혼재된다. 동일한 가드 모델을 고정한 상태에서 다른 조건은 유지하고 추론 예산이나 컨텍스트 크기만 단계적으로 변화시키는 통제 실험이 추가된다면, 자원 비대칭이 탐지 성능에 미치는 순수한 영향을 훨씬 명확하게 규명할 수 있을 것이다.
 
 **넷째, 구체적인 방어 기법의 구현과 검증은 남겨져 있다.** 저자들은 입력 가드에만 의존하는 전략의 한계를 짚고 출력 검사와 모델 자체의 안전 정렬을 병행할 필요성을 언급했으나, 이를 실제 방어 시스템으로 구현해 효과를 검증하는 단계까지는 나아가지 않았다. 다만 이 연구의 목적이 새로운 방어 기법 개발이 아니라 기존 방어 구조의 취약성을 실증하는 데 있다는 점을 감안하면, 이는 연구 자체의 결함이라기보다 후속 연구가 이어받아야 할 과제로 보는 편이 타당하다.
 
@@ -206,7 +207,7 @@ Fairoze 등의 이번 연구는 바로 이 공백을 파고든다. 저자들은 
        alt="A부터 D까지 전체 입력을 종합해 검사하는 방식과 네 부분을 개별 검사한 뒤 결과를 통합하는 방식의 비교"
        style="display: block; margin: 0 auto;">
   <figcaption style="margin-top: 0; font-size: 0.85em;">
-    [그림 3] 전체 입력과 분할 검사 비교
+    [그림 2] 전체 검사와 분할 검사의 차이
   </figcaption>
 </figure>
 
@@ -222,7 +223,7 @@ Fairoze 등의 이번 연구는 바로 이 공백을 파고든다. 저자들은 
 | **의미 기반 분할 검사** | 문장 및 문단 단위 분할의 효과 확인 |
 | **문맥 유지 기반 검사** | 이전 문맥 정보를 활용한 판단 일관성 개선 |
 
-<figcaption style="margin-top: 0; font-size: 0.85em;">[표 7] 입력 분할 방식별 비교 목적</figcaption>
+<figcaption style="margin-top: 0; font-size: 0.85em;">[표 8] 입력 분할 방식별 비교 목적</figcaption>
 </figure>
 
 실험 설계에서는 앞서 4절에서 지적한 통제 조건을 반영하고자 한다. 전체 입력 검사의 결과 역시 항상 정답이라는 보장은 없으므로, 정답 레이블이 확보된 정상·위험 입력 데이터셋을 별도로 준비하고 분할 전략을 제외한 나머지 평가 조건과 가드 모델은 동일하게 유지한다.
@@ -244,7 +245,7 @@ Fairoze 등의 이번 연구는 바로 이 공백을 파고든다. 저자들은 
 | **평가 지표** | Precision, Recall, F1-score, 판단 일치율, 처리 시간, 메모리 사용량 |
 | **기대 효과** | 운영 효율성을 고려한 프롬프트 검사 방식 개선 |
 
-<figcaption style="margin-top: 0; font-size: 0.85em;">[표 8] 분할 검사 후속 연구 계획</figcaption>
+<figcaption style="margin-top: 0; font-size: 0.85em;">[표 9] 분할 검사 후속 연구 계획</figcaption>
 </figure>
 
 우선 공개 가드 모델의 실행 환경과 레이블링된 평가 데이터셋을 구축한 뒤, 위 다섯 가지 방식을 구현해 안전성 판단 결과와 자원 사용량의 트레이드오프를 비교할 예정이다. 궁극적으로는 가드 모델의 컨텍스트 크기를 무리하게 키우지 않으면서도 입력 전체의 의미를 일관되게 판별할 수 있는 방어 구조를 모색하고자 한다.
@@ -262,7 +263,7 @@ Fairoze 등의 이번 연구는 바로 이 공백을 파고든다. 저자들은 
 | [Constitutional Classifiers++: Efficient Production-Grade Defenses against Universal Jailbreaks][6] | 실제 서비스 환경에서 보안성과 운영 효율성을 함께 달성하려는 최신 방어 연구의 흐름을 확인하기 위함 |
 | [StruQ: Defending Against Prompt Injection with Structured Queries][7] | 지시와 데이터를 구조적으로 분리하는 프롬프트 인젝션 방어 기법을 학습하고, 자원 비대칭 관점의 확장 가능성을 검토하기 위함 |
 
-<figcaption style="margin-top: 0; font-size: 0.85em;">[표 9] 후속 연구 참고 논문</figcaption>
+<figcaption style="margin-top: 0; font-size: 0.85em;">[표 10] 후속 연구 참고 논문</figcaption>
 </figure>
 
 ---
